@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
-import { ArrowLeft, CheckCircle2, LogOut, UserRound } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, UserRound } from 'lucide-react';
 import { profileApi } from '../api/profileApi.js';
 import { careerProfileApi } from '../api/careerProfileApi.js';
 import { CareerProfileFields, careerToForm, careerToPayload, initialCareerForm } from './CareerProfileFields.jsx';
 import { fieldClass } from './profileFormStyles.js';
-import { Logo } from '../../../shared/ui/Logo.jsx';
 import { Button } from '../../../shared/ui/Button.jsx';
 
 const emptyForm = { firstName: '', lastName: '', phone: '', location: '', photoUrl: '' };
@@ -36,7 +35,7 @@ function PersonalFields({ profile, form, updateField }) {
   );
 }
 
-export function PersonalProfileScreen({ runAuthenticated, onBack, onLogout }) {
+export function PersonalProfileScreen({ runAuthenticated, onBack }) {
   const [personal, setPersonal] = useState(null);
   const [career, setCareer] = useState(null);
   const [personalForm, setPersonalForm] = useState(emptyForm);
@@ -106,13 +105,7 @@ export function PersonalProfileScreen({ runAuthenticated, onBack, onLogout }) {
     }
   }
   return (
-    <div className="min-h-screen bg-[#F7F8FA] text-[#202938]">
-      <header className="border-b border-[#E3E7ED] bg-white">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-5">
-          <Logo size="md" />
-          <button type="button" onClick={onLogout} className="inline-flex items-center gap-2 rounded-lg border border-[#E3E7ED] px-4 py-2 text-sm font-medium text-[#243B64] hover:bg-[#F7F8FA]"><LogOut size={16} />Çıkış yap</button>
-        </div>
-      </header>
+    <div className="text-[#202938]">
       <main className="mx-auto max-w-4xl px-6 py-10 md:py-16">
         <button type="button" onClick={onBack} className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-[#5276A7] hover:text-[#243B64]"><ArrowLeft size={17} />Geri dön</button>
         <div className="mb-9 flex items-start gap-4">
