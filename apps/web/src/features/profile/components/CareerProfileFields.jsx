@@ -9,9 +9,6 @@ const levelOptions = [
   ['stajyer', 'Stajyer'], ['baslangic', 'Başlangıç'], ['orta', 'Orta'],
   ['kidemli', 'Kıdemli'], ['lider', 'Lider'],
 ];
-const workModelOptions = [
-  ['uzaktan', 'Uzaktan'], ['hibrit', 'Hibrit'], ['ofis', 'Ofis'],
-];
 
 export function careerToForm(profile) {
   return {
@@ -50,13 +47,6 @@ export function careerToPayload(form) {
 }
 
 export function CareerProfileFields({ form, updateField }) {
-  function toggleWorkModel(value) {
-    const next = form.workModels.includes(value)
-      ? form.workModels.filter((item) => item !== value)
-      : [...form.workModels, value];
-    updateField('workModels', next);
-  }
-
   return (
     <section className="rounded-2xl border border-[#E3E7ED] bg-white p-6 shadow-sm md:p-9 space-y-9">
         <div>
@@ -67,18 +57,6 @@ export function CareerProfileFields({ form, updateField }) {
             <label className="block text-sm font-medium">Deneyim seviyesi<select className={fieldClass} value={form.experienceLevel} onChange={(event) => updateField('experienceLevel', event.target.value)}><option value="">Seçiniz</option>{levelOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
           </div>
           <label className="mt-5 block text-sm font-medium">Hakkımda<textarea className={`${fieldClass} min-h-32 resize-y`} value={form.summary} maxLength={2000} placeholder="Becerilerini, deneyimlerini ve ilgilendiğin alanları anlat..." onChange={(event) => updateField('summary', event.target.value)} /><span className="mt-1 block text-right text-xs font-normal text-[#98A2B3]">{form.summary.length}/2000</span></label>
-        </div>
-
-        <div id="career-goals-section" className="scroll-mt-8 border-t border-[#E3E7ED] pt-8">
-          <h2 className="text-lg font-semibold text-[#243B64]">Kariyer hedeflerin</h2>
-          <div className="mt-5 grid gap-5 sm:grid-cols-2">
-            <label className="block text-sm font-medium">Hedef unvan<input className={fieldClass} value={form.targetTitle} maxLength={150} placeholder="Örn. Backend geliştirici" onChange={(event) => updateField('targetTitle', event.target.value)} /></label>
-            <label className="block text-sm font-medium">Hedef sektör<input className={fieldClass} value={form.targetIndustry} maxLength={150} placeholder="Örn. Teknoloji" onChange={(event) => updateField('targetIndustry', event.target.value)} /></label>
-            <label className="block text-sm font-medium">Hedef kıdem<select className={fieldClass} value={form.targetSeniority} onChange={(event) => updateField('targetSeniority', event.target.value)}><option value="">Seçiniz</option>{levelOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
-            <label className="block text-sm font-medium">Tercih edilen konumlar<input className={fieldClass} value={form.preferredLocationsText} placeholder="İstanbul, Ankara" onChange={(event) => updateField('preferredLocationsText', event.target.value)} /><span className="mt-2 block text-xs font-normal text-[#98A2B3]">Birden fazla konumu virgülle ayırabilirsin.</span></label>
-          </div>
-          <fieldset className="mt-5"><legend className="text-sm font-medium">Çalışma modelleri</legend><div className="mt-3 flex flex-wrap gap-3">{workModelOptions.map(([value, label]) => <label key={value} className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-[#D8DEE8] px-4 py-2.5 text-sm"><input type="checkbox" checked={form.workModels.includes(value)} onChange={() => toggleWorkModel(value)} className="accent-[#2F8F83]" />{label}</label>)}</div></fieldset>
-          <label className="mt-5 block text-sm font-medium">Kariyer notları<textarea className={`${fieldClass} min-h-28 resize-y`} value={form.careerNotes} maxLength={2000} placeholder="Kendi hedeflerin ve planların için notlar..." onChange={(event) => updateField('careerNotes', event.target.value)} /></label>
         </div>
 
         <div className="border-t border-[#E3E7ED] pt-8">
