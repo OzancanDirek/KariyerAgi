@@ -18,26 +18,26 @@ public class CertificatesController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<CertificateResponse>>> List()
     {
-        return await certificates.ListAsync();
+        return await certificates.GetCertificatesAsync();
     }
 
     [HttpPost]
     public async Task<ActionResult<CertificateResponse>> Create(CertificateRequest request)
     {
-        var created = await certificates.CreateAsync(request);
+        var created = await certificates.CreateCertificateAsync(request);
         return StatusCode(201, created);
     }
 
     [HttpPut("{id:guid}")]
     public async Task<ActionResult<CertificateResponse>> Update(Guid id, CertificateRequest request)
     {
-        return await certificates.UpdateAsync(id, request);
+        return await certificates.UpdateCertificateAsync(id, request);
     }
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id)
     {
-        await certificates.DeleteAsync(id);
+        await certificates.DeleteCertificateAsync(id);
         return NoContent();
     }
 
@@ -46,19 +46,19 @@ public class CertificatesController : ControllerBase
     [RequestSizeLimit(11 * 1024 * 1024)]
     public async Task<ActionResult<CertificateResponse>> UploadDocument(Guid id, IFormFile? file)
     {
-        return await certificates.UploadDocumentAsync(id, file);
+        return await certificates.UploadCertificateDocumentAsync(id, file);
     }
 
     [HttpGet("{id:guid}/document")]
     public async Task<IActionResult> DownloadDocument(Guid id)
     {
-        var document = await certificates.DownloadDocumentAsync(id);
+        var document = await certificates.DownloadCertificateDocumentAsync(id);
         return File(document.Bytes, document.ContentType, document.FileName);
     }
 
     [HttpDelete("{id:guid}/document")]
     public async Task<ActionResult<CertificateResponse>> DeleteDocument(Guid id)
     {
-        return await certificates.DeleteDocumentAsync(id);
+        return await certificates.DeleteCertificateDocumentAsync(id);
     }
 }

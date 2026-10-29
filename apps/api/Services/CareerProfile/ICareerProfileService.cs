@@ -4,6 +4,6 @@ namespace CareerPath.Api.Services.CareerProfile;
 
 public interface ICareerProfileService
 {
-    Task<CareerProfileResponse> GetMineAsync();
-    Task<CareerProfileResponse> UpdateMineAsync(UpdateCareerProfileRequest request);
+    Task<CareerProfileResponse> GetCareerProfileAsync();
+    Task<CareerProfileResponse> UpdateCareerProfileAsync(UpdateCareerProfileRequest request);
 }

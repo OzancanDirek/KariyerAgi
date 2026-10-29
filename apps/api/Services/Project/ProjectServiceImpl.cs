@@ -18,7 +18,7 @@ public class ProjectServiceImpl : IProjectService
         this.currentUser = currentUser;
     }
 
-    public async Task<List<ProjectResponse>> ListAsync()
+    public async Task<List<ProjectResponse>> GetProjectsAsync()
     {
         var cancellationToken = currentUser.CancellationToken;
         var identity = await currentUser.ResolveAsync();
@@ -26,7 +26,7 @@ public class ProjectServiceImpl : IProjectService
         return records.Select(ProjectMapper.ToResponse).ToList();
     }
 
-    public async Task<ProjectResponse> CreateAsync(ProjectRequest request)
+    public async Task<ProjectResponse> CreateProjectAsync(ProjectRequest request)
     {
         var cancellationToken = currentUser.CancellationToken;
         var identity = await currentUser.ResolveAsync();
@@ -38,7 +38,7 @@ public class ProjectServiceImpl : IProjectService
         return ProjectMapper.ToResponse(created);
     }
 
-    public async Task<ProjectResponse> UpdateAsync(Guid id, ProjectRequest request)
+    public async Task<ProjectResponse> UpdateProjectAsync(Guid id, ProjectRequest request)
     {
         var cancellationToken = currentUser.CancellationToken;
         var identity = await currentUser.ResolveAsync();
@@ -50,7 +50,7 @@ public class ProjectServiceImpl : IProjectService
         return ProjectMapper.ToResponse(updated);
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteProjectAsync(Guid id)
     {
         var cancellationToken = currentUser.CancellationToken;
         var identity = await currentUser.ResolveAsync();
