@@ -1,15 +1,8 @@
-import { ArrowRight, CheckCircle2, LogOut, Target, UserRound } from 'lucide-react';
-import { Logo } from '../../../shared/ui/Logo.jsx';
+import { ArrowRight, CheckCircle2, Target, UserRound } from 'lucide-react';
 
-export function WelcomeDashboard({ user, onOpenProfile, onOpenGoals, onLogout }) {
+export function WelcomeDashboard({ user, onOpenProfile, onOpenGoals }) {
   return (
-    <div className="min-h-screen bg-[#F7F8FA] text-[#202938]">
-      <header className="border-b border-[#E3E7ED] bg-white">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
-          <Logo size="md" />
-          <button type="button" onClick={onLogout} className="inline-flex items-center gap-2 rounded-lg border border-[#E3E7ED] px-4 py-2 text-sm font-medium text-[#243B64] hover:bg-[#F7F8FA]"><LogOut size={16} />Çıkış yap</button>
-        </div>
-      </header>
+    <div className="text-[#202938]">
       <main className="mx-auto max-w-6xl px-6 py-12 md:py-20">
         <div className="mb-8 inline-flex items-center gap-2 rounded-full bg-[#EBF5F4] px-4 py-2 text-sm font-medium text-[#27796F]"><CheckCircle2 size={17} />Oturumun açık</div>
         <h1 className="max-w-2xl text-3xl font-bold tracking-tight text-[#243B64] md:text-5xl">CareerPath’e hoş geldin.</h1>

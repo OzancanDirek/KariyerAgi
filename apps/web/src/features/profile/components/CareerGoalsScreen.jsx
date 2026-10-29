@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
-import { ArrowLeft, Building2, CheckCircle2, Home, Laptop, LogOut, Save, Sparkles, Target } from 'lucide-react';
+import { ArrowLeft, Building2, CheckCircle2, Home, Laptop, Save, Sparkles, Target } from 'lucide-react';
 import { careerProfileApi } from '../api/careerProfileApi.js';
 import { careerToForm, careerToPayload, initialCareerForm } from './CareerProfileFields.jsx';
 import { fieldClass } from './profileFormStyles.js';
-import { Logo } from '../../../shared/ui/Logo.jsx';
 import { Button } from '../../../shared/ui/Button.jsx';
 
 const positions = ['Frontend Geliştirici', 'Full-Stack Geliştirici', 'Backend Geliştirici', 'Veri Analisti', 'UI/UX Tasarımcısı', 'Ürün Yöneticisi', 'DevOps Mühendisi'];
@@ -25,7 +24,7 @@ function SummaryItem({ label, children }) {
   return <div className="border-b border-[#E3E7ED] py-4 last:border-0"><dt className="text-xs text-[#77849A]">{label}</dt><dd className="mt-1 whitespace-pre-wrap font-semibold text-[#243B64]">{children || 'Henüz belirtilmedi'}</dd></div>;
 }
 
-export function CareerGoalsScreen({ runAuthenticated, onHome, onProfile, onLogout }) {
+export function CareerGoalsScreen({ runAuthenticated, onHome, onProfile }) {
   const [form, setForm] = useState(initialCareerForm);
   const [loading, setLoading] = useState(true);
   const [loaded, setLoaded] = useState(false);
@@ -89,8 +88,7 @@ export function CareerGoalsScreen({ runAuthenticated, onHome, onProfile, onLogou
   const selectedLevel = levels.find((level) => level.value === form.targetSeniority)?.label;
 
   return (
-    <div className="min-h-screen bg-[#F7F8FA] text-[#202938]">
-      <header className="border-b border-[#E3E7ED] bg-white"><div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-5 sm:px-8"><Logo size="md" /><button type="button" onClick={onLogout} className="inline-flex items-center gap-2 rounded-lg border border-[#E3E7ED] px-4 py-2 text-sm font-medium text-[#243B64] hover:bg-[#F7F8FA]"><LogOut size={16} />Çıkış yap</button></div></header>
+    <div className="text-[#202938]">
       <main className="mx-auto max-w-7xl px-5 py-8 sm:px-8 sm:py-12">
         <nav className="mb-7 flex flex-wrap items-center gap-2 text-sm" aria-label="Sayfa yolu"><button type="button" onClick={onHome} className="text-[#667085] hover:text-[#243B64]">Ana sayfa</button><span className="text-[#98A2B3]">/</span><button type="button" onClick={onProfile} className="text-[#667085] hover:text-[#243B64]">Kariyer Profilim</button><span className="text-[#98A2B3]">/</span><span aria-current="page" className="font-semibold text-[#243B64]">Kariyer Hedeflerim</span></nav>
         <div className="mb-8"><p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#2F8F83]">Modül 02 · Kariyer & Profil</p><h1 className="mt-2 text-3xl font-bold tracking-tight text-[#243B64] sm:text-4xl">Kariyer Hedeflerim</h1><p className="mt-3 text-sm leading-6 text-[#667085]">Hedeflediğin pozisyonu ve çalışma tercihlerini belirle.</p></div>
