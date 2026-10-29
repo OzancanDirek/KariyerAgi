@@ -4,11 +4,11 @@ namespace CareerPath.Api.Services.Certificate;
 
 public interface ICertificateService
 {
-    Task<List<CertificateResponse>> ListAsync();
-    Task<CertificateResponse> CreateAsync(CertificateRequest request);
-    Task<CertificateResponse> UpdateAsync(Guid id, CertificateRequest request);
-    Task DeleteAsync(Guid id);
-    Task<CertificateResponse> UploadDocumentAsync(Guid id, IFormFile? file);
-    Task<CertificateDocument> DownloadDocumentAsync(Guid id);
-    Task<CertificateResponse> DeleteDocumentAsync(Guid id);
+    Task<List<CertificateResponse>> GetCertificatesAsync();
+    Task<CertificateResponse> CreateCertificateAsync(CertificateRequest request);
+    Task<CertificateResponse> UpdateCertificateAsync(Guid id, CertificateRequest request);
+    Task DeleteCertificateAsync(Guid id);
+    Task<CertificateResponse> UploadCertificateDocumentAsync(Guid id, IFormFile? file);
+    Task<CertificateDocument> DownloadCertificateDocumentAsync(Guid id);
+    Task<CertificateResponse> DeleteCertificateDocumentAsync(Guid id);
 }

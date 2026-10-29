@@ -18,12 +18,12 @@ public class ProfileController : ControllerBase
     [HttpGet("me")]
     public async Task<ActionResult<ProfileResponse>> Me()
     {
-        return await profile.GetMineAsync();
+        return await profile.GetProfileAsync();
     }
 
     [HttpPut("me")]
     public async Task<ActionResult<ProfileResponse>> Update(UpdateProfileRequest request)
     {
-        return await profile.UpdateMineAsync(request);
+        return await profile.UpdateProfileAsync(request);
     }
 }

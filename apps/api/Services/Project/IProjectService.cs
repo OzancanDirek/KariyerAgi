@@ -4,8 +4,8 @@ namespace CareerPath.Api.Services.Project;
 
 public interface IProjectService
 {
-    Task<List<ProjectResponse>> ListAsync();
-    Task<ProjectResponse> CreateAsync(ProjectRequest request);
-    Task<ProjectResponse> UpdateAsync(Guid id, ProjectRequest request);
-    Task DeleteAsync(Guid id);
+    Task<List<ProjectResponse>> GetProjectsAsync();
+    Task<ProjectResponse> CreateProjectAsync(ProjectRequest request);
+    Task<ProjectResponse> UpdateProjectAsync(Guid id, ProjectRequest request);
+    Task DeleteProjectAsync(Guid id);
 }

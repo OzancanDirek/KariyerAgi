@@ -19,26 +19,26 @@ public class EducationController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<EducationResponse>>> List()
     {
-        return await education.ListAsync();
+        return await education.GetEducationsAsync();
     }
 
     [HttpPost]
     public async Task<ActionResult<EducationResponse>> Create(EducationRequest request)
     {
-        var created = await education.CreateAsync(request);
+        var created = await education.CreateEducationAsync(request);
         return StatusCode(201, created);
     }
 
     [HttpPut("{id:guid}")]
     public async Task<ActionResult<EducationResponse>> Update(Guid id, EducationRequest request)
     {
-        return await education.UpdateAsync(id, request);
+        return await education.UpdateEducationAsync(id, request);
     }
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id)
     {
-        await education.DeleteAsync(id);
+        await education.DeleteEducationAsync(id);
         return NoContent();
     }
 }

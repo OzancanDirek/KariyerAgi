@@ -18,12 +18,12 @@ public class CareerProfileController : ControllerBase
     [HttpGet("me")]
     public async Task<ActionResult<CareerProfileResponse>> Me()
     {
-        return await profile.GetMineAsync();
+        return await profile.GetCareerProfileAsync();
     }
 
     [HttpPut("me")]
     public async Task<ActionResult<CareerProfileResponse>> Update(UpdateCareerProfileRequest request)
     {
-        return await profile.UpdateMineAsync(request);
+        return await profile.UpdateCareerProfileAsync(request);
     }
 }

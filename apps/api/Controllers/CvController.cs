@@ -18,7 +18,7 @@ public class CvController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<CvFileResponse>>> List()
     {
-        return await cv.GetMyCvsAsync();
+        return await cv.GetCvsAsync();
     }
 
     [HttpGet("consent")]

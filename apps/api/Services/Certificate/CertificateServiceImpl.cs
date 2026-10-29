@@ -26,7 +26,7 @@ public class CertificateServiceImpl : ICertificateService
         this.logger = logger;
     }
 
-    public async Task<List<CertificateResponse>> ListAsync()
+    public async Task<List<CertificateResponse>> GetCertificatesAsync()
     {
         var cancellationToken = currentUser.CancellationToken;
         var identity = await currentUser.ResolveAsync();
@@ -34,7 +34,7 @@ public class CertificateServiceImpl : ICertificateService
         return records.Select(CertificateMapper.ToResponse).ToList();
     }
 
-    public async Task<CertificateResponse> CreateAsync(CertificateRequest request)
+    public async Task<CertificateResponse> CreateCertificateAsync(CertificateRequest request)
     {
         var cancellationToken = currentUser.CancellationToken;
         var identity = await currentUser.ResolveAsync();
@@ -46,7 +46,7 @@ public class CertificateServiceImpl : ICertificateService
         return CertificateMapper.ToResponse(created);
     }
 
-    public async Task<CertificateResponse> UpdateAsync(Guid id, CertificateRequest request)
+    public async Task<CertificateResponse> UpdateCertificateAsync(Guid id, CertificateRequest request)
     {
         var cancellationToken = currentUser.CancellationToken;
         var identity = await currentUser.ResolveAsync();
@@ -58,7 +58,7 @@ public class CertificateServiceImpl : ICertificateService
         return CertificateMapper.ToResponse(updated);
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteCertificateAsync(Guid id)
     {
         var cancellationToken = currentUser.CancellationToken;
         var identity = await currentUser.ResolveAsync();
@@ -73,7 +73,7 @@ public class CertificateServiceImpl : ICertificateService
         }
     }
 
-    public async Task<CertificateResponse> UploadDocumentAsync(Guid id, IFormFile? file)
+    public async Task<CertificateResponse> UploadCertificateDocumentAsync(Guid id, IFormFile? file)
     {
         var cancellationToken = currentUser.CancellationToken;
         var identity = await currentUser.ResolveAsync();
@@ -107,7 +107,7 @@ public class CertificateServiceImpl : ICertificateService
         return CertificateMapper.ToResponse(updated);
     }
 
-    public async Task<CertificateDocument> DownloadDocumentAsync(Guid id)
+    public async Task<CertificateDocument> DownloadCertificateDocumentAsync(Guid id)
     {
         var cancellationToken = currentUser.CancellationToken;
         var identity = await currentUser.ResolveAsync();
@@ -120,7 +120,7 @@ public class CertificateServiceImpl : ICertificateService
         return new CertificateDocument { Bytes = bytes, ContentType = contentType, FileName = certificate.DocumentFileName ?? "sertifika" };
     }
 
-    public async Task<CertificateResponse> DeleteDocumentAsync(Guid id)
+    public async Task<CertificateResponse> DeleteCertificateDocumentAsync(Guid id)
     {
         var cancellationToken = currentUser.CancellationToken;
         var identity = await currentUser.ResolveAsync();

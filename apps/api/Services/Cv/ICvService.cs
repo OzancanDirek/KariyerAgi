@@ -4,7 +4,7 @@ namespace CareerPath.Api.Services.Cv;
 
 public interface ICvService
 {
-    Task<List<CvFileResponse>> GetMyCvsAsync();
+    Task<List<CvFileResponse>> GetCvsAsync();
     Task<CvConsentResponse> GetCurrentConsentAsync();
     Task<CvConsentResponse> AcceptCurrentConsentAsync(Guid textId);
     Task<CvFileResponse> UploadCvAsync(IFormFile? file);
