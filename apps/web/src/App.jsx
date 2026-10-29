@@ -7,6 +7,7 @@ import { PersonalProfileScreen } from './features/profile/components/PersonalPro
 import { ProfileOverviewScreen } from './features/profile/components/ProfileOverviewScreen.jsx';
 import { CareerGoalsScreen } from './features/profile/components/CareerGoalsScreen.jsx';
 import { ProfileRecordsScreen } from './features/profile/components/ProfileRecordsScreen.jsx';
+import { AuthenticatedLayout } from './shared/ui/AuthenticatedLayout.jsx';
 
 export default function App() {
   const { session, ready, login, register, logout, runAuthenticated } = useAuthentication();
@@ -33,23 +34,20 @@ export default function App() {
   }
 
   if (session) {
+    let page;
     if (signedInScreen === 'profile-edit') {
-      return <PersonalProfileScreen runAuthenticated={runAuthenticated} onBack={() => setSignedInScreen('profile-overview')} onLogout={logout} />;
+      page = <PersonalProfileScreen runAuthenticated={runAuthenticated} onBack={() => setSignedInScreen('profile-overview')} />;
+    } else if (signedInScreen === 'career-goals') {
+      page = <CareerGoalsScreen runAuthenticated={runAuthenticated} onHome={() => setSignedInScreen('dashboard')} onProfile={() => setSignedInScreen('profile-overview')} />;
+    } else if (signedInScreen.startsWith('records-')) {
+      page = <ProfileRecordsScreen kind={signedInScreen.slice('records-'.length)} runAuthenticated={runAuthenticated} onBack={() => setSignedInScreen('profile-overview')} />;
+    } else if (signedInScreen === 'profile-overview') {
+      page = <ProfileOverviewScreen runAuthenticated={runAuthenticated} onEdit={() => setSignedInScreen('profile-edit')} onOpenGoals={() => setSignedInScreen('career-goals')} onOpenRecords={(kind) => setSignedInScreen(`records-${kind}`)} />;
+    } else {
+      page = <WelcomeDashboard user={session.user} onOpenProfile={() => setSignedInScreen('profile-overview')} onOpenGoals={() => setSignedInScreen('career-goals')} />;
     }
 
-    if (signedInScreen === 'career-goals') {
-      return <CareerGoalsScreen runAuthenticated={runAuthenticated} onHome={() => setSignedInScreen('dashboard')} onProfile={() => setSignedInScreen('profile-overview')} onLogout={logout} />;
-    }
-
-    if (signedInScreen.startsWith('records-')) {
-      return <ProfileRecordsScreen kind={signedInScreen.slice('records-'.length)} runAuthenticated={runAuthenticated} onBack={() => setSignedInScreen('profile-overview')} />;
-    }
-
-    if (signedInScreen === 'profile-overview') {
-      return <ProfileOverviewScreen runAuthenticated={runAuthenticated} onHome={() => setSignedInScreen('dashboard')} onEdit={() => setSignedInScreen('profile-edit')} onOpenGoals={() => setSignedInScreen('career-goals')} onOpenRecords={(kind) => setSignedInScreen(`records-${kind}`)} onLogout={logout} />;
-    }
-
-    return <WelcomeDashboard user={session.user} onOpenProfile={() => setSignedInScreen('profile-overview')} onOpenGoals={() => setSignedInScreen('career-goals')} onLogout={logout} />;
+    return <AuthenticatedLayout screen={signedInScreen} onNavigate={setSignedInScreen} onLogout={logout}>{page}</AuthenticatedLayout>;
   }
 
   if (screen === 'register') {

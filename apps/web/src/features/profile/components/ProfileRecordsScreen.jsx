@@ -23,7 +23,7 @@ export function ProfileRecordsScreen({ kind, runAuthenticated, onBack }) {
   const Icon = page.icon;
   const Manager = page.component;
 
-  return <div className="min-h-screen bg-[#F7F8FA] px-5 py-8 text-[#202938] sm:px-8">
+  return <div className="px-5 py-8 text-[#202938] sm:px-8">
     <main className="mx-auto max-w-5xl">
       <button type="button" onClick={onBack} className="inline-flex items-center gap-2 rounded-lg px-2 py-2 text-sm font-semibold text-[#5276A7] hover:bg-white"><ArrowLeft size={17} />Kariyer profilime dön</button>
       <div className="mt-5 rounded-2xl border border-[#E3E7ED] bg-white p-6 shadow-sm sm:p-8">
