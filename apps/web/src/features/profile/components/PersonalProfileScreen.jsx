@@ -36,7 +36,7 @@ function PersonalFields({ profile, form, updateField }) {
   );
 }
 
-export function PersonalProfileScreen({ runAuthenticated, onBack, onLogout, focusGoals = false }) {
+export function PersonalProfileScreen({ runAuthenticated, onBack, onLogout }) {
   const [personal, setPersonal] = useState(null);
   const [career, setCareer] = useState(null);
   const [personalForm, setPersonalForm] = useState(emptyForm);
@@ -71,12 +71,6 @@ export function PersonalProfileScreen({ runAuthenticated, onBack, onLogout, focu
     load();
     return () => { active = false; };
   }, []);
-
-  useEffect(() => {
-    if (focusGoals && !loading && personal && career) {
-      document.getElementById('career-goals-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }, [focusGoals, loading, personal, career]);
 
   function updatePersonal(field, value) {
     setPersonalForm((current) => ({ ...current, [field]: value }));
@@ -126,7 +120,7 @@ export function PersonalProfileScreen({ runAuthenticated, onBack, onLogout, focu
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#2F8F83]">Hesap · Profil</p>
             <h1 className="mt-1 text-3xl font-bold tracking-tight text-[#243B64]">Profilim</h1>
-            <p className="mt-2 text-sm leading-6 text-[#667085]">Kişisel bilgilerini ve kariyer hedeflerini buradan yönetebilirsin.</p>
+            <p className="mt-2 text-sm leading-6 text-[#667085]">Kişisel ve genel kariyer bilgilerini buradan güncelleyebilirsin. Hedeflerin için Kariyer Hedeflerim ekranını kullan.</p>
           </div>
         </div>
         {loading && <p role="status" className="rounded-2xl bg-white p-6 text-sm text-[#667085]">Profil bilgilerin yükleniyor...</p>}

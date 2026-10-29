@@ -33,13 +33,12 @@ export default function App() {
   }
 
   if (session) {
-    if (signedInScreen === 'profile-edit' || signedInScreen === 'profile-edit-goals') {
-      const fromGoals = signedInScreen === 'profile-edit-goals';
-      return <PersonalProfileScreen runAuthenticated={runAuthenticated} focusGoals={fromGoals} onBack={() => setSignedInScreen(fromGoals ? 'career-goals' : 'profile-overview')} onLogout={logout} />;
+    if (signedInScreen === 'profile-edit') {
+      return <PersonalProfileScreen runAuthenticated={runAuthenticated} onBack={() => setSignedInScreen('profile-overview')} onLogout={logout} />;
     }
 
     if (signedInScreen === 'career-goals') {
-      return <CareerGoalsScreen runAuthenticated={runAuthenticated} onHome={() => setSignedInScreen('dashboard')} onProfile={() => setSignedInScreen('profile-overview')} onEdit={() => setSignedInScreen('profile-edit-goals')} onLogout={logout} />;
+      return <CareerGoalsScreen runAuthenticated={runAuthenticated} onHome={() => setSignedInScreen('dashboard')} onProfile={() => setSignedInScreen('profile-overview')} onLogout={logout} />;
     }
 
     if (signedInScreen.startsWith('records-')) {
