@@ -13,8 +13,8 @@ const models = [
 ];
 const levels = [
   { value: 'stajyer', label: 'Stajyer', description: 'İlk iş deneyimi' },
-  { value: 'baslangic', label: 'Başlangıç', description: 'Yeni mezun / junior' },
-  { value: 'orta', label: 'Orta', description: 'Deneyimli uzman' },
+  { value: 'baslangic', label: 'Junior', description: 'Kariyerinin ilk yılları' },
+  { value: 'orta', label: 'Senior', description: 'Deneyimli uzman' },
   { value: 'kidemli', label: 'Kıdemli', description: 'Kıdemli uzman' },
   { value: 'lider', label: 'Lider', description: 'Ekip / teknik lider' },
 ];
