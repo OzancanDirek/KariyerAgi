@@ -18,7 +18,7 @@ public class CareerProfileServiceImpl : ICareerProfileService
         this.currentUser = currentUser;
     }
 
-    public async Task<CareerProfileResponse> GetMineAsync()
+    public async Task<CareerProfileResponse> GetCareerProfileAsync()
     {
         var cancellationToken = currentUser.CancellationToken;
         var identity = await currentUser.ResolveAsync();
@@ -31,7 +31,7 @@ public class CareerProfileServiceImpl : ICareerProfileService
         return CareerProfileMapper.ToResponse(profile);
     }
 
-    public async Task<CareerProfileResponse> UpdateMineAsync(UpdateCareerProfileRequest request)
+    public async Task<CareerProfileResponse> UpdateCareerProfileAsync(UpdateCareerProfileRequest request)
     {
         var cancellationToken = currentUser.CancellationToken;
         var identity = await currentUser.ResolveAsync();

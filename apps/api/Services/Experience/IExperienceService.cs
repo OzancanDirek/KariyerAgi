@@ -5,8 +5,8 @@ namespace CareerPath.Api.Services.Experience;
 
 public interface IExperienceService
 {
-    Task<List<ExperienceResponse>> ListAsync();
-    Task<ExperienceResponse> CreateAsync(ExperienceRequest request);
-    Task<ExperienceResponse> UpdateAsync(Guid id, ExperienceRequest request);
-    Task DeleteAsync(Guid id);
+    Task<List<ExperienceResponse>> GetExperiencesAsync();
+    Task<ExperienceResponse> CreateExperienceAsync(ExperienceRequest request);
+    Task<ExperienceResponse> UpdateExperienceAsync(Guid id, ExperienceRequest request);
+    Task DeleteExperienceAsync(Guid id);
 }

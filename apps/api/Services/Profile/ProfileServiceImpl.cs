@@ -18,7 +18,7 @@ public class ProfileServiceImpl : IProfileService
         this.currentUser = currentUser;
     }
 
-    public async Task<ProfileResponse> GetMineAsync()
+    public async Task<ProfileResponse> GetProfileAsync()
     {
         var cancellationToken = currentUser.CancellationToken;
         var identity = await currentUser.ResolveAsync();
@@ -31,7 +31,7 @@ public class ProfileServiceImpl : IProfileService
         return ProfileMapper.ToResponse(profile);
     }
 
-    public async Task<ProfileResponse> UpdateMineAsync(UpdateProfileRequest request)
+    public async Task<ProfileResponse> UpdateProfileAsync(UpdateProfileRequest request)
     {
         var cancellationToken = currentUser.CancellationToken;
         var identity = await currentUser.ResolveAsync();

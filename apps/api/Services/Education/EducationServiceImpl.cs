@@ -19,7 +19,7 @@ public class EducationServiceImpl : IEducationService
         this.currentUser = currentUser;
     }
 
-    public async Task<List<EducationResponse>> ListAsync()
+    public async Task<List<EducationResponse>> GetEducationsAsync()
     {
         var cancellationToken = currentUser.CancellationToken;
         var identity = await currentUser.ResolveAsync();
@@ -27,7 +27,7 @@ public class EducationServiceImpl : IEducationService
         return records.Select(EducationMapper.ToResponse).ToList();
     }
 
-    public async Task<EducationResponse> CreateAsync(EducationRequest request)
+    public async Task<EducationResponse> CreateEducationAsync(EducationRequest request)
     {
         var cancellationToken = currentUser.CancellationToken;
         var identity = await currentUser.ResolveAsync();
@@ -39,7 +39,7 @@ public class EducationServiceImpl : IEducationService
         return EducationMapper.ToResponse(created);
     }
 
-    public async Task<EducationResponse> UpdateAsync(Guid id, EducationRequest request)
+    public async Task<EducationResponse> UpdateEducationAsync(Guid id, EducationRequest request)
     {
         var cancellationToken = currentUser.CancellationToken;
         var identity = await currentUser.ResolveAsync();
@@ -51,7 +51,7 @@ public class EducationServiceImpl : IEducationService
         return EducationMapper.ToResponse(updated);
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteEducationAsync(Guid id)
     {
         var cancellationToken = currentUser.CancellationToken;
         var identity = await currentUser.ResolveAsync();

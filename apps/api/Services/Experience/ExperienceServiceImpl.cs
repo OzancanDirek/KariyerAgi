@@ -18,7 +18,7 @@ public class ExperienceServiceImpl : IExperienceService
         this.currentUser = currentUser;
     }
 
-    public async Task<List<ExperienceResponse>> ListAsync()
+    public async Task<List<ExperienceResponse>> GetExperiencesAsync()
     {
         var cancellationToken = currentUser.CancellationToken;
         var identity = await currentUser.ResolveAsync();
@@ -26,7 +26,7 @@ public class ExperienceServiceImpl : IExperienceService
         return records.Select(ExperienceMapper.ToResponse).ToList();
     }
 
-    public async Task<ExperienceResponse> CreateAsync(ExperienceRequest request)
+    public async Task<ExperienceResponse> CreateExperienceAsync(ExperienceRequest request)
     {
         var cancellationToken = currentUser.CancellationToken;
         var identity = await currentUser.ResolveAsync();
@@ -38,7 +38,7 @@ public class ExperienceServiceImpl : IExperienceService
         return ExperienceMapper.ToResponse(created);
     }
 
-    public async Task<ExperienceResponse> UpdateAsync(Guid id, ExperienceRequest request)
+    public async Task<ExperienceResponse> UpdateExperienceAsync(Guid id, ExperienceRequest request)
     {
         var cancellationToken = currentUser.CancellationToken;
         var identity = await currentUser.ResolveAsync();
@@ -50,7 +50,7 @@ public class ExperienceServiceImpl : IExperienceService
         return ExperienceMapper.ToResponse(updated);
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteExperienceAsync(Guid id)
     {
         var cancellationToken = currentUser.CancellationToken;
         var identity = await currentUser.ResolveAsync();

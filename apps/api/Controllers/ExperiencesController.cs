@@ -19,26 +19,26 @@ public class ExperiencesController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<ExperienceResponse>>> List()
     {
-        return await experiences.ListAsync();
+        return await experiences.GetExperiencesAsync();
     }
 
     [HttpPost]
     public async Task<ActionResult<ExperienceResponse>> Create(ExperienceRequest request)
     {
-        var created = await experiences.CreateAsync(request);
+        var created = await experiences.CreateExperienceAsync(request);
         return StatusCode(201, created);
     }
 
     [HttpPut("{id:guid}")]
     public async Task<ActionResult<ExperienceResponse>> Update(Guid id, ExperienceRequest request)
     {
-        return await experiences.UpdateAsync(id, request);
+        return await experiences.UpdateExperienceAsync(id, request);
     }
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id)
     {
-        await experiences.DeleteAsync(id);
+        await experiences.DeleteExperienceAsync(id);
         return NoContent();
     }
 }

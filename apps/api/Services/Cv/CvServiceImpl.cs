@@ -25,7 +25,7 @@ public class CvServiceImpl : ICvService
         this.logger = logger;
     }
 
-    public async Task<List<CvFileResponse>> GetMyCvsAsync()
+    public async Task<List<CvFileResponse>> GetCvsAsync()
     {
         var cancellationToken = currentUser.CancellationToken;
         var identity = await currentUser.ResolveAsync();
