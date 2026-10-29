@@ -20,7 +20,7 @@ const futureModules = [
   ['Modül 06 · İş İlanları', 'İş İlanları & Eşleşme'],
 ];
 
-function Sidebar({ onHome, onLogout }) {
+function Sidebar({ onHome, onGoals, onLogout }) {
   return (
     <aside className="hidden w-72 shrink-0 border-r border-[#E3E7ED] bg-white lg:flex lg:min-h-screen lg:flex-col">
       <div className="border-b border-[#E3E7ED] px-6 py-6"><Logo size="md" showSubtitle /></div>
@@ -30,7 +30,7 @@ function Sidebar({ onHome, onLogout }) {
           <div className="mt-4 space-y-1">
             <button type="button" onClick={onHome} className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-[#52627A] hover:bg-[#F2F5F8]"><LayoutDashboard size={18} />Ana Dashboard</button>
             <span aria-current="page" className="flex items-center gap-3 rounded-lg bg-[#243B64] px-3 py-2.5 text-sm font-semibold text-white"><UserRound size={18} />Kariyer Profilim<ArrowRight size={15} className="ml-auto" /></span>
-            <span className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-[#98A2B3]"><Target size={18} />Kariyer Hedeflerim</span>
+            <button type="button" onClick={onGoals} className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-[#52627A] hover:bg-[#F2F5F8]"><Target size={18} />Kariyer Hedeflerim</button>
           </div>
         </div>
         {futureModules.map(([heading, item]) => <div key={heading}>
@@ -64,7 +64,7 @@ function Contact({ icon: Icon, children }) {
   return <span className="inline-flex items-center gap-1.5"><Icon size={15} />{children}</span>;
 }
 
-export function ProfileOverviewScreen({ runAuthenticated, onHome, onEdit, onOpenRecords, onLogout }) {
+export function ProfileOverviewScreen({ runAuthenticated, onHome, onEdit, onOpenGoals, onOpenRecords, onLogout }) {
   const [personal, setPersonal] = useState(null);
   const [career, setCareer] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -75,12 +75,12 @@ export function ProfileOverviewScreen({ runAuthenticated, onHome, onEdit, onOpen
 
     async function loadProfiles() {
       try {
-        const person = await runAuthenticated(profileApi.getMine);
+        const person = await runAuthenticated(profileApi.getProfile);
         if (active) {
           setPersonal(person);
         }
         try {
-          const candidate = await runAuthenticated(careerProfileApi.getMine);
+          const candidate = await runAuthenticated(careerProfileApi.getCareerProfile);
           if (active) {
             setCareer(candidate);
           }
@@ -112,7 +112,7 @@ export function ProfileOverviewScreen({ runAuthenticated, onHome, onEdit, onOpen
 
   return (
     <div className="min-h-screen bg-[#F7F8FA] text-[#202938] lg:flex">
-      <Sidebar onHome={onHome} onLogout={onLogout} />
+      <Sidebar onHome={onHome} onGoals={onOpenGoals} onLogout={onLogout} />
       <div className="min-w-0 flex-1">
         <header className="border-b border-[#E3E7ED] bg-white">
           <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-5 py-4 sm:px-8">
@@ -164,7 +164,7 @@ export function ProfileOverviewScreen({ runAuthenticated, onHome, onEdit, onOpen
               <div className="space-y-6">
                 <SectionCard icon={FileText} title="CV Yönetimi"><CvManager runAuthenticated={runAuthenticated} previewLimit={PROFILE_OVERVIEW_LIMIT} onShowAll={() => onOpenRecords('cv')} /></SectionCard>
                 <SectionCard icon={Award} title="Sertifikalar"><CertificateManager runAuthenticated={runAuthenticated} previewLimit={PROFILE_OVERVIEW_LIMIT} onShowAll={() => onOpenRecords('certificates')} /></SectionCard>
-                <SectionCard icon={Target} title="Kariyer Hedefleri"><p className="text-xs text-[#667085]">Hedef unvan</p><p className="mt-1 text-sm font-semibold">{career?.targetTitle || 'Henüz belirlenmedi'}</p><p className="mt-4 text-xs text-[#667085]">Hedef sektör</p><p className="mt-1 text-sm font-semibold">{career?.targetIndustry || 'Henüz belirlenmedi'}</p></SectionCard>
+                <SectionCard icon={Target} title="Kariyer Hedefleri"><p className="text-xs text-[#667085]">Hedef unvan</p><p className="mt-1 text-sm font-semibold">{career?.targetTitle || 'Henüz belirlenmedi'}</p><p className="mt-4 text-xs text-[#667085]">Hedef sektör</p><p className="mt-1 text-sm font-semibold">{career?.targetIndustry || 'Henüz belirlenmedi'}</p><button type="button" onClick={onOpenGoals} className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-[#243B64] hover:underline">Tüm hedeflerimi gör <ArrowRight size={15} /></button></SectionCard>
               </div>
             </div>
           </>}
