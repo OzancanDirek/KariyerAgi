@@ -36,7 +36,7 @@ function PersonalFields({ profile, form, updateField }) {
   );
 }
 
-export function PersonalProfileScreen({ runAuthenticated, onBack, onLogout }) {
+export function PersonalProfileScreen({ runAuthenticated, onBack, onLogout, focusGoals = false }) {
   const [personal, setPersonal] = useState(null);
   const [career, setCareer] = useState(null);
   const [personalForm, setPersonalForm] = useState(emptyForm);
@@ -50,8 +50,8 @@ export function PersonalProfileScreen({ runAuthenticated, onBack, onLogout }) {
     let active = true;
     async function load() {
       try {
-        const person = await runAuthenticated(profileApi.getMine);
-        const candidate = await runAuthenticated(careerProfileApi.getMine);
+        const person = await runAuthenticated(profileApi.getProfile);
+        const candidate = await runAuthenticated(careerProfileApi.getCareerProfile);
         if (active) {
           setPersonal(person);
           setCareer(candidate);
@@ -72,6 +72,12 @@ export function PersonalProfileScreen({ runAuthenticated, onBack, onLogout }) {
     return () => { active = false; };
   }, []);
 
+  useEffect(() => {
+    if (focusGoals && !loading && personal && career) {
+      document.getElementById('career-goals-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [focusGoals, loading, personal, career]);
+
   function updatePersonal(field, value) {
     setPersonalForm((current) => ({ ...current, [field]: value }));
     setSaved(false);
@@ -89,10 +95,10 @@ export function PersonalProfileScreen({ runAuthenticated, onBack, onLogout }) {
     setSaved(false);
     let personalSaved = false;
     try {
-      const updatedPerson = await runAuthenticated((token) => profileApi.updateMine(token, personalForm));
+      const updatedPerson = await runAuthenticated((token) => profileApi.updateProfile(token, personalForm));
       personalSaved = true;
       setPersonal(updatedPerson);
-      const updatedCareer = await runAuthenticated((token) => careerProfileApi.updateMine(token, careerToPayload(careerForm)));
+      const updatedCareer = await runAuthenticated((token) => careerProfileApi.updateCareerProfile(token, careerToPayload(careerForm)));
       setCareer(updatedCareer);
       setPersonalForm(toForm(updatedPerson));
       setCareerForm(careerToForm(updatedCareer));
@@ -114,7 +120,7 @@ export function PersonalProfileScreen({ runAuthenticated, onBack, onLogout }) {
         </div>
       </header>
       <main className="mx-auto max-w-4xl px-6 py-10 md:py-16">
-        <button type="button" onClick={onBack} className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-[#5276A7] hover:text-[#243B64]"><ArrowLeft size={17} />Ana sayfaya dön</button>
+        <button type="button" onClick={onBack} className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-[#5276A7] hover:text-[#243B64]"><ArrowLeft size={17} />Geri dön</button>
         <div className="mb-9 flex items-start gap-4">
           <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#E8F2F0] text-[#2F8F83]"><UserRound size={26} /></div>
           <div>

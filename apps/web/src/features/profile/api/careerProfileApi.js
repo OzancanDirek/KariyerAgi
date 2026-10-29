@@ -1,10 +1,10 @@
 import { request } from '../../../shared/api/request.js';
 
 export const careerProfileApi = {
-  getMine(token) {
+  getCareerProfile(token) {
     return request('career-profile', 'me', { token });
   },
-  updateMine(token, details) {
+  updateCareerProfile(token, details) {
     return request('career-profile', 'me', { method: 'PUT', token, body: details });
   },
 };

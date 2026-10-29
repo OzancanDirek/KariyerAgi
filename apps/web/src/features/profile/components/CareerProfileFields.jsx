@@ -69,7 +69,7 @@ export function CareerProfileFields({ form, updateField }) {
           <label className="mt-5 block text-sm font-medium">Hakkımda<textarea className={`${fieldClass} min-h-32 resize-y`} value={form.summary} maxLength={2000} placeholder="Becerilerini, deneyimlerini ve ilgilendiğin alanları anlat..." onChange={(event) => updateField('summary', event.target.value)} /><span className="mt-1 block text-right text-xs font-normal text-[#98A2B3]">{form.summary.length}/2000</span></label>
         </div>
 
-        <div className="border-t border-[#E3E7ED] pt-8">
+        <div id="career-goals-section" className="scroll-mt-8 border-t border-[#E3E7ED] pt-8">
           <h2 className="text-lg font-semibold text-[#243B64]">Kariyer hedeflerin</h2>
           <div className="mt-5 grid gap-5 sm:grid-cols-2">
             <label className="block text-sm font-medium">Hedef unvan<input className={fieldClass} value={form.targetTitle} maxLength={150} placeholder="Örn. Backend geliştirici" onChange={(event) => updateField('targetTitle', event.target.value)} /></label>
