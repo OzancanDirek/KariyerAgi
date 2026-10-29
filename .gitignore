@@ -1,0 +1,10 @@
+.dotnet/
+**/node_modules/
+**/dist/
+**/bin/
+**/obj/
+**/.env.local
+**/appsettings.Development.json
+.DS_Store
+.vscode/
+.idea/

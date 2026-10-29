@@ -1,0 +1,6 @@
+{
+  "name": "CareerPath - Kariyer ve Beceri Platformu",
+  "description": "Yapay zeka destekli kariyer gelişimi ve beceri takip platformu - Kimlik doğrulama, kayıt ve CV yükleme modülü.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
