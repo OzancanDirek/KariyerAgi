@@ -113,8 +113,6 @@ public class CvServiceImpl : ICvService
     {
         var cancellationToken = currentUser.CancellationToken;
         var identity = await currentUser.ResolveAsync();
-        var file = await GetOwnedAsync(identity.UserId, id, identity.AccessToken, cancellationToken);
-        await storage.DeleteAsync(Bucket, file.StoragePath, identity.AccessToken, cancellationToken);
         if (!await repository.DeleteAsync(identity.UserId, id, identity.AccessToken, cancellationToken))
         {
             throw new ApiException(ErrorCodes.CvNotFound);
