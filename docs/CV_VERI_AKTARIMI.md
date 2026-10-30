@@ -2,6 +2,8 @@
 
 **Durum:** Ürün ve hukuk incelemesi bekliyor. Kullanıcıya yayımlanacak onay metni değildir.
 
+CV'ye özgü aydınlatma ve ayrı aktarım metni taslakları `CV_AYDINLATMA_VE_RIZA_TASLAGI.md` dosyasındadır. Köşeli alanlar ve aktarım güvencesi tamamlanmadan gerçek CV yüklemesi açılmaz.
+
 ## Amaç ve kapsam
 
 Kullanıcıların PDF veya DOCX biçimindeki CV dosyalarını özel bir depolama alanına yüklemesi, kendi dosyalarını indirmesi, birini birincil seçmesi ve silmesi planlanmıştır. Dosyalarda kimlik, iletişim, eğitim, deneyim ve kullanıcının kendisinin eklediği başka kişisel veriler bulunabilir. Dosyalar herkese açık değildir; uygulama erişimi kullanıcı hesabıyla sınırlar.
