@@ -26,4 +26,24 @@ public class ProfileController : ControllerBase
     {
         return await profile.UpdateProfileAsync(request);
     }
+
+    [HttpPost("me/photo")]
+    [RequestSizeLimit(4 * 1024 * 1024)]
+    public async Task<ActionResult<ProfileResponse>> UploadPhoto(IFormFile? file)
+    {
+        return await profile.UploadPhotoAsync(file);
+    }
+
+    [HttpGet("me/photo")]
+    public async Task<IActionResult> DownloadPhoto()
+    {
+        var photo = await profile.DownloadPhotoAsync();
+        return File(photo.Bytes, photo.ContentType);
+    }
+
+    [HttpDelete("me/photo")]
+    public async Task<ActionResult<ProfileResponse>> DeletePhoto()
+    {
+        return await profile.DeletePhotoAsync();
+    }
 }

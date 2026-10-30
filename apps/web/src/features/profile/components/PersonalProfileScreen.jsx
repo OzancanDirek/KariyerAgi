@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
-import { ArrowLeft, CheckCircle2, UserRound } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { ArrowLeft, CheckCircle2, Trash2, Upload, UserRound } from 'lucide-react';
 import { profileApi } from '../api/profileApi.js';
 import { careerProfileApi } from '../api/careerProfileApi.js';
 import { CareerProfileFields, careerToForm, careerToPayload, initialCareerForm } from './CareerProfileFields.jsx';
 import { fieldClass } from './profileFormStyles.js';
 import { Button } from '../../../shared/ui/Button.jsx';
+import { useProfilePhoto } from '../hooks/useProfilePhoto.js';
 
 const emptyForm = { firstName: '', lastName: '', phone: '', location: '', photoUrl: '' };
 
@@ -18,7 +19,7 @@ function toForm(profile) {
   };
 }
 
-function PersonalFields({ profile, form, updateField }) {
+function PersonalFields({ profile, form, updateField, photoSource, selectedPhoto, selectPhoto, photoInput, uploadPhoto, deletePhoto, uploadingPhoto }) {
   return (
     <section className="rounded-2xl border border-[#E3E7ED] bg-white p-6 shadow-sm md:p-9 space-y-7">
         <div className="grid gap-5 sm:grid-cols-2">
@@ -30,7 +31,23 @@ function PersonalFields({ profile, form, updateField }) {
           <label className="block text-sm font-medium">Telefon<input className={fieldClass} value={form.phone} maxLength={30} autoComplete="tel" placeholder="+90 5xx xxx xx xx" onChange={(event) => updateField('phone', event.target.value)} /></label>
           <label className="block text-sm font-medium">Konum<input className={fieldClass} value={form.location} maxLength={150} autoComplete="address-level2" placeholder="İstanbul, Türkiye" onChange={(event) => updateField('location', event.target.value)} /></label>
         </div>
-        <label className="block text-sm font-medium">Profil fotoğrafı bağlantısı<input className={fieldClass} value={form.photoUrl} type="url" placeholder="https://..." onChange={(event) => updateField('photoUrl', event.target.value)} /><span className="mt-2 block text-xs font-normal text-[#98A2B3]">Şimdilik HTTPS görsel bağlantısı kullanabilirsin. Dosya yüklemeyi daha sonra ekleyeceğiz.</span></label>
+        <div className="rounded-xl border border-[#E3E7ED] bg-[#F8FAFC] p-5">
+          <h3 className="text-sm font-semibold text-[#243B64]">Profil fotoğrafı</h3>
+          <div className="mt-4 flex flex-wrap items-center gap-5">
+            <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-[#243B64] text-white">
+              {photoSource ? <img src={photoSource} alt="Profil fotoğrafı önizlemesi" className="h-full w-full object-cover" /> : <UserRound size={30} />}
+            </div>
+            <div className="min-w-0 flex-1">
+              <input ref={photoInput} aria-label="Profil fotoğrafı seç" type="file" accept="image/jpeg,image/png" onChange={(event) => selectPhoto(event.target.files?.[0] || null)} className="block w-full max-w-sm text-sm text-[#52627A] file:mr-3 file:rounded-lg file:border-0 file:bg-[#E8EEF6] file:px-3 file:py-2 file:font-semibold file:text-[#243B64]" />
+              <p className="mt-2 text-xs text-[#77849A]">JPG veya PNG · en fazla 3 MB</p>
+              {selectedPhoto && <p className="mt-1 truncate text-sm font-medium text-[#243B64]">Seçilen: {selectedPhoto.name}</p>}
+            </div>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <Button type="button" onClick={uploadPhoto} disabled={!selectedPhoto || uploadingPhoto}><Upload size={16} />{uploadingPhoto ? 'Yükleniyor...' : 'Fotoğrafı yükle'}</Button>
+            {(profile.hasUploadedPhoto || profile.photoUrl) && <Button type="button" variant="secondary" onClick={deletePhoto} disabled={uploadingPhoto}><Trash2 size={16} />Fotoğrafı kaldır</Button>}
+          </div>
+        </div>
     </section>
   );
 }
@@ -44,6 +61,10 @@ export function PersonalProfileScreen({ runAuthenticated, onBack }) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [saved, setSaved] = useState(false);
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const photoInput = useRef(null);
+  const photoSource = useProfilePhoto(personal, runAuthenticated, selectedPhoto);
 
   useEffect(() => {
     let active = true;
@@ -79,6 +100,45 @@ export function PersonalProfileScreen({ runAuthenticated, onBack }) {
   function updateCareer(field, value) {
     setCareerForm((current) => ({ ...current, [field]: value }));
     setSaved(false);
+  }
+
+  async function uploadPhoto() {
+    if (!selectedPhoto) {
+      return;
+    }
+    setError('');
+    setUploadingPhoto(true);
+    try {
+      const updated = await runAuthenticated((token) => profileApi.uploadPhoto(token, selectedPhoto));
+      setPersonal({ ...updated, photoVersion: Date.now() });
+      setPersonalForm(toForm(updated));
+      setSelectedPhoto(null);
+      if (photoInput.current) {
+        photoInput.current.value = '';
+      }
+    } catch (failure) {
+      setError(failure.message);
+    } finally {
+      setUploadingPhoto(false);
+    }
+  }
+
+  async function deletePhoto() {
+    setError('');
+    setUploadingPhoto(true);
+    try {
+      const updated = await runAuthenticated(profileApi.deletePhoto);
+      setPersonal(updated);
+      setPersonalForm(toForm(updated));
+      setSelectedPhoto(null);
+      if (photoInput.current) {
+        photoInput.current.value = '';
+      }
+    } catch (failure) {
+      setError(failure.message);
+    } finally {
+      setUploadingPhoto(false);
+    }
   }
 
   async function save(event) {
@@ -120,9 +180,10 @@ export function PersonalProfileScreen({ runAuthenticated, onBack }) {
         {error && <p role="alert" className="mb-6 rounded-xl border border-[#EFCACA] bg-[#FFF5F5] px-4 py-3 text-sm text-[#B42318]">{error}</p>}
         {saved && <p role="status" className="mb-6 flex items-center gap-2 rounded-xl border border-[#BCE0D9] bg-[#EBF5F4] px-4 py-3 text-sm text-[#27796F]"><CheckCircle2 size={17} />Profilin kaydedildi.</p>}
         {personal && career && <form onSubmit={save} className="space-y-8">
-          <div><h2 className="mb-4 text-lg font-semibold text-[#243B64]">Kişisel bilgiler</h2><PersonalFields profile={personal} form={personalForm} updateField={updatePersonal} /></div>
+          <div><h2 className="mb-4 text-lg font-semibold text-[#243B64]">Kişisel bilgiler</h2><PersonalFields profile={personal} form={personalForm} updateField={updatePersonal} photoSource={photoSource} selectedPhoto={selectedPhoto} selectPhoto={setSelectedPhoto} photoInput={photoInput} uploadPhoto={uploadPhoto} deletePhoto={deletePhoto} uploadingPhoto={uploadingPhoto} /></div>
           <div><h2 className="mb-4 text-lg font-semibold text-[#243B64]">Kariyer bilgileri</h2><CareerProfileFields form={careerForm} updateField={updateCareer} /></div>
-          <div className="flex flex-wrap justify-end gap-3"><Button type="button" variant="secondary" onClick={onBack}>Vazgeç</Button><Button type="submit" isLoading={saving}>Profili kaydet</Button></div>
+          {selectedPhoto && <p className="text-right text-sm text-[#667085]">Profili kaydetmeden önce seçtiğin fotoğrafı yükle.</p>}
+          <div className="flex flex-wrap justify-end gap-3"><Button type="button" variant="secondary" onClick={onBack}>Vazgeç</Button><Button type="submit" isLoading={saving} disabled={Boolean(selectedPhoto) || uploadingPhoto}>Profili kaydet</Button></div>
         </form>}
       </main>
     </div>

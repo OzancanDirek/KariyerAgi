@@ -27,6 +27,7 @@ ASP.NET Core 8 backend. Kimlik doğrulama Supabase Auth üzerinden, profil okuma
 | GET | `/api/session/me` | Kimlik servisinden kullanıcıyı getirir |
 | GET | `/api/profile/me` | Giriş yapan kişinin temel profilini getirir |
 | PUT | `/api/profile/me` | Ad, soyad, telefon, konum ve fotoğraf adresini günceller |
+| POST/GET/DELETE | `/api/profile/me/photo` | Profil fotoğrafını yükler, okur veya kaldırır |
 | GET | `/api/career-profile/me` | Giriş yapan adayın kariyer profilini getirir |
 | PUT | `/api/career-profile/me` | Adayın unvan, özet, bağlantı, hedef ve görünürlük bilgilerini günceller |
 | GET/POST | `/api/experiences` | Deneyimleri listele veya ekle |

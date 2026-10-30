@@ -15,7 +15,8 @@ public static class ProfileMapper
             Email = profile.Email,
             Phone = profile.Phone,
             Location = profile.Location,
-            PhotoUrl = profile.PhotoUrl
+            PhotoUrl = profile.PhotoUrl,
+            HasUploadedPhoto = profile.PhotoPath is not null
         };
     }
 }
