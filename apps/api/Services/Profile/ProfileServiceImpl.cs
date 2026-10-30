@@ -63,11 +63,6 @@ public class ProfileServiceImpl : IProfileService
                 throw new ApiException(ErrorCodes.ProfileNotFound);
             }
 
-            if (current.PhotoPath is not null)
-            {
-                await DeleteFileBestEffortAsync(current.PhotoPath, identity.AccessToken, cancellationToken);
-            }
-
             return ProfileMapper.ToResponse(updated);
         }
         catch
@@ -100,11 +95,6 @@ public class ProfileServiceImpl : IProfileService
         if (updated is null)
         {
             throw new ApiException(ErrorCodes.ProfileNotFound);
-        }
-
-        if (current.PhotoPath is not null)
-        {
-            await DeleteFileBestEffortAsync(current.PhotoPath, identity.AccessToken, cancellationToken);
         }
 
         return ProfileMapper.ToResponse(updated);
