@@ -24,4 +24,7 @@ public class SystemUser
 
     [JsonPropertyName("profil_fotografi_url")]
     public string? PhotoUrl { get; set; }
+
+    [JsonPropertyName("profil_fotografi_yolu")]
+    public string? PhotoPath { get; set; }
 }

@@ -40,6 +40,8 @@ public static class ErrorCodes
     public static readonly ErrorDefinition ProfileAccessDenied = new("PRO-006", "Bu profile erişim izniniz yok.", 403);
     public static readonly ErrorDefinition ProfileServiceUnavailable = new("PRO-007", "Profil servisine ulaşılamıyor.", 503);
     public static readonly ErrorDefinition ProfileServiceFailed = new("PRO-008", "Profil bilgileri işlenemedi.", 502);
+    public static readonly ErrorDefinition ProfilePhotoInvalid = new("PRO-009", "JPG veya PNG biçiminde en fazla 3 MB fotoğraf yükleyin.", 400);
+    public static readonly ErrorDefinition ProfilePhotoNotFound = new("PRO-010", "Profil fotoğrafı bulunamadı.", 404);
     public static readonly ErrorDefinition CareerProfileNotFound = new("CAR-001", "Aday kariyer profili bulunamadı.", 404);
     public static readonly ErrorDefinition CareerProfileTextTooLong = new("CAR-002", "Kariyer profili metni izin verilen uzunluğu aşıyor.", 400);
     public static readonly ErrorDefinition CareerProfileUrlInvalid = new("CAR-003", "Geçerli bir HTTPS bağlantısı girin.", 400);
