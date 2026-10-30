@@ -11,6 +11,7 @@ import { CertificateManager } from './CertificateManager.jsx';
 import { ProjectManager } from './ProjectManager.jsx';
 import { CvManager } from './CvManager.jsx';
 import { PROFILE_OVERVIEW_LIMIT } from './profileRecordPreview.js';
+import { useProfilePhoto } from '../hooks/useProfilePhoto.js';
 
 function SectionCard({ icon: Icon, title, children, className = '' }) {
   return (
@@ -74,6 +75,7 @@ export function ProfileOverviewScreen({ runAuthenticated, onEdit, onOpenGoals, o
   const firstName = personal?.firstName || '';
   const lastName = personal?.lastName || '';
   const initials = `${firstName[0] || ''}${lastName[0] || ''}`.toLocaleUpperCase('tr-TR') || 'CP';
+  const photoSource = useProfilePhoto(personal, runAuthenticated);
 
   return (
     <div className="text-[#202938]">
@@ -86,7 +88,7 @@ export function ProfileOverviewScreen({ runAuthenticated, onEdit, onOpenGoals, o
               <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
                 <div className="flex items-start gap-5">
                   <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-[#243B64] text-xl font-bold text-white shadow-sm">
-                    {personal.photoUrl ? <img src={personal.photoUrl} alt="Profil fotoğrafı" className="h-full w-full object-cover" /> : initials}
+                    {photoSource ? <img src={photoSource} alt="Profil fotoğrafı" className="h-full w-full object-cover" /> : initials}
                   </div>
                   <div>
                     <h1 className="text-2xl font-bold tracking-tight text-[#202938]">{`${firstName} ${lastName}`.trim() || 'Profilim'}</h1>

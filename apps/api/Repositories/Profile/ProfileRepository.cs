@@ -5,7 +5,7 @@ namespace CareerPath.Api.Repositories.Profile;
 
 public class ProfileRepository : IProfileRepository
 {
-    private const string Columns = "id,ad,soyad,eposta,telefon,konum,profil_fotografi_url";
+    private const string Columns = "id,ad,soyad,eposta,telefon,konum,profil_fotografi_url,profil_fotografi_yolu";
     private readonly SupabaseRestClient client;
 
     public ProfileRepository(SupabaseRestClient client)
@@ -29,6 +29,17 @@ public class ProfileRepository : IProfileRepository
             ["telefon"] = profile.Phone,
             ["konum"] = profile.Location,
             ["profil_fotografi_url"] = profile.PhotoUrl
+        };
+        using var result = await client.SendAsync(HttpMethod.Patch, BuildPath(userId), values, accessToken, cancellationToken);
+        return SupabaseResponseReader.ReadSingle<SystemUser>(result.RootElement);
+    }
+
+    public async Task<SystemUser?> UpdatePhotoAsync(Guid userId, string accessToken, string? path, CancellationToken cancellationToken)
+    {
+        var values = new Dictionary<string, object?>
+        {
+            ["profil_fotografi_yolu"] = path,
+            ["profil_fotografi_url"] = null
         };
         using var result = await client.SendAsync(HttpMethod.Patch, BuildPath(userId), values, accessToken, cancellationToken);
         return SupabaseResponseReader.ReadSingle<SystemUser>(result.RootElement);

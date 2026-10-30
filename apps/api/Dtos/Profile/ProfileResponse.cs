@@ -9,4 +9,5 @@ public class ProfileResponse
     public string? Phone { get; set; }
     public string? Location { get; set; }
     public string? PhotoUrl { get; set; }
+    public bool HasUploadedPhoto { get; set; }
 }
