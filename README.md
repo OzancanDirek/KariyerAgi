@@ -15,7 +15,7 @@ Sertifikalar için `sql/migrations/20261029_certificates_documents.sql` Supabase
 
 Profil fotoğrafı için `sql/migrations/20261030_profile_photos.sql` Supabase projesine uygulanmıştır. Fotoğraflar kullanıcıya özel alanda tutulur. Web ekranı 20 MB'a kadar JPG ve PNG dosyalarını kabul eder, gerekirse yüklemeden önce küçültür; saklanan dosya en fazla 3 MB olabilir.
 
-Silme işlemlerinin veri kaybetmeden çalışması için `sql/migrations/20261030_soft_delete.sql` geçişi, güncel API çalıştırılmadan önce uygulanmalıdır. Kural ve kapsam `docs/SOFT_DELETE.md` dosyasında açıklanır.
+Silme işlemlerinin veri kaybetmeden çalışması için `sql/migrations/20261030_soft_delete.sql` geçişi Supabase projesine uygulanmıştır. Yeni bir ortama kurulurken geçiş, güncel API çalıştırılmadan önce uygulanmalıdır. Kural ve kapsam `docs/SOFT_DELETE.md` dosyasında açıklanır.
 
 Web giriş ve kayıt isteklerini .NET API’ye gönderir. API bu işlemler için Supabase Auth ile konuşur. `GET /api/health` sağlık kontrolüdür.
 
