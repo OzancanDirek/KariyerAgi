@@ -28,7 +28,7 @@ public class ProfileController : ControllerBase
     }
 
     [HttpPost("me/photo")]
-    [RequestSizeLimit(4 * 1024 * 1024)]
+    [RequestSizeLimit(21 * 1024 * 1024)]
     public async Task<ActionResult<ProfileResponse>> UploadPhoto(IFormFile? file)
     {
         return await profile.UploadPhotoAsync(file);

@@ -13,7 +13,7 @@ Tek VS Code çalışma klasörü içinde iki uygulama:
 
 Sertifikalar için `sql/migrations/20261029_certificates_documents.sql` Supabase projesine uygulanmıştır. Bu değişiklik sertifika belgesi alanlarını ve kullanıcıya özel dosya saklama alanını oluşturur.
 
-Profil fotoğrafı için `sql/migrations/20261030_profile_photos.sql` Supabase projesine uygulanmıştır. Fotoğraflar kullanıcıya özel alanda tutulur; JPG ve PNG dosyaları en fazla 3 MB olabilir.
+Profil fotoğrafı için `sql/migrations/20261030_profile_photos.sql` Supabase projesine uygulanmıştır. Fotoğraflar kullanıcıya özel alanda tutulur. Web ekranı 20 MB'a kadar JPG ve PNG dosyalarını kabul eder, gerekirse yüklemeden önce küçültür; saklanan dosya en fazla 3 MB olabilir.
 
 Web giriş ve kayıt isteklerini .NET API’ye gönderir. API bu işlemler için Supabase Auth ile konuşur. `GET /api/health` sağlık kontrolüdür.
 

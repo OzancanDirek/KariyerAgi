@@ -6,6 +6,7 @@ import { CareerProfileFields, careerToForm, careerToPayload, initialCareerForm }
 import { fieldClass } from './profileFormStyles.js';
 import { Button } from '../../../shared/ui/Button.jsx';
 import { useProfilePhoto } from '../hooks/useProfilePhoto.js';
+import { photoSelectionError, prepareProfilePhoto } from '../utils/prepareProfilePhoto.js';
 
 const emptyForm = { firstName: '', lastName: '', phone: '', location: '', photoUrl: '' };
 
@@ -19,7 +20,7 @@ function toForm(profile) {
   };
 }
 
-function PersonalFields({ profile, form, updateField, photoSource, selectedPhoto, selectPhoto, photoInput, uploadPhoto, deletePhoto, uploadingPhoto }) {
+function PersonalFields({ profile, form, updateField, photoSource, selectedPhoto, selectPhoto, photoInput, uploadPhoto, deletePhoto, uploadingPhoto, photoNotice }) {
   return (
     <section className="rounded-2xl border border-[#E3E7ED] bg-white p-6 shadow-sm md:p-9 space-y-7">
         <div className="grid gap-5 sm:grid-cols-2">
@@ -39,8 +40,9 @@ function PersonalFields({ profile, form, updateField, photoSource, selectedPhoto
             </div>
             <div className="min-w-0 flex-1">
               <input ref={photoInput} aria-label="Profil fotoğrafı seç" type="file" accept="image/jpeg,image/png" onChange={(event) => selectPhoto(event.target.files?.[0] || null)} className="block w-full max-w-sm text-sm text-[#52627A] file:mr-3 file:rounded-lg file:border-0 file:bg-[#E8EEF6] file:px-3 file:py-2 file:font-semibold file:text-[#243B64]" />
-              <p className="mt-2 text-xs text-[#77849A]">JPG veya PNG · en fazla 3 MB</p>
+              <p className="mt-2 text-xs text-[#77849A]">JPG veya PNG · büyük fotoğraflar otomatik küçültülür</p>
               {selectedPhoto && <p className="mt-1 truncate text-sm font-medium text-[#243B64]">Seçilen: {selectedPhoto.name}</p>}
+              {photoNotice && <p role="status" className="mt-2 text-xs font-medium text-[#27796F]">{photoNotice}</p>}
             </div>
           </div>
           <div className="mt-4 flex flex-wrap gap-3">
@@ -63,6 +65,7 @@ export function PersonalProfileScreen({ runAuthenticated, onBack }) {
   const [saved, setSaved] = useState(false);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [photoNotice, setPhotoNotice] = useState('');
   const photoInput = useRef(null);
   const photoSource = useProfilePhoto(personal, runAuthenticated, selectedPhoto);
 
@@ -102,6 +105,27 @@ export function PersonalProfileScreen({ runAuthenticated, onBack }) {
     setSaved(false);
   }
 
+  function selectPhoto(file) {
+    setPhotoNotice('');
+    setError('');
+    if (!file) {
+      setSelectedPhoto(null);
+      return;
+    }
+
+    const validationError = photoSelectionError(file);
+    if (validationError) {
+      setSelectedPhoto(null);
+      setError(validationError);
+      if (photoInput.current) {
+        photoInput.current.value = '';
+      }
+      return;
+    }
+
+    setSelectedPhoto(file);
+  }
+
   async function uploadPhoto() {
     if (!selectedPhoto) {
       return;
@@ -109,10 +133,12 @@ export function PersonalProfileScreen({ runAuthenticated, onBack }) {
     setError('');
     setUploadingPhoto(true);
     try {
-      const updated = await runAuthenticated((token) => profileApi.uploadPhoto(token, selectedPhoto));
+      const prepared = await prepareProfilePhoto(selectedPhoto);
+      const updated = await runAuthenticated((token) => profileApi.uploadPhoto(token, prepared.file));
       setPersonal({ ...updated, photoVersion: Date.now() });
       setPersonalForm(toForm(updated));
       setSelectedPhoto(null);
+      setPhotoNotice(prepared.optimized ? 'Fotoğraf küçültülerek yüklendi.' : 'Fotoğraf yüklendi.');
       if (photoInput.current) {
         photoInput.current.value = '';
       }
@@ -125,6 +151,7 @@ export function PersonalProfileScreen({ runAuthenticated, onBack }) {
 
   async function deletePhoto() {
     setError('');
+    setPhotoNotice('');
     setUploadingPhoto(true);
     try {
       const updated = await runAuthenticated(profileApi.deletePhoto);
@@ -180,7 +207,7 @@ export function PersonalProfileScreen({ runAuthenticated, onBack }) {
         {error && <p role="alert" className="mb-6 rounded-xl border border-[#EFCACA] bg-[#FFF5F5] px-4 py-3 text-sm text-[#B42318]">{error}</p>}
         {saved && <p role="status" className="mb-6 flex items-center gap-2 rounded-xl border border-[#BCE0D9] bg-[#EBF5F4] px-4 py-3 text-sm text-[#27796F]"><CheckCircle2 size={17} />Profilin kaydedildi.</p>}
         {personal && career && <form onSubmit={save} className="space-y-8">
-          <div><h2 className="mb-4 text-lg font-semibold text-[#243B64]">Kişisel bilgiler</h2><PersonalFields profile={personal} form={personalForm} updateField={updatePersonal} photoSource={photoSource} selectedPhoto={selectedPhoto} selectPhoto={setSelectedPhoto} photoInput={photoInput} uploadPhoto={uploadPhoto} deletePhoto={deletePhoto} uploadingPhoto={uploadingPhoto} /></div>
+          <div><h2 className="mb-4 text-lg font-semibold text-[#243B64]">Kişisel bilgiler</h2><PersonalFields profile={personal} form={personalForm} updateField={updatePersonal} photoSource={photoSource} selectedPhoto={selectedPhoto} selectPhoto={selectPhoto} photoInput={photoInput} uploadPhoto={uploadPhoto} deletePhoto={deletePhoto} uploadingPhoto={uploadingPhoto} photoNotice={photoNotice} /></div>
           <div><h2 className="mb-4 text-lg font-semibold text-[#243B64]">Kariyer bilgileri</h2><CareerProfileFields form={careerForm} updateField={updateCareer} /></div>
           {selectedPhoto && <p className="text-right text-sm text-[#667085]">Profili kaydetmeden önce seçtiğin fotoğrafı yükle.</p>}
           <div className="flex flex-wrap justify-end gap-3"><Button type="button" variant="secondary" onClick={onBack}>Vazgeç</Button><Button type="submit" isLoading={saving} disabled={Boolean(selectedPhoto) || uploadingPhoto}>Profili kaydet</Button></div>
