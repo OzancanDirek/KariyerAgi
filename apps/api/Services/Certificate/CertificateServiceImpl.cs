@@ -62,14 +62,9 @@ public class CertificateServiceImpl : ICertificateService
     {
         var cancellationToken = currentUser.CancellationToken;
         var identity = await currentUser.ResolveAsync();
-        var certificate = await GetOwnedAsync(identity.UserId, id, identity.AccessToken, cancellationToken);
         if (!await repository.DeleteAsync(identity.UserId, id, identity.AccessToken, cancellationToken))
         {
             throw new ApiException(ErrorCodes.CertificateNotFound);
-        }
-        if (certificate.DocumentPath is not null)
-        {
-            await DeleteStorageFileBestEffortAsync(certificate.DocumentPath, identity.AccessToken, cancellationToken);
         }
     }
 
@@ -99,10 +94,6 @@ public class CertificateServiceImpl : ICertificateService
         {
             await DeleteStorageFileBestEffortAsync(path, identity.AccessToken, cancellationToken);
             throw;
-        }
-        if (certificate.DocumentPath is not null)
-        {
-            await DeleteStorageFileBestEffortAsync(certificate.DocumentPath, identity.AccessToken, cancellationToken);
         }
         return CertificateMapper.ToResponse(updated);
     }
@@ -134,7 +125,6 @@ public class CertificateServiceImpl : ICertificateService
         {
             throw new ApiException(ErrorCodes.CertificateNotFound);
         }
-        await DeleteStorageFileBestEffortAsync(certificate.DocumentPath, identity.AccessToken, cancellationToken);
         return CertificateMapper.ToResponse(updated);
     }
 
