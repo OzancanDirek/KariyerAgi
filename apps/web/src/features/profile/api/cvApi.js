@@ -4,12 +4,6 @@ export const cvApi = {
   list(token) {
     return request('cv', '', { token });
   },
-  consent(token) {
-    return request('cv', 'consent', { token });
-  },
-  grantConsent(token, textId) {
-    return request('cv', `consent/${textId}`, { method: 'POST', token });
-  },
   upload(token, file) {
     const formData = new FormData();
     formData.append('file', file);

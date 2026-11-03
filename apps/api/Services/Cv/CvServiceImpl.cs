@@ -12,12 +12,12 @@ namespace CareerPath.Api.Services.Cv;
 public class CvServiceImpl : ICvService
 {
     private const string Bucket = "cv-dosyalari";
-    private readonly ICvRepository repository;
+    private readonly CvRepository repository;
     private readonly CurrentUserContextProvider currentUser;
     private readonly SupabasePrivateStorageClient storage;
     private readonly ILogger<CvServiceImpl> logger;
 
-    public CvServiceImpl(ICvRepository repository, CurrentUserContextProvider currentUser, SupabasePrivateStorageClient storage, ILogger<CvServiceImpl> logger)
+    public CvServiceImpl(CvRepository repository, CurrentUserContextProvider currentUser, SupabasePrivateStorageClient storage, ILogger<CvServiceImpl> logger)
     {
         this.repository = repository;
         this.currentUser = currentUser;
@@ -33,35 +33,10 @@ public class CvServiceImpl : ICvService
         return files.Select(CvMapper.ToResponse).ToList();
     }
 
-    public async Task<CvConsentResponse> GetCurrentConsentAsync()
-    {
-        var cancellationToken = currentUser.CancellationToken;
-        var identity = await currentUser.ResolveAsync();
-        return await ResolveConsentAsync(identity.UserId, identity.AccessToken, cancellationToken);
-    }
-
-    public async Task<CvConsentResponse> AcceptCurrentConsentAsync(Guid textId)
-    {
-        var cancellationToken = currentUser.CancellationToken;
-        var identity = await currentUser.ResolveAsync();
-        var current = await repository.GetCurrentConsentTextAsync(identity.AccessToken, cancellationToken);
-        if (current is null || current.Id != textId)
-        {
-            throw new ApiException(ErrorCodes.CvConsentUnavailable);
-        }
-        await repository.GrantConsentAsync(textId, identity.AccessToken, cancellationToken);
-        return await ResolveConsentAsync(identity.UserId, identity.AccessToken, cancellationToken);
-    }
-
     public async Task<CvFileResponse> UploadCvAsync(IFormFile? file)
     {
         var cancellationToken = currentUser.CancellationToken;
         var identity = await currentUser.ResolveAsync();
-        var consent = await ResolveConsentAsync(identity.UserId, identity.AccessToken, cancellationToken);
-        if (!consent.Granted)
-        {
-            throw new ApiException(consent.TextId is null ? ErrorCodes.CvConsentUnavailable : ErrorCodes.CvConsentRequired);
-        }
         var (bytes, contentType, extension, fileName) = await CvFileValidator.ReadAsync(file, cancellationToken);
         var path = $"{identity.UserId:D}/{Guid.NewGuid():N}.{extension}";
         await storage.UploadAsync(Bucket, path, bytes, contentType, identity.AccessToken, cancellationToken);
@@ -129,20 +104,4 @@ public class CvServiceImpl : ICvService
         return file;
     }
 
-    private async Task<CvConsentResponse> ResolveConsentAsync(Guid userId, string token, CancellationToken cancellationToken)
-    {
-        var text = await repository.GetCurrentConsentTextAsync(token, cancellationToken);
-        if (text is null)
-        {
-            return new CvConsentResponse();
-        }
-        return new CvConsentResponse
-        {
-            TextId = text.Id,
-            Title = text.Title,
-            Content = text.Content,
-            Version = text.Version,
-            Granted = await repository.HasConsentAsync(userId, text.Id, token, cancellationToken)
-        };
-    }
 }

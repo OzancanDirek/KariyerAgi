@@ -4,7 +4,7 @@ using EducationEntity = CareerPath.Api.Entities.Education;
 
 namespace CareerPath.Api.Repositories.Education;
 
-public class EducationRepository : IEducationRepository
+public class EducationRepository
 {
     private const string Table = "egitimler";
     private const string Columns = "id,aday_id,kurum,derece,bolum,baslangic_tarihi,bitis_tarihi,not_ortalamasi,not_olcegi,aciklama";

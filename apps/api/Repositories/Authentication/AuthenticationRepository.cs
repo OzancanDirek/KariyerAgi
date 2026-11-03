@@ -4,7 +4,7 @@ using CareerPath.Api.Security;
 
 namespace CareerPath.Api.Repositories.Authentication;
 
-public class AuthenticationRepository : IAuthenticationRepository
+public class AuthenticationRepository
 {
     private readonly SupabaseAuthClient client;
 

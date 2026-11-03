@@ -9,10 +9,10 @@ namespace CareerPath.Api.Services.Experience;
 
 public class ExperienceServiceImpl : IExperienceService
 {
-    private readonly IExperienceRepository repository;
+    private readonly ExperienceRepository repository;
     private readonly CurrentUserContextProvider currentUser;
 
-    public ExperienceServiceImpl(IExperienceRepository repository, CurrentUserContextProvider currentUser)
+    public ExperienceServiceImpl(ExperienceRepository repository, CurrentUserContextProvider currentUser)
     {
         this.repository = repository;
         this.currentUser = currentUser;

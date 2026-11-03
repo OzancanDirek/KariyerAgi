@@ -21,18 +21,6 @@ public class CvController : ControllerBase
         return await cv.GetCvsAsync();
     }
 
-    [HttpGet("consent")]
-    public async Task<ActionResult<CvConsentResponse>> GetConsent()
-    {
-        return await cv.GetCurrentConsentAsync();
-    }
-
-    [HttpPost("consent/{textId:guid}")]
-    public async Task<ActionResult<CvConsentResponse>> GrantConsent(Guid textId)
-    {
-        return await cv.AcceptCurrentConsentAsync(textId);
-    }
-
     [HttpPost]
     [Consumes("multipart/form-data")]
     [RequestSizeLimit(11 * 1024 * 1024)]

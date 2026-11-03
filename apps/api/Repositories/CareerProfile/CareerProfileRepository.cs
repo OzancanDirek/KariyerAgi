@@ -3,7 +3,7 @@ using CareerPath.Api.Infrastructure.Supabase;
 
 namespace CareerPath.Api.Repositories.CareerProfile;
 
-public class CareerProfileRepository : ICareerProfileRepository
+public class CareerProfileRepository
 {
     private const string Columns = "id,unvan,ozet,deneyim_seviyesi,linkedin_url,github_url,portfolyo_url,hedef_unvan,hedef_sektor,calisma_modelleri,tercih_edilen_konumlar,hedef_kidem,kariyer_notlari,profil_gorunurlugu";
     private readonly SupabaseRestClient client;

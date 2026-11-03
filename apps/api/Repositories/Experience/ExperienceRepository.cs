@@ -4,7 +4,7 @@ using ExperienceEntity = CareerPath.Api.Entities.Experience;
 
 namespace CareerPath.Api.Repositories.Experience;
 
-public class ExperienceRepository : IExperienceRepository
+public class ExperienceRepository
 {
     private const string Table = "deneyimler";
     private const string Columns = "id,aday_id,pozisyon,sirket_adi,calisma_tipi,calisma_modeli,konum,baslangic_tarihi,bitis_tarihi,aciklama";

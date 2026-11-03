@@ -13,12 +13,12 @@ public class CertificateServiceImpl : ICertificateService
 {
     private const string Bucket = "sertifika-belgeleri";
     private const int MaxFileSize = 10 * 1024 * 1024;
-    private readonly ICertificateRepository repository;
+    private readonly CertificateRepository repository;
     private readonly CurrentUserContextProvider currentUser;
     private readonly SupabasePrivateStorageClient storage;
     private readonly ILogger<CertificateServiceImpl> logger;
 
-    public CertificateServiceImpl(ICertificateRepository repository, CurrentUserContextProvider currentUser, SupabasePrivateStorageClient storage, ILogger<CertificateServiceImpl> logger)
+    public CertificateServiceImpl(CertificateRepository repository, CurrentUserContextProvider currentUser, SupabasePrivateStorageClient storage, ILogger<CertificateServiceImpl> logger)
     {
         this.repository = repository;
         this.currentUser = currentUser;

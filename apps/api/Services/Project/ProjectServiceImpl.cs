@@ -9,10 +9,10 @@ namespace CareerPath.Api.Services.Project;
 
 public class ProjectServiceImpl : IProjectService
 {
-    private readonly IProjectRepository repository;
+    private readonly ProjectRepository repository;
     private readonly CurrentUserContextProvider currentUser;
 
-    public ProjectServiceImpl(IProjectRepository repository, CurrentUserContextProvider currentUser)
+    public ProjectServiceImpl(ProjectRepository repository, CurrentUserContextProvider currentUser)
     {
         this.repository = repository;
         this.currentUser = currentUser;

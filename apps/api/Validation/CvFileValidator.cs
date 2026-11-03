@@ -1,4 +1,3 @@
-using System.IO.Compression;
 using CareerPath.Api.Exceptions;
 
 namespace CareerPath.Api.Validation;
@@ -29,24 +28,6 @@ public static class CvFileValidator
         {
             return (bytes, "application/pdf", "pdf", fileName);
         }
-        if (fileName.EndsWith(".docx", StringComparison.OrdinalIgnoreCase) && IsDocx(bytes))
-        {
-            return (bytes, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "docx", fileName);
-        }
         throw new ApiException(ErrorCodes.CvFileInvalid);
-    }
-
-    private static bool IsDocx(byte[] bytes)
-    {
-        try
-        {
-            using var stream = new MemoryStream(bytes);
-            using var archive = new ZipArchive(stream, ZipArchiveMode.Read);
-            return archive.GetEntry("[Content_Types].xml") is not null && archive.GetEntry("word/document.xml") is not null;
-        }
-        catch (InvalidDataException)
-        {
-            return false;
-        }
     }
 }

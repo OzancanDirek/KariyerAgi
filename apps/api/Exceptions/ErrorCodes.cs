@@ -80,9 +80,17 @@ public static class ErrorCodes
     public static readonly ErrorDefinition ProjectInvalidDates = new("PRJ-005", "Bitiş tarihi başlangıç tarihinden önce olamaz.", 400);
     public static readonly ErrorDefinition ProjectNotFound = new("PRJ-006", "Proje bulunamadı.", 404);
     public static readonly ErrorDefinition ProjectOperationFailed = new("PRJ-007", "Proje işlemi tamamlanamadı.", 502);
+    public static readonly ErrorDefinition SkillNotFound = new("SKL-001", "Beceri bulunamadı.", 404);
+    public static readonly ErrorDefinition SkillNameInvalid = new("SKL-002", "Beceri adı 1 ile 80 karakter arasında olmalıdır.", 400);
+    public static readonly ErrorDefinition RoadmapPlannerNotConfigured = new("RDM-001", "Yol haritası yapay zekâ servisi yapılandırılmadı.", 503);
+    public static readonly ErrorDefinition RoadmapPlannerFailed = new("RDM-002", "Kişisel çalışma planı oluşturulamadı. Lütfen tekrar deneyin.", 502);
+    public static readonly ErrorDefinition RoadmapPlanInvalid = new("RDM-003", "Yapay zekâ geçerli bir çalışma planı oluşturamadı. Lütfen tekrar deneyin.", 502);
     public static readonly ErrorDefinition CvNotFound = new("CV-001", "CV dosyası bulunamadı.", 404);
-    public static readonly ErrorDefinition CvFileInvalid = new("CV-002", "PDF veya DOCX biçiminde en fazla 10 MB dosya yükleyin.", 400);
-    public static readonly ErrorDefinition CvConsentRequired = new("CV-003", "CV yüklemek için güncel açık rıza metnini onaylamanız gerekiyor.", 403);
-    public static readonly ErrorDefinition CvConsentUnavailable = new("CV-004", "CV yükleme için veri aktarımı ve bilgilendirme koşulları henüz tamamlanmadı.", 503);
+    public static readonly ErrorDefinition CvFileInvalid = new("CV-002", "En fazla 10 MB boyutunda bir PDF dosyası yükleyin.", 400);
+    public static readonly ErrorDefinition CvAnalysisNotConfigured = new("CV-006", "CV analizi henüz yapılandırılmadı.", 503);
+    public static readonly ErrorDefinition CvAnalysisFailed = new("CV-007", "CV analizi tamamlanamadı.", 502);
+    public static readonly ErrorDefinition CvDailyLimitReached = new("CV-008", "Günlük 2 CV analizi hakkınız doldu. Yeni haklar Türkiye saatiyle gece yarısı açılır.", 429);
     public static readonly ErrorDefinition CvOperationFailed = new("CV-005", "CV işlemi tamamlanamadı.", 502);
+    public static readonly ErrorDefinition CvDraftNotFound = new("CV-009", "CV taslağı bulunamadı.", 404);
+    public static readonly ErrorDefinition CvDraftInvalid = new("CV-010", "CV taslağının adı, şablonu veya içeriği geçersiz.", 400);
 }

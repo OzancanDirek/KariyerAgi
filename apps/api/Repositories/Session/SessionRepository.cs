@@ -4,7 +4,7 @@ using CareerPath.Api.Security;
 
 namespace CareerPath.Api.Repositories.Session;
 
-public class SessionRepository : ISessionRepository
+public class SessionRepository
 {
     private readonly SupabaseAuthClient client;
 
