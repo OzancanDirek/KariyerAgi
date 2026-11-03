@@ -7,17 +7,20 @@ Supabase `public` şemasındaki beceri tabloları canlı kayıt sayıları, uygu
 - `aktorler`, `sistem_kullanicilari`, `roller`, `kullanici_roller`, `aday_profilleri`: kimlik, rol ve aday profili.
 - `deneyimler`, `egitimler`, `projeler`, `sertifikalar`: profil kayıtları.
 - `cv_dosyalari`, `cv_analizleri`: CV ve rapor kayıtları.
+- `cv_taslaklari`: CV oluşturucuda hazırlanan düzenlenebilir taslaklar.
 - `cv_analiz_istekleri`: günlük iki analiz sınırını eşzamanlı isteklerde de koruyan geçici hak kayıtları. Boş olabilir; kaldırılırsa limit güvenliği bozulur.
+- `aday_yol_haritasi_gorevleri`: Gemini'nin ürettiği haftalık görevler, tamamlanma durumu ve soft delete ile arşivlenen eski planlar. Görev başlığı ve açıklaması doğrudan burada tutulur.
 - `private.saklanan_dosya_gecmisi`: kaldırılan/değiştirilen fotoğraf ve sertifika dosyalarının izini tutan denetim kaydı. Boş olabilir; tetikleyiciler kullanır.
 
 ## Sonraki modüller için ilk şemada ayrılanlar
 
-- `beceriler` (126 kayıt) ve `beceri_kategorileri` (26 kayıt): yazılımın yanında yönetim, satış, finans, eğitim, sağlık, lojistik ve diğer alanları kapsayan beceri kataloğu ve gruplama. Katalog `20261103_expand_skill_catalog.sql` ile genişletildi.
+- `beceriler` ve `beceri_kategorileri`: yazılımın yanında yönetim, satış, finans, eğitim, sağlık, lojistik ve diğer alanları kapsayan beceri kataloğu ve gruplama. Katalog `20261103_expand_skill_catalog.sql` ile genişletildi.
 - `beceri_iliskileri` (13 kayıt): haritada gösterilen katalog bağlantıları.
 - `beceri_esanlamlilari` (22 kayıt): mevcut `beceri_ara` fonksiyonunun eşanlamlı araması; korunmalı.
 - `aday_becerileri`: adayın seçtiği katalog becerileri. Aday ve beceri arasında tek ara tablo; silme işlemi `is_deleted` ile yapılır. Beceri haritası bu seçimleri ve son CV analizindeki katalogla eşleşen önerileri ayrı işaretlerle gösterir. CV önerileri aday onaylayana kadar bu tabloya yazılmaz.
-- `meslekler` ve `meslek_becerileri` (ikisi de boş): ileride meslek eşleştirme için ayrılmış. Şu an ekranda kullanılmıyor; o modül tasarlanırken yeniden değerlendirilir.
+- `meslekler` ve `meslek_becerileri`: yol haritasında rol seçimi ve gerekli becerilerin belirlenmesi için kullanılır.
 - `proje_becerileri` (boştu): uygulama kodunda hiç kullanılmıyordu. Proje teknolojileri `projeler.teknolojiler` alanında tutuluyor. 3 Kasım 2026 tarihinde canlı veritabanından kaldırıldı; işlem öncesinde tablo boşluğu kontrol edildi.
+- `beceri_gorev_sablonlari`: Gemini planı kullanıma alınınca işlevsiz kaldı. 20 şablon ve arşivde bunlara bağlı 6 görev vardı; arşiv görevlerinin metinleri `aday_yol_haritasi_gorevleri` içinde korundu. `sablon_id` alanı ve şablon tablosu `20261103_remove_roadmap_task_templates.sql` ile kaldırıldı. Sonrasında 14 görev kaydı korunduğu doğrulandı.
 
 ## Şu an uygulama kodunda kullanılmayanlar
 
