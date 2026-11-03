@@ -8,10 +8,10 @@ namespace CareerPath.Api.Services.Session;
 
 public class SessionServiceImpl : ISessionService
 {
-    private readonly ISessionRepository repository;
+    private readonly SessionRepository repository;
     private readonly HttpRequestContext requestContext;
 
-    public SessionServiceImpl(ISessionRepository repository, HttpRequestContext requestContext)
+    public SessionServiceImpl(SessionRepository repository, HttpRequestContext requestContext)
     {
         this.repository = repository;
         this.requestContext = requestContext;

@@ -4,7 +4,7 @@ using ProjectEntity = CareerPath.Api.Entities.Project;
 
 namespace CareerPath.Api.Repositories.Project;
 
-public class ProjectRepository : IProjectRepository
+public class ProjectRepository
 {
     private const string Table = "projeler";
     private const string Columns = "id,aday_id,ad,aciklama,rol,teknolojiler,proje_url,kod_url,baslangic_tarihi,bitis_tarihi";

@@ -11,12 +11,12 @@ namespace CareerPath.Api.Services.Profile;
 public class ProfileServiceImpl : IProfileService
 {
     private const string PhotoBucket = "profil-fotograflari";
-    private readonly IProfileRepository repository;
+    private readonly ProfileRepository repository;
     private readonly CurrentUserContextProvider currentUser;
     private readonly SupabasePrivateStorageClient storage;
     private readonly ILogger<ProfileServiceImpl> logger;
 
-    public ProfileServiceImpl(IProfileRepository repository, CurrentUserContextProvider currentUser, SupabasePrivateStorageClient storage, ILogger<ProfileServiceImpl> logger)
+    public ProfileServiceImpl(ProfileRepository repository, CurrentUserContextProvider currentUser, SupabasePrivateStorageClient storage, ILogger<ProfileServiceImpl> logger)
     {
         this.repository = repository;
         this.currentUser = currentUser;

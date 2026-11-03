@@ -9,10 +9,10 @@ namespace CareerPath.Api.Services.Authentication;
 
 public class AuthenticationServiceImpl : IAuthenticationService
 {
-    private readonly IAuthenticationRepository repository;
+    private readonly AuthenticationRepository repository;
     private readonly HttpRequestContext requestContext;
 
-    public AuthenticationServiceImpl(IAuthenticationRepository repository, HttpRequestContext requestContext)
+    public AuthenticationServiceImpl(AuthenticationRepository repository, HttpRequestContext requestContext)
     {
         this.repository = repository;
         this.requestContext = requestContext;

@@ -9,10 +9,10 @@ namespace CareerPath.Api.Services.CareerProfile;
 
 public class CareerProfileServiceImpl : ICareerProfileService
 {
-    private readonly ICareerProfileRepository repository;
+    private readonly CareerProfileRepository repository;
     private readonly CurrentUserContextProvider currentUser;
 
-    public CareerProfileServiceImpl(ICareerProfileRepository repository, CurrentUserContextProvider currentUser)
+    public CareerProfileServiceImpl(CareerProfileRepository repository, CurrentUserContextProvider currentUser)
     {
         this.repository = repository;
         this.currentUser = currentUser;

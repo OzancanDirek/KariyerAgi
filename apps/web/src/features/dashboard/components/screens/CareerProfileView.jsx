@@ -549,7 +549,7 @@ const CareerProfileView = ({
               <UploadCloud className="w-5 h-5 text-[#5276A7] mx-auto mb-1.5" />
               <div className="text-xs font-medium text-[#202938]">Yeni Özgeçmiş Yükle</div>
               <p className="text-[10px] text-[#667085] mt-0.5">
-                PDF veya DOCX (Maks 10 MB)
+                Yalnızca PDF (Maks 10 MB)
               </p>
             </div>
           </div>

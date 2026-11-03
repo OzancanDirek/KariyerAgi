@@ -4,7 +4,7 @@ using CertificateEntity = CareerPath.Api.Entities.Certificate;
 
 namespace CareerPath.Api.Repositories.Certificate;
 
-public class CertificateRepository : ICertificateRepository
+public class CertificateRepository
 {
     private const string Table = "sertifikalar";
     private const string Columns = "id,aday_id,ad,veren_kurum,verilis_tarihi,gecerlilik_bitis_tarihi,sertifika_no,dogrulama_url,belge_yolu,belge_dosya_adi";

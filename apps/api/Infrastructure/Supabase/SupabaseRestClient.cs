@@ -50,7 +50,7 @@ public class SupabaseRestClient
             var content = await response.Content.ReadAsStringAsync(cancellationToken);
             try
             {
-                return JsonDocument.Parse(content);
+                return JsonDocument.Parse(string.IsNullOrWhiteSpace(content) ? "null" : content);
             }
             catch (JsonException)
             {

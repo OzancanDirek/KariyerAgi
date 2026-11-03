@@ -30,7 +30,8 @@ const Modal = ({
     sm: "max-w-sm",
     md: "max-w-md",
     lg: "max-w-lg",
-    xl: "max-w-2xl"
+    xl: "max-w-2xl",
+    "2xl": "max-w-4xl"
   };
   return <div
     className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#202938]/40 backdrop-blur-xs animate-in fade-in duration-200"

@@ -40,6 +40,10 @@ Check<CvFile>(
     new Dictionary<string, string> { ["fileName"] = "cv.pdf", ["contentType"] = "application/pdf", ["sizeBytes"] = "12345", ["isPrimary"] = "True" });
 
 Console.WriteLine("Profil, kariyer, deneyim, eğitim, sertifika, proje ve CV veri sözleşmeleri doğrulandı.");
+PdfSelectorChecks.Run();
+await CvFileValidatorChecks.RunAsync();
+CvScoreChecks.Run();
+RoadmapPlanChecks.Run();
 
 void Check<TEntity>(string databaseJson, Func<TEntity, object> map, Dictionary<string, string> expected)
 {

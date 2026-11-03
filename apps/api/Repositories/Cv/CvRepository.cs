@@ -3,7 +3,7 @@ using CareerPath.Api.Infrastructure.Supabase;
 
 namespace CareerPath.Api.Repositories.Cv;
 
-public class CvRepository : ICvRepository
+public class CvRepository
 {
     private const string Columns = "id,aday_id,depolama_yolu,orijinal_dosya_adi,mime_tipi,boyut_bayt,birincil_mi,olusturma_tarihi";
     private readonly SupabaseRestClient client;
@@ -44,20 +44,4 @@ public class CvRepository : ICvRepository
         return result.RootElement.GetArrayLength() > 0;
     }
 
-    public async Task<ConsentText?> GetCurrentConsentTextAsync(string token, CancellationToken cancellationToken)
-    {
-        using var result = await client.SendAsync(HttpMethod.Get, "guncel_riza_metinleri?tur=eq.acik_riza_yurt_disi_aktarim&select=id,baslik,icerik,surum", null, token, cancellationToken);
-        return SupabaseResponseReader.ReadSingle<ConsentText>(result.RootElement);
-    }
-
-    public async Task<bool> HasConsentAsync(Guid userId, Guid textId, string token, CancellationToken cancellationToken)
-    {
-        using var result = await client.SendAsync(HttpMethod.Get, $"riza_kayitlari?kullanici_id=eq.{userId:D}&riza_metni_id=eq.{textId:D}&geri_alinma_tarihi=is.null&select=id", null, token, cancellationToken);
-        return result.RootElement.GetArrayLength() > 0;
-    }
-
-    public async Task GrantConsentAsync(Guid textId, string token, CancellationToken cancellationToken)
-    {
-        using var result = await client.SendAsync(HttpMethod.Post, "rpc/riza_ver", new { p_riza_metni_id = textId }, token, cancellationToken);
-    }
 }

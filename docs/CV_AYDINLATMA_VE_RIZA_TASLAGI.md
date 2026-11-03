@@ -1,6 +1,6 @@
 # CV yükleme için aydınlatma ve aktarım metni taslağı
 
-**Durum:** Ürün içi yayına hazır değildir. Köşeli alanlar veri sorumlusu tarafından doğrulanmadan ve yurt dışı aktarım dayanağı tamamlanmadan veritabanına yürürlükte metin olarak eklenmez.
+**Durum:** Hukuki metin taslağıdır; ürün içinde yayımlanmamıştır. Teknik CV yükleme çalışır. Gerçek kullanıcılarla canlı yayın öncesi köşeli alanlar ve yurt dışı aktarım dayanağı tamamlanmalıdır.
 
 **Doğrulanan teknik bilgi (30.10.2026):** CareerPath'in mevcut Supabase projesinin ana bölgesi `Central EU (Frankfurt) / eu-central-1` olarak görünüyor. Bu, Türkiye dışına düzenli veri aktarımı ihtimalini doğurur. Supabase'in alt işleyenleri, destek erişimleri ve yedekleme yerleri ayrıca doğrulanmalıdır.
 
@@ -8,13 +8,13 @@
 
 **Veri sorumlusu:** [Tam ad / ticaret unvanı, adres, iletişim ve KVKK başvuru e-postası]
 
-CareerPath hesabınıza yüklediğiniz PDF veya DOCX CV dosyası ile dosya adı, türü, boyutu, yüklenme tarihi ve birincil CV tercihiniz işlenir. CV içeriğinde kendi eklediğiniz kimlik ve iletişim bilgileriniz, eğitim ve iş geçmişiniz, becerileriniz, sertifikalarınız ve başka bilgiler bulunabilir. CV'nize başkalarına ait veya özel nitelikli kişisel veri eklememenizi öneririz.
+CareerPath hesabınıza yüklediğiniz PDF CV dosyası ile dosya adı, türü, boyutu, yüklenme tarihi ve birincil CV tercihiniz işlenir. CV içeriğinde kendi eklediğiniz kimlik ve iletişim bilgileriniz, eğitim ve iş geçmişiniz, becerileriniz, sertifikalarınız ve başka bilgiler bulunabilir. CV'nize başkalarına ait veya özel nitelikli kişisel veri eklememenizi öneririz.
 
 Veriler, CV'nizi hesabınızda saklamak, size listelemek ve indirmenizi sağlamak, birincil CV tercihinizi yönetmek amacıyla işlenir. [İleride AI analizi açılacaksa bu amaç, kullanılan sağlayıcılar ve aktarım ayrıca açıklanmalıdır; mevcut CV yükleme onayı AI analizine izin vermez.]
 
 Veriler, dosyayı yüklemeniz yoluyla elektronik ortamda toplanır. Bu işlemenin hukuki sebebi [somut hizmet ilişkisine göre KVKK m.5 kapsamındaki dayanak]; CV içinde bulunabilecek özel nitelikli verilerin işlenme şartı ve ek tedbirleri [ayrıca değerlendirilecek] şeklindedir. Veriler, barındırma ve depolama hizmeti sağlayıcısı [doğrulanmış tüzel kişi/alt işleyenler] ile [doğrulanmış alıcı grupları] tarafından [doğrulanmış ülke/bölgelerde] işlenebilir. Düzenli yurt dışı aktarımın KVKK m.9 dayanağı ve uygun güvencesi [somut karar/standart sözleşme bilgisi] olarak belirtilecektir.
 
-CV dosyası kullanıcı arayüzünde silindiğinde kayıt görünümden kaldırılır; mevcut soft delete tasarımında dosya ve kayıt hemen fiziksel olarak silinmez. Saklama süresi, yedeklerin yaşam süresi, kalıcı imha takvimi ve ilgili kişi talep süreci [belirlenecek] şeklindedir. Bu bilgiler tamamlanmadan gerçek kişilerin CV'leri alınmaz.
+CV dosyası kullanıcı arayüzünde silindiğinde kayıt görünümden kaldırılır; mevcut soft delete tasarımında dosya ve kayıt hemen fiziksel olarak silinmez. Saklama süresi, yedeklerin yaşam süresi, kalıcı imha takvimi ve ilgili kişi talep süreci [belirlenecek] şeklindedir. Bu bilgiler gerçek kullanıcılarla canlı yayın öncesinde tamamlanmalıdır.
 
 KVKK m.11 kapsamındaki erişim, düzeltme, silme ve diğer taleplerinizi [başvuru kanalı] üzerinden iletebilirsiniz. Başvuru usulü ve kimlik doğrulama yöntemi [belirlenecek].
 

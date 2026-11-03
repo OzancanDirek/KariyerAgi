@@ -114,9 +114,9 @@ const CvUploadScreen = ({
       setFile(dummyFile);
       processUploadedFile({ name: "Mehmet_Akif_Yazilim_CV.pdf", size: 1.4 * 1024 * 1024 });
     } else {
-      const dummyFile = new File(["dummy content"], "Veri_Analisti_Aday_CV.docx", { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
+      const dummyFile = new File(["dummy content"], "Veri_Analisti_Aday_CV.pdf", { type: "application/pdf" });
       setFile(dummyFile);
-      processUploadedFile({ name: "Veri_Analisti_Aday_CV.docx", size: 2.1 * 1024 * 1024 });
+      processUploadedFile({ name: "Veri_Analisti_Aday_CV.pdf", size: 2.1 * 1024 * 1024 });
     }
   };
   const handleRemoveSkill = (skillToRemove) => {
@@ -246,7 +246,7 @@ const CvUploadScreen = ({
                     <input
     ref={fileInputRef}
     type="file"
-    accept=".pdf,.docx,.doc"
+    accept=".pdf,application/pdf"
     className="hidden"
     onChange={handleFileInputChange}
   />
@@ -259,7 +259,7 @@ const CvUploadScreen = ({
                       Özgeçmişinizi buraya sürükleyin veya bilgisayarınızdan seçin
                     </h3>
                     <p className="text-xs text-[#667085] mt-1 max-w-sm mx-auto">
-                      PDF veya DOCX formatında, en fazla 10 MB boyutunda belgeler desteklenmektedir.
+                      Yalnızca PDF formatında, en fazla 10 MB boyutunda belgeler desteklenmektedir.
                     </p>
 
                     <div className="mt-4">

@@ -19,8 +19,12 @@ Silme işlemlerinin veri kaybetmeden çalışması için `sql/migrations/2026103
 
 Web giriş ve kayıt isteklerini .NET API’ye gönderir. API bu işlemler için Supabase Auth ile konuşur. `GET /api/health` sağlık kontrolüdür.
 
-Profil özetinde deneyim, eğitim, sertifika, proje ve CV kayıtlarının en yeni üçü görünür. Her bölümdeki “Tümünü gör” bağlantısı bütün kayıtların yönetilebildiği ayrı ekrana açılır. CV yönetim ekranı hazırdır. Canlı CV yükleme, veri aktarımının hukuki dayanağı ve aydınlatma metni netleştirilene kadar kapalıdır. Ayrıntılar `docs/CV_VERI_AKTARIMI.md` dosyasındadır.
+Profil özetinde deneyim, eğitim, sertifika, proje ve CV kayıtlarının en yeni üçü görünür. Her bölümdeki “Tümünü gör” bağlantısı bütün kayıtların yönetilebildiği ayrı ekrana açılır. CV yönetim ekranında PDF/DOCX yükleme, indirme, birincil CV seçme ve silme çalışır. Dosyalar kullanıcıya özel Supabase alanında tutulur. Canlı yayın öncesi veri işleme ve aktarım bilgileri `docs/CV_VERI_AKTARIMI.md` dosyasında ayrıca takip edilir.
 
 ## Git akışı
 
 `main` kararlı sürümleri, `develop` devam eden geliştirmeyi tutar. Yeni özellikler `feature/<kisa-ad>` dalında geliştirilir, inceleme sonrası `develop` dalına birleştirilir. Sürüm hazır olduğunda `develop` içeriği `main` dalına alınır.
+
+CV analizi için `sql/migrations/20261030_cv_analyses.sql` veritabanı değişikliği ve API sunucusunda `Gemini__ApiKey` gerekir. Anahtar yalnızca sunucuda tutulur. Analiz ekranı sabit örnek puan göstermez; sonuçlar seçilen CV'ye bağlı olarak saklanır.
+
+Analiz maliyetini sınırlamak için `sql/migrations/20261031_cv_analysis_daily_quota.sql` aday başına Türkiye saatiyle günlük iki analiz hakkı tanımlar. Ekran kalan hakkı gösterir; sınır API ve veritabanında uygulanır.

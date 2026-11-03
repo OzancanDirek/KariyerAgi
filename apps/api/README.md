@@ -40,8 +40,6 @@ ASP.NET Core 8 backend. Kimlik doğrulama Supabase Auth üzerinden, profil okuma
 | GET/POST | `/api/projects` | Projeleri listele veya ekle |
 | PUT/DELETE | `/api/projects/{id}` | Projeyi güncelle veya sil |
 | GET/POST | `/api/cv` | CV dosyalarını listele veya yükle |
-| GET | `/api/cv/consent` | Güncel açık rıza metnini ve onay durumunu getir |
-| POST | `/api/cv/consent/{textId}` | Kullanıcının açık rızasını kaydet |
 | GET | `/api/cv/{id}/document` | CV dosyasını indir |
 | PUT | `/api/cv/{id}/primary` | Birincil CV'yi seç |
 | DELETE | `/api/cv/{id}` | CV dosyasını sil |
@@ -57,6 +55,12 @@ Deneyim ve eğitim kayıtları kullanıcının kendi aday kimliğiyle filtreleni
 
 Sertifika alanları `sertifikalar` tablosuyla eşleşir. Belgeler özel `sertifika-belgeleri` alanında tutulur ve yalnızca sahibinin JWT'siyle erişilir. Yükleme PDF, JPG ve PNG dosyalarıyla 10 MB'ı aşmayacak şekilde sınırlandırılmıştır. Dosya yükleme, sertifika kaydından sonra ayrı bir istektir; yükleme başarısız olursa sertifika bilgileri kayıtlı kalır ve kullanıcıya yeniden deneme uyarısı gösterilir. Veritabanı ve dosya alanı değişikliği `sql/migrations/20261029_certificates_documents.sql` dosyasındadır.
 
-Projeler `projeler` tablosuyla eşleşir. CV dosyaları özel `cv-dosyalari` Storage alanında, dosya bilgileri `cv_dosyalari` tablosunda tutulur. PDF veya DOCX, en fazla 10 MB kabul edilir. Mevcut uygulama yüklemeyi `acik_riza_yurt_disi_aktarim` kaydı ve kullanıcı onayı bulunmadığında durdurur. Canlı CV yüklemesi açılmadan önce veri aktarımının hukuki dayanağı ve aydınlatma yükümlülüğü ayrıca netleştirilmelidir; yalnızca bir metin eklemek yeterli kabul edilmemelidir. Bkz. `../../docs/CV_VERI_AKTARIMI.md`.
+Projeler `projeler` tablosuyla eşleşir. CV dosyaları özel `cv-dosyalari` Storage alanında, dosya bilgileri `cv_dosyalari` tablosunda tutulur. Yeni yüklemelerde yalnızca PDF, en fazla 10 MB kabul edilir. CV yükleme için yurt dışı aktarım onayı teknik şartı kaldırılmıştır. Dosya sahibine özel erişim ve boyut/tür sınırları korunur. Gerçek kullanıcılarla canlı yayın öncesi veri aktarımının hukuki dayanağı ve aydınlatma yükümlülüğü ayrıca netleştirilmelidir; yalnızca bir metin eklemek yeterli kabul edilmemelidir. Bkz. `../../docs/CV_VERI_AKTARIMI.md`.
 
 Veritabanı sütunu → entity → API DTO alan eşleştirmesini kontrol etmek için proje kökünden `dotnet run --project apps/api.contractchecks/CareerPath.ContractChecks.csproj` çalıştırın. Profil, kariyer, deneyim, eğitim, sertifika, proje ve CV örnek yanıtları doğrulanır.
+
+### CV analizi (Gemini)
+
+`Gemini__ApiKey` ortam değişkeni .NET API sürecinde ayarlanır. Anahtarı React `.env` dosyasına veya Git'e koymayın. Analiz ekranı kullanıcının kendi PDF CV'sini işler ve yalnızca yapılandırılmış bulguları `cv_analizleri` tablosuna kaydeder. Önce `sql/migrations/20261030_cv_analyses.sql` migration'ını uygulayın. Anahtar yoksa analiz isteği `CV-006` hatası döner; CV yükleme ve görüntüleme çalışmaya devam eder.
+
+Günlük sınır için `sql/migrations/20261031_cv_analysis_daily_quota.sql` uygulanır. Aday başına Türkiye takvim gününde iki analiz yapılabilir. Önceki başarılı analizler de sayılır; eşzamanlı istekler veritabanında kilitlenerek kontrol edilir. Tamamlanmayan bir isteğin geçici rezervasyonu 10 dakika sonra sona erer. `GET /api/cv/analysis/quota` kalan hakkı döner; sınır dolduğunda `POST /api/cv/{id}/analysis` `CV-008` ve HTTP 429 döner.

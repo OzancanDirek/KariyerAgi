@@ -10,10 +10,10 @@ namespace CareerPath.Api.Services.Education;
 
 public class EducationServiceImpl : IEducationService
 {
-    private readonly IEducationRepository repository;
+    private readonly EducationRepository repository;
     private readonly CurrentUserContextProvider currentUser;
 
-    public EducationServiceImpl(IEducationRepository repository, CurrentUserContextProvider currentUser)
+    public EducationServiceImpl(EducationRepository repository, CurrentUserContextProvider currentUser)
     {
         this.repository = repository;
         this.currentUser = currentUser;
