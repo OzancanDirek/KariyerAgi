@@ -5,12 +5,10 @@ import { FormInput } from '../../../shared/ui/FormInput.jsx';
 import { Button } from '../../../shared/ui/Button.jsx';
 
 export function RegisterScreen({ onNavigate, onRegister, isEmployer, onToggleEmployer }) {
-  const [form, setForm] = useState({ ad: '', soyad: '', email: '', password: '', confirmPassword: '' });
+  const [form, setForm] = useState({ ad: '', soyad: '', email: '', telefon: '', password: '', confirmPassword: '' });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const hasMinLength = form.password.length >= 8;
-  const hasUppercase = /[A-Z]/.test(form.password);
-  const hasNumber = /[0-9]/.test(form.password);
+  const hasMinLength = form.password.length >= 6;
 
   function updateField(field, value) {
     setForm((current) => ({ ...current, [field]: value }));
@@ -33,8 +31,13 @@ export function RegisterScreen({ onNavigate, onRegister, isEmployer, onToggleEmp
       nextErrors.email = 'Geçerli bir e-posta adresi girin.';
     }
 
-    if (!hasMinLength || !hasUppercase || !hasNumber) {
-      nextErrors.password = 'Şifre gereksinimlerini karşılamalıdır.';
+    const phone = form.telefon.replace(/\D/g, '').replace(/^90(?=5\d{9}$)/, '').replace(/^0(?=5\d{9}$)/, '');
+    if (!/^5\d{9}$/.test(phone)) {
+      nextErrors.telefon = 'Geçerli bir cep telefonu numarası girin.';
+    }
+
+    if (!hasMinLength) {
+      nextErrors.password = 'Şifre en az 6 karakter olmalıdır.';
     }
 
     if (!form.confirmPassword) {
@@ -56,6 +59,7 @@ export function RegisterScreen({ onNavigate, onRegister, isEmployer, onToggleEmp
         ad: form.ad.trim(),
         soyad: form.soyad.trim(),
         email: form.email.trim(),
+        telefon: phone,
         password: form.password,
         rol: isEmployer ? 'isveren' : 'aday',
       });
@@ -85,11 +89,12 @@ export function RegisterScreen({ onNavigate, onRegister, isEmployer, onToggleEmp
                 <FormInput label="Soyad" id="register-soyad" required autoComplete="family-name" value={form.soyad} onChange={(event) => updateField('soyad', event.target.value)} error={errors.soyad} placeholder="Yılmaz" />
               </div>
               <FormInput label={isEmployer ? 'Kurumsal e-posta adresi' : 'E-posta adresi'} id="register-email" type="email" required autoComplete="email" value={form.email} onChange={(event) => updateField('email', event.target.value)} error={errors.email} placeholder="ornek@universite.edu.tr" />
+              <FormInput label="Cep telefonu" id="register-phone" type="tel" required autoComplete="tel" value={form.telefon} onChange={(event) => updateField('telefon', event.target.value)} error={errors.telefon} placeholder="05xx xxx xx xx" />
               <FormInput label="Şifre" id="register-password" isPassword required autoComplete="new-password" value={form.password} onChange={(event) => updateField('password', event.target.value)} error={errors.password} placeholder="••••••••" />
 
               {form.password && <div className="space-y-1 rounded-lg border border-[#E3E7ED] bg-[#F7F8FA] p-2.5 text-xs text-[#667085]">
                 <p className="font-medium text-[#202938]">Şifre gereksinimleri</p>
-                {[[hasMinLength, 'En az 8 karakter'], [hasUppercase, 'En az bir büyük harf'], [hasNumber, 'En az bir rakam']].map(([valid, label]) => <p key={label} className="flex items-center gap-1.5">{valid ? <Check size={14} className="text-[#2F8F83]" /> : <X size={14} />}{label}</p>)}
+                {[[hasMinLength, 'En az 6 karakter']].map(([valid, label]) => <p key={label} className="flex items-center gap-1.5">{valid ? <Check size={14} className="text-[#2F8F83]" /> : <X size={14} />}{label}</p>)}
               </div>}
 
               <FormInput label="Şifreyi tekrar gir" id="register-confirm" isPassword required autoComplete="new-password" value={form.confirmPassword} onChange={(event) => updateField('confirmPassword', event.target.value)} error={errors.confirmPassword} placeholder="••••••••" />

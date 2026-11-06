@@ -4,6 +4,7 @@ using CareerPath.Api.Infrastructure.Gemini;
 using CareerPath.Api.Repositories.CareerProfile;
 using CareerPath.Api.Repositories.Roadmap;
 using CareerPath.Api.Security;
+using CareerPath.Api.Mappers;
 
 namespace CareerPath.Api.Services.Roadmap;
 
@@ -29,7 +30,7 @@ public class RoadmapTaskServiceImpl : IRoadmapTaskService
         var identity = await currentUser.ResolveAsync();
         var map = await roadmap.GetRoadmapAsync(roleId);
         var rows = await tasks.ListAsync(identity.UserId, roleId, identity.AccessToken, currentUser.CancellationToken);
-        return ToResponses(rows, map.Skills);
+        return RoadmapTaskMapper.ToResponses(rows, map.Skills);
     }
 
     public async Task<List<RoadmapTaskResponse>> CreatePlanAsync(Guid roleId, CreateRoadmapPlanRequest request)
@@ -55,7 +56,7 @@ public class RoadmapTaskServiceImpl : IRoadmapTaskService
         var firstMonday = today.AddDays(-((int)today.DayOfWeek + 6) % 7);
         await tasks.ReplacePlanAsync(roleId, generated.Tasks, firstMonday, identity.AccessToken, currentUser.CancellationToken);
         var rows = await tasks.ListAsync(identity.UserId, roleId, identity.AccessToken, currentUser.CancellationToken);
-        return ToResponses(rows, map.Skills);
+        return RoadmapTaskMapper.ToResponses(rows, map.Skills);
     }
 
     public async Task SetCompletedAsync(Guid roleId, Guid taskId, bool completed)
@@ -97,14 +98,4 @@ public class RoadmapTaskServiceImpl : IRoadmapTaskService
         }
     }
 
-    private static List<RoadmapTaskResponse> ToResponses(List<RoadmapTaskRow> rows, List<RoadmapSkillResponse> skills)
-    {
-        var names = skills.ToDictionary(skill => skill.Id, skill => skill.Name);
-        return rows.Select(row => new RoadmapTaskResponse
-        {
-            Id = row.Id, SkillId = row.SkillId, SkillName = names.GetValueOrDefault(row.SkillId, "Beceri"),
-            Week = row.Week, DueDate = row.DueDate, Title = row.Title, Description = row.Description,
-            Type = row.Type, Priority = row.Priority, EstimatedHours = row.EstimatedHours, Completed = row.Completed
-        }).ToList();
-    }
 }

@@ -15,12 +15,12 @@ public class SupabaseRestClient
         this.requestFactory = requestFactory;
     }
 
-    public async Task<JsonDocument> SendAsync(HttpMethod method, string path, object? body, string accessToken, CancellationToken cancellationToken)
+    public async Task<JsonDocument> SendAsync(HttpMethod method, string path, object? body, string accessToken, CancellationToken cancellationToken, bool returnRepresentation = true, IReadOnlyDictionary<string, ErrorDefinition>? databaseErrors = null)
     {
         using var request = requestFactory.Create(method, $"rest/v1/{path}", body, accessToken);
         if (method == HttpMethod.Patch || method == HttpMethod.Post || method == HttpMethod.Delete)
         {
-            request.Headers.TryAddWithoutValidation("Prefer", "return=representation");
+            request.Headers.TryAddWithoutValidation("Prefer", returnRepresentation ? "return=representation" : "return=minimal");
         }
 
         HttpResponseMessage response;
@@ -37,11 +37,34 @@ public class SupabaseRestClient
         {
             if (!response.IsSuccessStatusCode)
             {
+                var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
+                if (responseBody.Contains("sistem_kullanicilari_telefon_tekil", StringComparison.Ordinal))
+                {
+                    throw new ApiException(ErrorCodes.PhoneAlreadyRegistered);
+                }
+                if (databaseErrors is not null)
+                {
+                    try
+                    {
+                        using var errorDocument = JsonDocument.Parse(responseBody);
+                        if (errorDocument.RootElement.TryGetProperty("message", out var messageElement)
+                            && messageElement.GetString() is { } message
+                            && databaseErrors.TryGetValue(message, out var mappedError))
+                        {
+                            throw new ApiException(mappedError);
+                        }
+                    }
+                    catch (JsonException)
+                    {
+                    }
+                }
+
                 var error = response.StatusCode switch
                 {
                     HttpStatusCode.Unauthorized => ErrorCodes.InvalidCredentials,
                     HttpStatusCode.Forbidden => ErrorCodes.ProfileAccessDenied,
                     HttpStatusCode.BadRequest => ErrorCodes.Validation,
+                    HttpStatusCode.Conflict => ErrorCodes.DuplicateRecord,
                     _ => ErrorCodes.ProfileServiceFailed
                 };
                 throw new ApiException(error);

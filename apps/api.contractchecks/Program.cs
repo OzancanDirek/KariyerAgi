@@ -44,6 +44,7 @@ PdfSelectorChecks.Run();
 await CvFileValidatorChecks.RunAsync();
 CvScoreChecks.Run();
 RoadmapPlanChecks.Run();
+RecruitmentChecks.Run();
 
 void Check<TEntity>(string databaseJson, Func<TEntity, object> map, Dictionary<string, string> expected)
 {

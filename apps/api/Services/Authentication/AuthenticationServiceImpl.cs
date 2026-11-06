@@ -1,3 +1,4 @@
+using CareerPath.Api.Enums;
 using System.Net.Mail;
 using CareerPath.Api.Dtos;
 using CareerPath.Api.Exceptions;
@@ -23,11 +24,14 @@ public class AuthenticationServiceImpl : IAuthenticationService
         request.Email = ValidateCredentials(request.Email, request.Password);
         request.Ad = StringUtils.TrimRequired(request.Ad, ErrorCodes.FullNameRequired);
         request.Soyad = StringUtils.TrimRequired(request.Soyad, ErrorCodes.FullNameRequired);
+        request.Telefon = PhoneNumberUtils.NormalizeRequired(request.Telefon);
 
-        if (request.Rol is not ("aday" or "isveren"))
+        if (!AccountRoleExtensions.TryFromDatabaseCode(request.Rol, out var role) || role == AccountRole.Yonetici)
         {
             throw new ApiException(ErrorCodes.InvalidRole);
         }
+
+        request.Rol = role.ToDatabaseCode();
 
         return repository.RegisterAsync(request, requestContext.CancellationToken);
     }

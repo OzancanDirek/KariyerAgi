@@ -19,7 +19,7 @@ public class AuthenticationRepository
         {
             email = request.Email,
             password = request.Password,
-            data = new { ad = request.Ad, soyad = request.Soyad, rol = request.Rol }
+            data = new { ad = request.Ad, soyad = request.Soyad, telefon = request.Telefon, rol = request.Rol }
         }, null, cancellationToken);
         var root = result.RootElement;
         var user = SupabaseSessionMapper.ReadUser(root.TryGetProperty("user", out var nested) ? nested : root);
