@@ -21,10 +21,10 @@ export function AuthFrame({ isEmployer, onToggleEmployer, switchLabel, heading, 
                 <span className="h-2 w-2 rounded-full bg-[#2F8F83] shadow-[0_0_0_4px_#EBF5F4]" />
                 {isEmployer ? 'İŞVEREN PORTALI' : 'KARİYER PORTALI'}
               </span>
-              <button type="button" onClick={onToggleEmployer} className="auth-switch inline-flex items-center gap-2 rounded-lg border border-[#DCE4EC] bg-[#F7F8FA] px-3 py-2 text-xs font-semibold text-[#243B64] transition-colors hover:border-[#AFC2D3] hover:bg-[#EEF2F6] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2F8F83]">
+              {onToggleEmployer && <button type="button" onClick={onToggleEmployer} className="auth-switch inline-flex items-center gap-2 rounded-lg border border-[#DCE4EC] bg-[#F7F8FA] px-3 py-2 text-xs font-semibold text-[#243B64] transition-colors hover:border-[#AFC2D3] hover:bg-[#EEF2F6] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2F8F83]">
                 {isEmployer ? <User size={15} /> : <Building2 size={15} />}
                 <span>{switchLabel}</span>
-              </button>
+              </button>}
             </div>
 
             <div className="mb-7">

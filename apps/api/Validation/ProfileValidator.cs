@@ -13,7 +13,7 @@ public static class ProfileValidator
         {
             FirstName = TextFieldValidator.RequiredText(request.FirstName, 100, ErrorCodes.FullNameRequired, ErrorCodes.ProfileNameTooLong),
             LastName = TextFieldValidator.RequiredText(request.LastName, 100, ErrorCodes.FullNameRequired, ErrorCodes.ProfileNameTooLong),
-            Phone = TextFieldValidator.Text(request.Phone, 30, ErrorCodes.ProfilePhoneTooLong),
+            Phone = PhoneNumberUtils.Normalize(request.Phone),
             Location = TextFieldValidator.Text(request.Location, 150, ErrorCodes.ProfileLocationTooLong),
             PhotoUrl = TextFieldValidator.HttpsUrl(request.PhotoUrl, 2048, ErrorCodes.ProfilePhotoUrlInvalid)
         };

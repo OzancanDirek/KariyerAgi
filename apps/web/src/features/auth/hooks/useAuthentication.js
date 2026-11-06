@@ -25,8 +25,10 @@ export function useAuthentication() {
         try {
           const refreshed = await sessionApi.refresh(saved.refreshToken);
           if (active) {
-            saveSession(refreshed, isRemembered());
-            setSession(refreshed);
+            const user = await sessionApi.currentUser(refreshed.accessToken);
+            const next = { ...refreshed, user };
+            saveSession(next, isRemembered());
+            setSession(next);
           }
         } catch {
           if (active) {
@@ -47,7 +49,9 @@ export function useAuthentication() {
   }, []);
 
   async function login(credentials, rememberMe) {
-    const next = await authenticationApi.login(credentials);
+    const result = await authenticationApi.login(credentials);
+    const user = await sessionApi.currentUser(result.accessToken);
+    const next = { ...result, user };
     saveSession(next, rememberMe);
     setSession(next);
   }
@@ -55,8 +59,10 @@ export function useAuthentication() {
   async function register(details) {
     const result = await authenticationApi.register(details);
     if (result.session) {
-      saveSession(result.session, true);
-      setSession(result.session);
+      const user = await sessionApi.currentUser(result.session.accessToken);
+      const next = { ...result.session, user };
+      saveSession(next, true);
+      setSession(next);
     }
     return result;
   }
@@ -76,9 +82,11 @@ export function useAuthentication() {
 
       try {
         const refreshed = await sessionApi.refresh(saved.refreshToken);
-        saveSession(refreshed, isRemembered());
-        setSession(refreshed);
-        return await action(refreshed.accessToken);
+        const user = await sessionApi.currentUser(refreshed.accessToken);
+        const next = { ...refreshed, user };
+        saveSession(next, isRemembered());
+        setSession(next);
+        return await action(next.accessToken);
       } catch (refreshError) {
         clearSavedSession();
         setSession(null);

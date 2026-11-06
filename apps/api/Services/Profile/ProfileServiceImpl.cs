@@ -50,7 +50,6 @@ public class ProfileServiceImpl : IProfileService
     {
         var cancellationToken = currentUser.CancellationToken;
         var identity = await currentUser.ResolveAsync();
-        var current = await GetCurrentProfileAsync(identity.UserId, identity.AccessToken, cancellationToken);
         var (bytes, contentType, extension) = await ProfilePhotoValidator.ReadAsync(file, cancellationToken);
         var path = $"{identity.UserId:D}/{Guid.NewGuid():N}.{extension}";
         await storage.UploadAsync(PhotoBucket, path, bytes, contentType, identity.AccessToken, cancellationToken);
@@ -90,7 +89,6 @@ public class ProfileServiceImpl : IProfileService
     {
         var cancellationToken = currentUser.CancellationToken;
         var identity = await currentUser.ResolveAsync();
-        var current = await GetCurrentProfileAsync(identity.UserId, identity.AccessToken, cancellationToken);
         var updated = await repository.UpdatePhotoAsync(identity.UserId, identity.AccessToken, null, cancellationToken);
         if (updated is null)
         {
