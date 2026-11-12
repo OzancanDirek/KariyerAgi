@@ -2,6 +2,12 @@
 
 ASP.NET Core 8 backend. Kimlik doğrulama Supabase Auth üzerinden, profil okuma ve güncelleme Supabase REST üzerinden kullanıcının kendi JWT'siyle yapılır. İlan eşleşmesi sonucunu yazmak için yalnızca sunucuda saklanan `Supabase:SecretKey` (`sb_secret_...`) kullanılır; istemcilere verilmez. Bu anahtar yoksa eşleşme kaydı `JOB-009` ile durur. Yerel ortamda `dotnet user-secrets`, canlı ortamda sunucu gizli ayarları kullanılmalıdır.
 
+## Render üzerinde yayımlama
+
+Kökteki `render.yaml`, API'yi `apps/api/Dockerfile` ile Render Web Service olarak kurar. GitHub deposunu Render Blueprint olarak bağlarken `Supabase__Url`, `Supabase__PublishableKey`, `Supabase__SecretKey` ve `Gemini__ApiKey` değerlerini Render'ın gizli ortam ayarlarına girin. Bu değerleri Git'e, React ortam dosyasına veya mobil uygulamaya koymayın. `Web__Origin` web sitesinin tam kökeni olmalıdır; yalnızca yerel web ile denemede `http://localhost:3000` kalabilir.
+
+Render'ın verdiği HTTPS adresinde `/api/health` yanıtını kontrol edin. Web uygulamasında `VITE_API_URL` değerini bu adres yapıp yeniden derleyin. Mobil uygulama aynı adrese Supabase oturum token'ını `Authorization: Bearer <token>` başlığıyla gönderir. `render.yaml` ilk kurulum için ücretsiz planı seçer; boşta uykuya geçtiği için canlı kullanıcı trafiğinden önce uygun ücretli plana alınmalıdır. Sunucu gizli ayarları yeni hizmete ayrıca taşınır; yerel `dotnet user-secrets` otomatik aktarılmaz.
+
 ## Yapı
 
 - `Controllers`: Authentication, Session, Profile, CareerProfile, Experiences, Education, Certificates, Projects ve Cv uç noktaları.

@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: careerpath-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./apps/api/Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: Supabase__Url
+        sync: false
+      - key: Supabase__PublishableKey
+        sync: false
+      - key: Supabase__SecretKey
+        sync: false
+      - key: Gemini__ApiKey
+        sync: false
+      - key: Web__Origin
+        value: http://localhost:3000
