@@ -6,7 +6,7 @@ public interface ISkillService
 {
     Task<SkillMapResponse> GetSkillMapAsync();
     Task AddSkillAsync(Guid skillId);
-    Task AddCustomSkillAsync(string? name);
+    Task AddCustomSkillAsync(string? name, Guid? categoryId);
     Task RemoveSkillAsync(Guid selectionId);
     Task DismissSkillAsync(DismissSkillRequest request);
 }

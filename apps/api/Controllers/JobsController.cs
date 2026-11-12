@@ -11,11 +11,13 @@ public class JobsController : ControllerBase
 {
     private readonly IJobService jobs;
     private readonly IJobApplicationService applications;
+    private readonly JobMatchService matches;
 
-    public JobsController(IJobService jobs, IJobApplicationService applications)
+    public JobsController(IJobService jobs, IJobApplicationService applications, JobMatchService matches)
     {
         this.jobs = jobs;
         this.applications = applications;
+        this.matches = matches;
     }
 
     [HttpGet]
@@ -59,6 +61,30 @@ public class JobsController : ControllerBase
     public async Task<ActionResult<List<ApplicationResponse>>> ListApplications(Guid id)
     {
         return await applications.GetJobApplicationsAsync(id);
+    }
+
+    [HttpGet("{id:guid}/match-criteria")]
+    public async Task<ActionResult<MatchCriteriaResponse?>> GetMatchCriteria(Guid id)
+    {
+        return await matches.GetCriteriaAsync(id);
+    }
+
+    [HttpPost("{id:guid}/match-criteria/draft")]
+    public async Task<ActionResult<MatchCriteriaResponse>> DraftMatchCriteria(Guid id)
+    {
+        return await matches.DraftCriteriaAsync(id);
+    }
+
+    [HttpPut("{id:guid}/match-criteria")]
+    public async Task<ActionResult<MatchCriteriaResponse>> SaveMatchCriteria(Guid id, MatchCriteriaRequest request)
+    {
+        return await matches.SaveCriteriaAsync(id, request);
+    }
+
+    [HttpGet("{id:guid}/matches")]
+    public async Task<ActionResult<List<ApplicationMatchResponse>>> ListMatches(Guid id)
+    {
+        return await matches.ListMatchesAsync(id);
     }
 
     [HttpPost("{id:guid}/applications")]

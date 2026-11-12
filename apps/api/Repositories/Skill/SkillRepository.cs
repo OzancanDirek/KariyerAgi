@@ -19,7 +19,7 @@ public class SkillRepository
         var skillTask = ReadAsync<SkillRow>("beceriler?select=id,kategori_id,ad,ad_en&aktif_mi=eq.true&order=ad.asc", token, cancellationToken);
         var relationTask = ReadAsync<RelationRow>("beceri_iliskileri?select=kaynak_beceri_id,hedef_beceri_id,iliski_tipi", token, cancellationToken);
         var aliasTask = ReadAsync<SkillAliasRow>("beceri_esanlamlilari?select=beceri_id,esanlamli", token, cancellationToken);
-        var selectedTask = ReadAsync<SelectedSkillRow>($"aday_becerileri?aday_id=eq.{candidateId:D}&select=id,beceri_id,ozel_ad,is_deleted", token, cancellationToken);
+        var selectedTask = ReadAsync<SelectedSkillRow>($"aday_becerileri?aday_id=eq.{candidateId:D}&select=id,beceri_id,ozel_ad,kategori_id,is_deleted", token, cancellationToken);
         var analysisTask = ReadAsync<CvSkillsRow>($"cv_analizleri?aday_id=eq.{candidateId:D}&is_deleted=eq.false&select=beceriler&order=olusturma_tarihi.desc&limit=1", token, cancellationToken);
         await Task.WhenAll(categoryTask, skillTask, relationTask, aliasTask, selectedTask, analysisTask);
         var categories = await categoryTask;
@@ -38,12 +38,18 @@ public class SkillRepository
 
     public async Task<List<SelectedSkillRow>> GetSelectionsAsync(Guid candidateId, string token, CancellationToken cancellationToken)
     {
-        return await ReadAsync<SelectedSkillRow>($"aday_becerileri?aday_id=eq.{candidateId:D}&select=id,beceri_id,ozel_ad,is_deleted", token, cancellationToken);
+        return await ReadAsync<SelectedSkillRow>($"aday_becerileri?aday_id=eq.{candidateId:D}&select=id,beceri_id,ozel_ad,kategori_id,is_deleted", token, cancellationToken);
     }
 
     public async Task<bool> SkillExistsAsync(Guid skillId, string token, CancellationToken cancellationToken)
     {
         using var result = await client.SendAsync(HttpMethod.Get, $"beceriler?id=eq.{skillId:D}&aktif_mi=eq.true&select=id", null, token, cancellationToken);
+        return result.RootElement.GetArrayLength() > 0;
+    }
+
+    public async Task<bool> CategoryExistsAsync(Guid categoryId, string token, CancellationToken cancellationToken)
+    {
+        using var result = await client.SendAsync(HttpMethod.Get, $"beceri_kategorileri?id=eq.{categoryId:D}&select=id", null, token, cancellationToken);
         return result.RootElement.GetArrayLength() > 0;
     }
 
@@ -59,9 +65,9 @@ public class SkillRepository
         return result.RootElement.GetArrayLength() > 0;
     }
 
-    public async Task<bool> AddCustomSkillAsync(Guid candidateId, string name, string token, CancellationToken cancellationToken)
+    public async Task<bool> AddCustomSkillAsync(Guid candidateId, string name, Guid categoryId, string token, CancellationToken cancellationToken)
     {
-        using var result = await client.SendAsync(HttpMethod.Post, "aday_becerileri?select=id", new { aday_id = candidateId, ozel_ad = name }, token, cancellationToken);
+        using var result = await client.SendAsync(HttpMethod.Post, "aday_becerileri?select=id", new { aday_id = candidateId, ozel_ad = name, kategori_id = categoryId }, token, cancellationToken);
         return result.RootElement.GetArrayLength() > 0;
     }
 
@@ -96,6 +102,7 @@ public class SkillRepository
         [JsonPropertyName("id")] public Guid Id { get; set; }
         [JsonPropertyName("beceri_id")] public Guid? SkillId { get; set; }
         [JsonPropertyName("ozel_ad")] public string? CustomName { get; set; }
+        [JsonPropertyName("kategori_id")] public Guid? CategoryId { get; set; }
         [JsonPropertyName("is_deleted")] public bool IsDeleted { get; set; }
     }
 

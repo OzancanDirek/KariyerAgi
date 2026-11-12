@@ -11,14 +11,16 @@ namespace CareerPath.Api.Services.Roadmap;
 public class RoadmapTaskServiceImpl : IRoadmapTaskService
 {
     private readonly RoadmapTaskRepository tasks;
+    private readonly CustomRoadmapTaskRepository customTasks;
     private readonly CareerProfileRepository profiles;
     private readonly IRoadmapService roadmap;
     private readonly GeminiRoadmapPlanner planner;
     private readonly CurrentUserContextProvider currentUser;
 
-    public RoadmapTaskServiceImpl(RoadmapTaskRepository tasks, CareerProfileRepository profiles, IRoadmapService roadmap, GeminiRoadmapPlanner planner, CurrentUserContextProvider currentUser)
+    public RoadmapTaskServiceImpl(RoadmapTaskRepository tasks, CustomRoadmapTaskRepository customTasks, CareerProfileRepository profiles, IRoadmapService roadmap, GeminiRoadmapPlanner planner, CurrentUserContextProvider currentUser)
     {
         this.tasks = tasks;
+        this.customTasks = customTasks;
         this.profiles = profiles;
         this.roadmap = roadmap;
         this.planner = planner;
@@ -29,7 +31,9 @@ public class RoadmapTaskServiceImpl : IRoadmapTaskService
     {
         var identity = await currentUser.ResolveAsync();
         var map = await roadmap.GetRoadmapAsync(roleId);
-        var rows = await tasks.ListAsync(identity.UserId, roleId, identity.AccessToken, currentUser.CancellationToken);
+        var rows = map.IsCustomRole
+            ? await customTasks.ListAsync(identity.UserId, roleId, identity.AccessToken, currentUser.CancellationToken)
+            : await tasks.ListAsync(identity.UserId, roleId, identity.AccessToken, currentUser.CancellationToken);
         return RoadmapTaskMapper.ToResponses(rows, map.Skills);
     }
 
@@ -54,15 +58,29 @@ public class RoadmapTaskServiceImpl : IRoadmapTaskService
         ValidatePlan(generated, missing, request.Weeks, request.WeeklyHours);
         var today = DateOnly.FromDateTime(DateTime.UtcNow);
         var firstMonday = today.AddDays(-((int)today.DayOfWeek + 6) % 7);
-        await tasks.ReplacePlanAsync(roleId, generated.Tasks, firstMonday, identity.AccessToken, currentUser.CancellationToken);
-        var rows = await tasks.ListAsync(identity.UserId, roleId, identity.AccessToken, currentUser.CancellationToken);
+        if (map.IsCustomRole)
+        {
+            await customTasks.ReplacePlanAsync(roleId, generated.Tasks, map.Skills.ToDictionary(skill => skill.Id, skill => skill.Name), firstMonday, identity.AccessToken, currentUser.CancellationToken);
+        }
+        else
+        {
+            await tasks.ReplacePlanAsync(roleId, generated.Tasks, firstMonday, identity.AccessToken, currentUser.CancellationToken);
+        }
+
+        var rows = map.IsCustomRole
+            ? await customTasks.ListAsync(identity.UserId, roleId, identity.AccessToken, currentUser.CancellationToken)
+            : await tasks.ListAsync(identity.UserId, roleId, identity.AccessToken, currentUser.CancellationToken);
         return RoadmapTaskMapper.ToResponses(rows, map.Skills);
     }
 
     public async Task SetCompletedAsync(Guid roleId, Guid taskId, bool completed)
     {
         var identity = await currentUser.ResolveAsync();
-        if (!await tasks.SetCompletedAsync(identity.UserId, roleId, taskId, completed, identity.AccessToken, currentUser.CancellationToken))
+        var map = await roadmap.GetRoadmapAsync(roleId);
+        var updated = map.IsCustomRole
+            ? await customTasks.SetCompletedAsync(identity.UserId, roleId, taskId, completed, identity.AccessToken, currentUser.CancellationToken)
+            : await tasks.SetCompletedAsync(identity.UserId, roleId, taskId, completed, identity.AccessToken, currentUser.CancellationToken);
+        if (!updated)
         {
             throw new ApiException(ErrorCodes.Validation);
         }
@@ -71,7 +89,11 @@ public class RoadmapTaskServiceImpl : IRoadmapTaskService
     public async Task DeleteTaskAsync(Guid roleId, Guid taskId)
     {
         var identity = await currentUser.ResolveAsync();
-        if (!await tasks.DeleteAsync(identity.UserId, roleId, taskId, identity.AccessToken, currentUser.CancellationToken))
+        var map = await roadmap.GetRoadmapAsync(roleId);
+        var deleted = map.IsCustomRole
+            ? await customTasks.DeleteAsync(identity.UserId, roleId, taskId, identity.AccessToken, currentUser.CancellationToken)
+            : await tasks.DeleteAsync(identity.UserId, roleId, taskId, identity.AccessToken, currentUser.CancellationToken);
+        if (!deleted)
         {
             throw new ApiException(ErrorCodes.Validation);
         }

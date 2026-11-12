@@ -45,6 +45,8 @@ await CvFileValidatorChecks.RunAsync();
 CvScoreChecks.Run();
 RoadmapPlanChecks.Run();
 RecruitmentChecks.Run();
+JobMatchChecks.Run();
+SkillCategoryChecks.Run();
 
 void Check<TEntity>(string databaseJson, Func<TEntity, object> map, Dictionary<string, string> expected)
 {

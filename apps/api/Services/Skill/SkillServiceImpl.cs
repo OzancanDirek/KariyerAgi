@@ -45,7 +45,7 @@ public class SkillServiceImpl : ISkillService
         }
     }
 
-    public async Task AddCustomSkillAsync(string? name)
+    public async Task AddCustomSkillAsync(string? name, Guid? categoryId)
     {
         var normalized = NormalizeName(name);
         var identity = await currentUser.ResolveAsync();
@@ -57,13 +57,19 @@ public class SkillServiceImpl : ISkillService
             return;
         }
 
+        if (!categoryId.HasValue || categoryId.Value == Guid.Empty ||
+            !await repository.CategoryExistsAsync(categoryId.Value, identity.AccessToken, currentUser.CancellationToken))
+        {
+            throw new ApiException(ErrorCodes.Validation);
+        }
+
         var selected = await repository.GetSelectionsAsync(identity.UserId, identity.AccessToken, currentUser.CancellationToken);
         if (selected.Any(item => !item.IsDeleted && string.Equals(item.CustomName, normalized, StringComparison.OrdinalIgnoreCase)))
         {
             return;
         }
 
-        if (!await repository.AddCustomSkillAsync(identity.UserId, normalized, identity.AccessToken, currentUser.CancellationToken))
+        if (!await repository.AddCustomSkillAsync(identity.UserId, normalized, categoryId.Value, identity.AccessToken, currentUser.CancellationToken))
         {
             throw new ApiException(ErrorCodes.SkillNotFound);
         }

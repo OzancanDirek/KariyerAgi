@@ -22,5 +22,6 @@ public class RoadmapResponse
     public string? TargetTitle { get; set; }
     public List<RoadmapRoleResponse> Roles { get; set; } = new();
     public Guid? RoleId { get; set; }
+    public bool IsCustomRole { get; set; }
     public List<RoadmapSkillResponse> Skills { get; set; } = new();
 }

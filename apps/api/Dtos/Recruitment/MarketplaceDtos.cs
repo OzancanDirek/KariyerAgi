@@ -64,6 +64,11 @@ public class ApplicationRequest
     public string? CoverLetter { get; set; }
 }
 
+public class UpdateApplicationStatusRequest
+{
+    public string? Status { get; set; }
+}
+
 public class ApplicationResponse
 {
     public Guid Id { get; set; }
@@ -75,6 +80,50 @@ public class ApplicationResponse
     public string Status { get; set; } = string.Empty;
     public DateTimeOffset CreatedAt { get; set; }
     public DateTimeOffset UpdatedAt { get; set; }
+}
+
+public class ApplicantDetailResponse
+{
+    public Guid Id { get; set; }
+    public Guid JobId { get; set; }
+    public string? CandidateName { get; set; }
+    public string? Email { get; set; }
+    public string? Phone { get; set; }
+    public string? Location { get; set; }
+    public string? Title { get; set; }
+    public string? Summary { get; set; }
+    public string? ExperienceLevel { get; set; }
+    public string? LinkedInUrl { get; set; }
+    public string? GitHubUrl { get; set; }
+    public string? PortfolioUrl { get; set; }
+    public string? CvFileName { get; set; }
+    public string? CvContentType { get; set; }
+    public string? CoverLetter { get; set; }
+    public string Status { get; set; } = string.Empty;
+    public DateTimeOffset CreatedAt { get; set; }
+}
+
+public class ApplicantDetailRow
+{
+    [JsonPropertyName("id")] public Guid Id { get; set; }
+    [JsonPropertyName("ilan_id")] public Guid JobId { get; set; }
+    [JsonPropertyName("aday_adi")] public string? CandidateName { get; set; }
+    [JsonPropertyName("eposta")] public string? Email { get; set; }
+    [JsonPropertyName("telefon")] public string? Phone { get; set; }
+    [JsonPropertyName("konum")] public string? Location { get; set; }
+    [JsonPropertyName("unvan")] public string? Title { get; set; }
+    [JsonPropertyName("ozet")] public string? Summary { get; set; }
+    [JsonPropertyName("deneyim_seviyesi")] public string? ExperienceLevel { get; set; }
+    [JsonPropertyName("linkedin_url")] public string? LinkedInUrl { get; set; }
+    [JsonPropertyName("github_url")] public string? GitHubUrl { get; set; }
+    [JsonPropertyName("portfolyo_url")] public string? PortfolioUrl { get; set; }
+    [JsonPropertyName("cv_dosyasi_id")] public Guid? CvFileId { get; set; }
+    [JsonPropertyName("cv_dosya_adi")] public string? CvFileName { get; set; }
+    [JsonPropertyName("cv_depolama_yolu")] public string? CvStoragePath { get; set; }
+    [JsonPropertyName("cv_mime_tipi")] public string? CvContentType { get; set; }
+    [JsonPropertyName("on_yazi")] public string? CoverLetter { get; set; }
+    [JsonPropertyName("durum")] public string Status { get; set; } = string.Empty;
+    [JsonPropertyName("olusturma_tarihi")] public DateTimeOffset CreatedAt { get; set; }
 }
 
 public class CompanyRow

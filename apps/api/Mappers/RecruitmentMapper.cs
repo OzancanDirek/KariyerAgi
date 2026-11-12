@@ -63,4 +63,28 @@ public static class RecruitmentMapper
             UpdatedAt = row.UpdatedAt
         };
     }
+
+    public static ApplicantDetailResponse ToResponse(ApplicantDetailRow row)
+    {
+        return new ApplicantDetailResponse
+        {
+            Id = row.Id,
+            JobId = row.JobId,
+            CandidateName = row.CandidateName,
+            Email = row.Email,
+            Phone = row.Phone,
+            Location = row.Location,
+            Title = row.Title,
+            Summary = row.Summary,
+            ExperienceLevel = row.ExperienceLevel,
+            LinkedInUrl = row.LinkedInUrl,
+            GitHubUrl = row.GitHubUrl,
+            PortfolioUrl = row.PortfolioUrl,
+            CvFileName = row.CvFileName,
+            CvContentType = row.CvContentType,
+            CoverLetter = row.CoverLetter,
+            Status = row.Status,
+            CreatedAt = row.CreatedAt
+        };
+    }
 }

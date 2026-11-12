@@ -104,7 +104,7 @@ export default function App() {
     } else if (signedInScreen === 'skill-map') {
       page = <SkillMapScreen runAuthenticated={runAuthenticated} />;
     } else if (signedInScreen === 'roadmap') {
-      page = <RoadmapScreen runAuthenticated={runAuthenticated} onOpenSkills={() => navigateSignedIn('skill-map')} onOpenGoals={() => navigateSignedIn('career-goals')} />;
+      page = <RoadmapScreen runAuthenticated={runAuthenticated} onOpenSkills={() => navigateSignedIn('skill-map')} onOpenGoals={() => navigateSignedIn('career-goals')} onOpenResources={() => navigateSignedIn('learning-resources')} />;
     } else if (signedInScreen === 'learning-resources') {
       page = <LearningResourcesScreen runAuthenticated={runAuthenticated} onOpenRoadmap={() => navigateSignedIn('roadmap')} />;
     } else if (signedInScreen === 'candidate-jobs') {

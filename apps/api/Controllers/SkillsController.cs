@@ -38,7 +38,7 @@ public class SkillsController : ControllerBase
     [HttpPost("custom")]
     public async Task<IActionResult> AddCustom(CustomSkillRequest request)
     {
-        await skills.AddCustomSkillAsync(request.Name);
+        await skills.AddCustomSkillAsync(request.Name, request.CategoryId);
         return NoContent();
     }
 

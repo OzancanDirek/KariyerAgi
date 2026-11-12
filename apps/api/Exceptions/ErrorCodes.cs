@@ -49,9 +49,14 @@ public static class ErrorCodes
     public static readonly ErrorDefinition JobNotFound = new("JOB-002", "İlan bulunamadı veya erişim izniniz yok.", 404);
     public static readonly ErrorDefinition JobOperationFailed = new("JOB-003", "İlan işlemi tamamlanamadı.", 502);
     public static readonly ErrorDefinition JobNotAcceptingApplications = new("JOB-004", "Bu ilan başvuru kabul etmiyor.", 409);
+    public static readonly ErrorDefinition JobMatchCriteriaInvalid = new("JOB-005", "İlan ölçütleri 4-8 adet olmalı ve ağırlıkları toplam 100 etmelidir.", 400);
+    public static readonly ErrorDefinition JobMatchNoCriteria = new("JOB-006", "Önce ilan değerlendirme ölçütlerini kaydedin.", 409);
+    public static readonly ErrorDefinition JobMatchNoCv = new("JOB-007", "Bu başvuruda incelenebilir bir PDF CV bulunmuyor.", 409);
+    public static readonly ErrorDefinition JobMatchFailed = new("JOB-008", "İlan uyumu değerlendirilemedi. Lütfen tekrar deneyin.", 502);
     public static readonly ErrorDefinition ApplicationAlreadyExists = new("APP-001", "Bu ilana etkin bir başvurunuz zaten var.", 409);
     public static readonly ErrorDefinition ApplicationNotFound = new("APP-002", "Başvuru bulunamadı.", 404);
     public static readonly ErrorDefinition ApplicationOperationFailed = new("APP-003", "Başvuru işlemi tamamlanamadı.", 502);
+    public static readonly ErrorDefinition ApplicationStatusInvalid = new("APP-005", "Başvuru aşaması geçersiz veya bu aşamaya geçilemiyor.", 409);
     public static readonly ErrorDefinition DuplicateRecord = new("APP-004", "Bu kayıt zaten mevcut.", 409);
     public static readonly ErrorDefinition Unexpected = new("SYS-001", "Beklenmeyen bir sistem hatası oluştu.", 500);
     public static readonly ErrorDefinition ProfileNotFound = new("PRO-001", "Profil bulunamadı.", 404);

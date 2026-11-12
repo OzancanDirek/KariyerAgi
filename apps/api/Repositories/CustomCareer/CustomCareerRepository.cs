@@ -27,6 +27,12 @@ public class CustomCareerRepository
         return SupabaseResponseReader.ReadSingle<CustomCareerRow>(result.RootElement);
     }
 
+    public async Task<List<CustomCareerRow>> GetConfirmedAsync(Guid candidateId, string token, CancellationToken cancellationToken)
+    {
+        using var result = await client.SendAsync(HttpMethod.Get, $"aday_ozel_meslek_taslaklari?aday_id=eq.{candidateId:D}&durum=eq.confirmed&select={Columns}&order=olusturma_tarihi.desc", null, token, cancellationToken);
+        return SupabaseResponseReader.ReadList<CustomCareerRow>(result.RootElement);
+    }
+
     public async Task<CustomCareerRow?> GetAsync(Guid candidateId, Guid id, string token, CancellationToken cancellationToken)
     {
         using var result = await client.SendAsync(HttpMethod.Get, $"aday_ozel_meslek_taslaklari?aday_id=eq.{candidateId:D}&id=eq.{id:D}&select={Columns}", null, token, cancellationToken);

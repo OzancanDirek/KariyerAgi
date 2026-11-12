@@ -54,6 +54,15 @@ internal static class RecruitmentChecks
             throw new Exception("Aday adı başvuru yanıtına taşınmadı.");
         }
 
+        if (!ApplicationStatusExtensions.TryFromDatabaseCode("mulakat", out var applicationStatus)
+            || applicationStatus != ApplicationStatus.Mulakat
+            || !applicationStatus.CanEmployerSet()
+            || ApplicationStatus.GeriCekildi.CanEmployerSet()
+            || ApplicationStatus.Mulakat.ToDatabaseCode() != "mulakat")
+        {
+            throw new Exception("Başvuru aşaması eşlemesi veya işveren yetkisi yanlış.");
+        }
+
         var company = CompanyValidator.Normalize(new CompanyRequest { Name = "  Test Şirketi  " });
         using var companyJson = JsonDocument.Parse(JsonSerializer.Serialize(company));
         if (companyJson.RootElement.GetProperty("ad").GetString() != "Test Şirketi"

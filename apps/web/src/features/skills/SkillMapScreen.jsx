@@ -15,6 +15,8 @@ export function SkillMapScreen({ runAuthenticated }) {
   const [error, setError] = useState('');
   const [busy, setBusy] = useState('');
   const [catalogOpen, setCatalogOpen] = useState(false);
+  const [suggestionToAdd, setSuggestionToAdd] = useState(null);
+  const [suggestionCategoryId, setSuggestionCategoryId] = useState('');
   const [view, setView] = useState('all');
   const requestVersion = useRef(0);
   const mutationInProgress = useRef(false);
@@ -37,6 +39,12 @@ export function SkillMapScreen({ runAuthenticated }) {
   useEffect(() => { load(); }, []);
 
   async function perform(skill, action) {
+    if (action === 'add' && skill.unmatched) {
+      setSuggestionToAdd(skill);
+      setSuggestionCategoryId('');
+      setError('');
+      return;
+    }
     if (mutationInProgress.current) {
       return;
     }
@@ -47,7 +55,6 @@ export function SkillMapScreen({ runAuthenticated }) {
       await runAuthenticated((token) => {
         if (action === 'dismiss') return skillsApi.dismiss(token, skill.unmatched ? { name: skill.name } : { skillId: skill.id });
         if (action === 'remove') return skillsApi.remove(token, skill.selectionId);
-        if (skill.unmatched) return skillsApi.addCustom(token, skill.name);
         return skillsApi.add(token, skill.id);
       });
       await load();
@@ -60,7 +67,7 @@ export function SkillMapScreen({ runAuthenticated }) {
     }
   }
 
-  async function addNamedSkill(name) {
+  async function addNamedSkill(name, categoryId) {
     if (mutationInProgress.current) {
       return false;
     }
@@ -68,12 +75,16 @@ export function SkillMapScreen({ runAuthenticated }) {
       setError('Beceri adı 1 ile 80 karakter arasında olmalıdır.');
       return false;
     }
+    if (!categoryId) {
+      setError('Beceri alanını seç.');
+      return false;
+    }
 
     mutationInProgress.current = true;
     setBusy('custom');
     try {
       setError('');
-      await runAuthenticated((token) => skillsApi.addCustom(token, name));
+      await runAuthenticated((token) => skillsApi.addCustom(token, name, categoryId));
       await load();
       return true;
     } catch (failure) {
@@ -82,6 +93,13 @@ export function SkillMapScreen({ runAuthenticated }) {
     } finally {
       mutationInProgress.current = false;
       setBusy('');
+    }
+  }
+
+  async function confirmSuggestion() {
+    if (await addNamedSkill(suggestionToAdd.name, suggestionCategoryId)) {
+      setSuggestionToAdd(null);
+      setSuggestionCategoryId('');
     }
   }
 
@@ -116,5 +134,6 @@ export function SkillMapScreen({ runAuthenticated }) {
     </>}
 
     <SkillCatalogModal isOpen={catalogOpen} onClose={() => setCatalogOpen(false)} categories={map?.categories || []} skills={map?.skills || []} busy={busy} error={error} onAdd={(skill) => perform(skill, 'add')} onAddCustom={addNamedSkill} />
+    {suggestionToAdd && <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#172640]/65 px-4" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setSuggestionToAdd(null); }}><div role="dialog" aria-modal="true" aria-labelledby="skill-category-title" className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl"><h2 id="skill-category-title" className="text-xl font-bold text-[#243B64]">{suggestionToAdd.name} hangi alana ait?</h2><p className="mt-2 text-sm text-[#667085]">CV’de bulunan bu beceriyi ağacında doğru dalda göstermek için alanını seç.</p>{error && <p role="alert" className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}<select aria-label="Beceri alanı" value={suggestionCategoryId} onChange={(event) => setSuggestionCategoryId(event.target.value)} className="mt-5 w-full rounded-xl border border-[#D8E0EA] bg-white px-4 py-3"><option value="">Alan seç</option>{map.categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</select><div className="mt-5 flex justify-end gap-2"><button type="button" onClick={() => setSuggestionToAdd(null)} className="rounded-lg border border-[#D8E0EA] px-4 py-2 text-sm font-semibold">Vazgeç</button><button type="button" onClick={confirmSuggestion} disabled={!suggestionCategoryId || Boolean(busy)} className="rounded-lg bg-[#243B64] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">Becerilerime ekle</button></div></div></div>}
   </main>;
 }

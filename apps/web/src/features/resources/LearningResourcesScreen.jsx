@@ -7,6 +7,19 @@ import { customCareerApi } from './customCareerApi.js';
 const types = { dokumantasyon: 'Dokümantasyon', kurs: 'Kurs', makale: 'Makale', video: 'Video', uygulama: 'Uygulama' };
 const levels = { baslangic: 'Başlangıç', orta: 'Orta', ileri: 'İleri' };
 
+function isCustomTarget(roadmap) {
+  if (roadmap.isCustomRole) {
+    return true;
+  }
+  const target = roadmap.targetTitle?.trim();
+  if (!target) {
+    return false;
+  }
+
+  const normalizedTarget = target.replaceAll('-', ' ').replace(/developer/gi, 'Geliştirici').toLocaleLowerCase('tr-TR');
+  return !roadmap.roles.some((role) => role.name.replaceAll('-', ' ').toLocaleLowerCase('tr-TR') === normalizedTarget);
+}
+
 function ResourceList({ items, exercise }) {
   return <div className="mt-5 space-y-3">
     {items.map((item) => <a key={item.id} href={item.url} target="_blank" rel="noopener noreferrer" className="group flex items-start gap-3 rounded-xl border border-[#E2E9F0] p-4 transition hover:border-[#8FC8BC] hover:bg-[#F8FCFB]"><BookOpen size={20} className="mt-0.5 shrink-0 text-[#2E9485]" /><div className="min-w-0 flex-1"><p className="font-semibold text-[#263D63] group-hover:text-[#237D71]">{item.title}</p><p className="mt-1 text-xs text-[#738299]">{item.provider} · {types[item.type] ?? item.type} · {levels[item.level] ?? item.level} · {item.language?.toUpperCase()} · {item.paid ? 'Ücretli' : 'Ücretsiz'}</p></div><ArrowUpRight size={17} className="shrink-0 text-[#7890AB]" /></a>)}
@@ -23,7 +36,7 @@ export function LearningResourcesScreen({ runAuthenticated, onOpenRoadmap }) {
   const [resources, setResources] = useState([]);
   const [career, setCareer] = useState(null);
   const [roleId, setRoleId] = useState(null);
-  const [mode, setMode] = useState('catalog');
+  const [mode, setMode] = useState(null);
   const [customTitle, setCustomTitle] = useState('');
   const [selectedIndexes, setSelectedIndexes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -42,6 +55,9 @@ export function LearningResourcesScreen({ runAuthenticated, onOpenRoadmap }) {
           setRoadmap(nextRoadmap);
           setResources(nextResources);
           setCareer(latestCareer);
+          const customTarget = isCustomTarget(nextRoadmap);
+          setMode((current) => current ?? (customTarget ? 'custom' : 'catalog'));
+          setCustomTitle((current) => current || (customTarget ? nextRoadmap.targetTitle : ''));
           if (latestCareer?.status === 'draft') {
             setSelectedIndexes(latestCareer.suggestedSkills.map((_, index) => index));
           }
@@ -106,7 +122,7 @@ export function LearningResourcesScreen({ runAuthenticated, onOpenRoadmap }) {
     {error && <div role="alert" className="mb-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">{error} <button type="button" onClick={() => setRetry((value) => value + 1)} className="ml-2 font-semibold underline">Tekrar dene</button></div>}
     {loading && <div className="rounded-2xl border border-[#E0E6EE] bg-white p-8 text-[#66758D]">Kaynaklar yükleniyor...</div>}
     {!loading && roadmap && <>
-      <section className="rounded-[28px] bg-[#233B65] p-6 text-white shadow-lg sm:p-8"><div className="flex items-center gap-2 text-sm font-semibold text-[#96DACE]"><BookOpen size={19} /> KİŞİSEL ÖĞRENME ROTASI</div><div className="mt-5 flex flex-wrap items-end justify-between gap-5"><div className="w-full max-w-lg"><label htmlFor="resources-role" className="block text-sm text-[#C9D4E7]">Hedef meslek</label><select id="resources-role" value={mode === 'custom' ? 'custom' : roadmap.roleId ?? ''} onChange={(event) => { if (event.target.value === 'custom') { setMode('custom'); setCustomTitle(career?.title ?? ''); } else { setMode('catalog'); setRoleId(event.target.value); } }} className="mt-2 w-full rounded-xl bg-white px-4 py-3 font-semibold text-[#243B64]"><option value="" disabled>Meslek seç</option>{roadmap.roles.map((role) => <option key={role.id} value={role.id}>{role.name}</option>)}<option value="custom">Listede olmayan mesleğim…</option></select></div><p className="text-sm text-[#CDD9E9]">{mode === 'catalog' ? `${groups.filter(({ skill }) => !skill.selected).length} öğrenilecek beceri · ${resourceCount} kaynak` : 'Mesleğine özel becerileri birlikte belirle'}</p></div></section>
+      <section className="rounded-[28px] bg-[#233B65] p-6 text-white shadow-lg sm:p-8"><div className="flex items-center gap-2 text-sm font-semibold text-[#96DACE]"><BookOpen size={19} /> KİŞİSEL ÖĞRENME ROTASI</div><div className="mt-5 flex flex-wrap items-end justify-between gap-5"><div className="w-full max-w-lg"><label htmlFor="resources-role" className="block text-sm text-[#C9D4E7]">Hedef meslek</label><select id="resources-role" value={mode === 'custom' ? 'custom' : roadmap.roleId ?? ''} onChange={(event) => { if (event.target.value === 'custom') { setMode('custom'); setCustomTitle(roadmap.targetTitle ?? career?.title ?? ''); } else { setMode('catalog'); setRoleId(event.target.value); } }} className="mt-2 w-full rounded-xl bg-white px-4 py-3 font-semibold text-[#243B64]"><option value="" disabled>Meslek seç</option>{roadmap.roles.map((role) => <option key={role.id} value={role.id}>{role.name}</option>)}<option value="custom">{mode === 'custom' && customTitle ? customTitle : 'Listede olmayan mesleğim…'}</option></select></div><p className="text-sm text-[#CDD9E9]">{mode === 'catalog' ? `${groups.filter(({ skill }) => !skill.selected).length} öğrenilecek beceri · ${resourceCount} kaynak` : 'Mesleğine özel becerileri birlikte belirle'}</p></div></section>
       {mode === 'catalog' && <><div className="mt-7 grid gap-5 lg:grid-cols-2">{groups.map(({ skill, items }) => <CatalogGroup key={skill.id} skill={skill} items={items} />)}</div>{groups.length === 0 && <div className="mt-7 rounded-2xl border border-[#E0E6EE] bg-white p-8 text-[#65748B]">Bu meslek için beceriler henüz tanımlanmadı. Listede olmayan meslek seçeneğini kullanabilirsin.</div>}</>}
       {mode === 'custom' && <><section className="mt-7 rounded-[24px] border border-[#E0E6EE] bg-white p-5 shadow-sm sm:p-7"><div className="flex items-center gap-2"><Sparkles size={21} className="text-[#2E9485]" /><h2 className="text-xl font-bold text-[#243B64]">Kendi mesleğim</h2></div><p className="mt-2 max-w-2xl text-sm text-[#65748B]">Mesleğini yaz; yapay zekâ beceri ve küçük çalışma önerileri hazırlasın. Önerileri sen seçtikten sonra varsa katalogdaki incelenmiş kaynaklar gösterilir.</p><div className="mt-5 flex flex-col gap-3 sm:flex-row"><input aria-label="Meslek adı" value={customTitle} onChange={(event) => setCustomTitle(event.target.value)} maxLength={100} placeholder="Örneğin: Restoratör" className="min-w-0 flex-1 rounded-xl border border-[#D9E1EB] px-4 py-3 text-[#243B64]" /><button type="button" disabled={working || customTitle.trim().length < 3} onClick={generateDraft} className="rounded-xl bg-[#243B64] px-5 py-3 font-semibold text-white disabled:opacity-50">{working ? 'Hazırlanıyor…' : showCareer ? 'Yeni taslak hazırla' : 'Beceri taslağı oluştur'}</button></div><p className="mt-3 text-xs text-[#8593A6]">Günlük en fazla 2 taslak oluşturulabilir. Meslek adı ve kaydettiğin beceriler öneri için Gemini’ye gönderilir.</p>{career && !showCareer && <button type="button" onClick={() => setCustomTitle(career.title)} className="mt-3 text-sm font-semibold text-[#2E9485] underline">Kaydettiğim “{career.title}” taslağını aç</button>}</section>
         {showCareer && career.status === 'draft' && <section className="mt-6 rounded-[24px] border border-[#D8E8E3] bg-[#F3FAF8] p-5 sm:p-7"><h2 className="text-xl font-bold text-[#243B64]">Becerileri onayla</h2><p className="mt-2 text-sm text-[#65748B]">Bunlar yapay zekâ önerisidir. Mesleğine uygun gördüklerini seç; kaydettikten sonra öğrenme alanında görünür.</p><div className="mt-5 grid gap-3 md:grid-cols-2">{career.suggestedSkills.map((skill, index) => <label key={`${skill.name}-${index}`} className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#DCE9E5] bg-white p-4"><input type="checkbox" checked={selectedIndexes.includes(index)} onChange={() => changeSelection(index)} className="mt-1 accent-[#2E9485]" /><span><strong className="text-[#243B64]">{skill.name}</strong><span className="mt-1 block text-sm text-[#65748B]">{skill.reason}</span></span></label>)}</div><button type="button" disabled={working || selectedIndexes.length === 0} onClick={confirmSkills} className="mt-5 rounded-xl bg-[#2E9485] px-5 py-3 font-semibold text-white disabled:opacity-50">Seçtiklerimi kaydet</button></section>}

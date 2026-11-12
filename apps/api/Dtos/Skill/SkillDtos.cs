@@ -41,6 +41,7 @@ public class SelectSkillRequest
 public class CustomSkillRequest
 {
     public string? Name { get; set; }
+    public Guid? CategoryId { get; set; }
 }
 
 public class DismissSkillRequest

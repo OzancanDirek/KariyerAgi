@@ -7,8 +7,8 @@ export const skillsApi = {
   add(token, skillId) {
     return request('skills', '', { method: 'POST', token, body: { skillId } });
   },
-  addCustom(token, name) {
-    return request('skills', 'custom', { method: 'POST', token, body: { name } });
+  addCustom(token, name, categoryId) {
+    return request('skills', 'custom', { method: 'POST', token, body: { name, categoryId } });
   },
   dismiss(token, skill) {
     return request('skills', 'dismiss', { method: 'POST', token, body: skill });

@@ -24,7 +24,7 @@ public static class SkillMapper
                 Name = row.Name,
                 SortOrder = row.SortOrder
             }).ToList(),
-            Skills = data.Skills.Select(row =>
+            Skills = data.Skills.Where(row => !activeCustomNames.Contains(row.Name ?? row.EnglishName ?? string.Empty)).Select(row =>
                 {
                     activeCatalog.TryGetValue(row.Id, out var selection);
                     var cvMatch = suggested.Contains(row.Name ?? "") || suggested.Contains(row.EnglishName ?? "") || (aliases.TryGetValue(row.Id, out var names) && names.Overlaps(suggested));
@@ -41,6 +41,7 @@ public static class SkillMapper
                     .Select(row => new SkillResponse
                     {
                         Id = row.Id,
+                        CategoryId = row.CategoryId,
                         Name = row.CustomName!,
                         Selected = true,
                         Custom = true,
