@@ -118,7 +118,7 @@ public class JobMatchService
             throw new ApiException(ErrorCodes.JobMatchNoCv);
         }
         var score = JobMatchScoreCalculator.Calculate(evidence);
-        var saved = await repository.SaveMatchAsync(applicationId, criteria.Version, score, evidence, user.AccessToken, currentUser.CancellationToken);
+        var saved = await repository.SaveMatchAsync(applicationId, criteria.Version, score, evidence, currentUser.CancellationToken);
         return saved is null ? throw new ApiException(ErrorCodes.JobMatchFailed) : ToResponse(saved);
     }
 

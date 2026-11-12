@@ -53,6 +53,7 @@ public static class ErrorCodes
     public static readonly ErrorDefinition JobMatchNoCriteria = new("JOB-006", "Önce ilan değerlendirme ölçütlerini kaydedin.", 409);
     public static readonly ErrorDefinition JobMatchNoCv = new("JOB-007", "Bu başvuruda incelenebilir bir PDF CV bulunmuyor.", 409);
     public static readonly ErrorDefinition JobMatchFailed = new("JOB-008", "İlan uyumu değerlendirilemedi. Lütfen tekrar deneyin.", 502);
+    public static readonly ErrorDefinition JobMatchServerNotConfigured = new("JOB-009", "İlan uyumu sunucu ayarı eksik.", 503);
     public static readonly ErrorDefinition ApplicationAlreadyExists = new("APP-001", "Bu ilana etkin bir başvurunuz zaten var.", 409);
     public static readonly ErrorDefinition ApplicationNotFound = new("APP-002", "Başvuru bulunamadı.", 404);
     public static readonly ErrorDefinition ApplicationOperationFailed = new("APP-003", "Başvuru işlemi tamamlanamadı.", 502);

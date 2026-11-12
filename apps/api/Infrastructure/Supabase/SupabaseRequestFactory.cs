@@ -23,7 +23,25 @@ public class SupabaseRequestFactory
             throw new ApiException(ErrorCodes.AuthConfigurationMissing);
         }
 
-        var request = new HttpRequestMessage(method, $"{url!.TrimEnd('/')}/{endpoint}");
+        return CreateRequest(method, endpoint, body, accessToken, url!, key!);
+    }
+
+    public HttpRequestMessage CreateServerRequest(HttpMethod method, string endpoint, object? body)
+    {
+        var url = configuration["Supabase:Url"];
+        var key = configuration["Supabase:SecretKey"];
+        if (!Uri.TryCreate(url, UriKind.Absolute, out var baseUri) || baseUri.Scheme != Uri.UriSchemeHttps
+            || key is null || StringUtils.IsBlank(key) || !key.StartsWith("sb_secret_", StringComparison.Ordinal))
+        {
+            throw new ApiException(ErrorCodes.JobMatchServerNotConfigured);
+        }
+
+        return CreateRequest(method, endpoint, body, null, url!, key!);
+    }
+
+    private static HttpRequestMessage CreateRequest(HttpMethod method, string endpoint, object? body, string? accessToken, string url, string key)
+    {
+        var request = new HttpRequestMessage(method, $"{url.TrimEnd('/')}/{endpoint}");
         request.Headers.Add("apikey", key);
         if (accessToken is not null)
         {

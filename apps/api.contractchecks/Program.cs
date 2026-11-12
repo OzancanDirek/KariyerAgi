@@ -46,6 +46,7 @@ CvScoreChecks.Run();
 RoadmapPlanChecks.Run();
 RecruitmentChecks.Run();
 JobMatchChecks.Run();
+SupabaseServiceRoleChecks.Run();
 SkillCategoryChecks.Run();
 
 void Check<TEntity>(string databaseJson, Func<TEntity, object> map, Dictionary<string, string> expected)

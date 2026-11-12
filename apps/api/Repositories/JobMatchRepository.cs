@@ -36,9 +36,9 @@ public class JobMatchRepository
         return SupabaseResponseReader.ReadList<ApplicationMatchRow>(result.RootElement);
     }
 
-    public async Task<ApplicationMatchRow?> SaveMatchAsync(Guid applicationId, int version, int score, List<MatchEvidence> evidence, string token, CancellationToken cancellationToken)
+    public async Task<ApplicationMatchRow?> SaveMatchAsync(Guid applicationId, int version, int score, List<MatchEvidence> evidence, CancellationToken cancellationToken)
     {
-        using var result = await client.SendAsync(HttpMethod.Post, "rpc/is_basvurusu_eslestirmesini_kaydet", new { p_basvuru_id = applicationId, p_olcut_surumu = version, p_puan = score, p_dayanaklar = evidence }, token, cancellationToken);
+        using var result = await client.SendServerRequestAsync(HttpMethod.Post, "rpc/is_basvurusu_eslestirmesini_kaydet", new { p_basvuru_id = applicationId, p_olcut_surumu = version, p_puan = score, p_dayanaklar = evidence }, cancellationToken);
         return SupabaseResponseReader.ReadSingle<ApplicationMatchRow>(result.RootElement);
     }
 }

@@ -1,6 +1,6 @@
 # CareerPath API
 
-ASP.NET Core 8 backend. Kimlik doğrulama Supabase Auth üzerinden, profil okuma ve güncelleme Supabase REST üzerinden kullanıcının kendi JWT'siyle yapılır. `service_role` anahtarı kullanılmaz.
+ASP.NET Core 8 backend. Kimlik doğrulama Supabase Auth üzerinden, profil okuma ve güncelleme Supabase REST üzerinden kullanıcının kendi JWT'siyle yapılır. İlan eşleşmesi sonucunu yazmak için yalnızca sunucuda saklanan `Supabase:SecretKey` (`sb_secret_...`) kullanılır; istemcilere verilmez. Bu anahtar yoksa eşleşme kaydı `JOB-009` ile durur. Yerel ortamda `dotnet user-secrets`, canlı ortamda sunucu gizli ayarları kullanılmalıdır.
 
 ## Yapı
 

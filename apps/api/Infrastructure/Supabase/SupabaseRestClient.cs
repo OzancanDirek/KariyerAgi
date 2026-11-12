@@ -18,6 +18,17 @@ public class SupabaseRestClient
     public async Task<JsonDocument> SendAsync(HttpMethod method, string path, object? body, string accessToken, CancellationToken cancellationToken, bool returnRepresentation = true, IReadOnlyDictionary<string, ErrorDefinition>? databaseErrors = null)
     {
         using var request = requestFactory.Create(method, $"rest/v1/{path}", body, accessToken);
+        return await SendRequestAsync(request, method, cancellationToken, returnRepresentation, databaseErrors);
+    }
+
+    public async Task<JsonDocument> SendServerRequestAsync(HttpMethod method, string path, object? body, CancellationToken cancellationToken)
+    {
+        using var request = requestFactory.CreateServerRequest(method, $"rest/v1/{path}", body);
+        return await SendRequestAsync(request, method, cancellationToken, true, null);
+    }
+
+    private async Task<JsonDocument> SendRequestAsync(HttpRequestMessage request, HttpMethod method, CancellationToken cancellationToken, bool returnRepresentation, IReadOnlyDictionary<string, ErrorDefinition>? databaseErrors)
+    {
         if (method == HttpMethod.Patch || method == HttpMethod.Post || method == HttpMethod.Delete)
         {
             request.Headers.TryAddWithoutValidation("Prefer", returnRepresentation ? "return=representation" : "return=minimal");
