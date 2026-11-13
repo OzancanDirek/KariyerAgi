@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import { authenticationApi } from '../api/authenticationApi.js';
 import { sessionApi } from '../api/sessionApi.js';
 import { clearSavedSession, getSavedSession, isRemembered, saveSession } from '../storage/sessionStorage.js';
+import { takeEmailConfirmationSession } from '../authRedirect.js';
+
+let emailConfirmationSession = takeEmailConfirmationSession();
 
 export function useAuthentication() {
   const [session, setSession] = useState(getSavedSession);
@@ -10,8 +13,31 @@ export function useAuthentication() {
   useEffect(() => {
     let active = true;
     const saved = getSavedSession();
+    const confirmed = emailConfirmationSession;
+    emailConfirmationSession = null;
 
     async function restoreSession() {
+      if (confirmed) {
+        try {
+          const user = await sessionApi.currentUser(confirmed.accessToken);
+          if (active) {
+            const next = { ...confirmed, user };
+            saveSession(next, true);
+            setSession(next);
+          }
+        } catch {
+          if (active) {
+            clearSavedSession();
+            setSession(null);
+          }
+        } finally {
+          if (active) {
+            setReady(true);
+          }
+        }
+        return;
+      }
+
       if (!saved) {
         setReady(true);
         return;
