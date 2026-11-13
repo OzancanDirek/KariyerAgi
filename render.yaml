@@ -18,4 +18,16 @@ services:
       - key: Gemini__ApiKey
         sync: false
       - key: Web__Origin
-        value: http://localhost:3000
+        sync: false
+  - type: web
+    name: careerpath-web
+    runtime: static
+    buildCommand: npm ci --prefix apps/web && npm run build --prefix apps/web
+    staticPublishPath: ./apps/web/dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://careerpath-api-5k1f.onrender.com
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

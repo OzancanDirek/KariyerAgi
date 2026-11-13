@@ -10,6 +10,12 @@ React ve JSX tabanlı web uygulaması. API projesi `../api` klasöründedir.
 
 Tarayıcı adresi: `http://localhost:3000`. Üretim derlemesi: `npm run build`.
 
+## Yayın
+
+Kökteki `render.yaml`, web uygulamasını Render statik sitesi olarak kurar. `VITE_API_URL` mevcut API yayın adresine ayarlanmıştır. API adresi değişirse bu değeri güncelleyin. Bu değer derleme sırasında web dosyalarına yazılır; gizli anahtar girmeyin.
+
+API hizmetinin `Web__Origin` değerine web sitesinin Render'da oluşan tam HTTPS kök adresini girin (sonunda `/` olmadan). Web adresi değişirse bu değeri de güncelleyin. Ardından Supabase Authentication → URL Configuration altında Site URL ve Redirect URLs değerlerini web adresiyle uyumlu hale getirin; mobilin `careerpath://auth-callback` yönlendirmesini koruyun. Canlı alan adları kesinleşmeden `localhost` Site URL değerini kaldırmayın.
+
 ## Yapı
 
 - `src/App.jsx`: oturum durumuna göre ekran seçimi.
