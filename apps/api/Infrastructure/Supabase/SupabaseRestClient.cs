@@ -18,16 +18,16 @@ public class SupabaseRestClient
     public async Task<JsonDocument> SendAsync(HttpMethod method, string path, object? body, string accessToken, CancellationToken cancellationToken, bool returnRepresentation = true, IReadOnlyDictionary<string, ErrorDefinition>? databaseErrors = null)
     {
         using var request = requestFactory.Create(method, $"rest/v1/{path}", body, accessToken);
-        return await SendRequestAsync(request, method, cancellationToken, returnRepresentation, databaseErrors);
+        return await SendRequestAsync(request, method, cancellationToken, returnRepresentation, databaseErrors, false);
     }
 
     public async Task<JsonDocument> SendServerRequestAsync(HttpMethod method, string path, object? body, CancellationToken cancellationToken)
     {
         using var request = requestFactory.CreateServerRequest(method, $"rest/v1/{path}", body);
-        return await SendRequestAsync(request, method, cancellationToken, true, null);
+        return await SendRequestAsync(request, method, cancellationToken, true, null, true);
     }
 
-    private async Task<JsonDocument> SendRequestAsync(HttpRequestMessage request, HttpMethod method, CancellationToken cancellationToken, bool returnRepresentation, IReadOnlyDictionary<string, ErrorDefinition>? databaseErrors)
+    private async Task<JsonDocument> SendRequestAsync(HttpRequestMessage request, HttpMethod method, CancellationToken cancellationToken, bool returnRepresentation, IReadOnlyDictionary<string, ErrorDefinition>? databaseErrors, bool serverRequest)
     {
         if (method == HttpMethod.Patch || method == HttpMethod.Post || method == HttpMethod.Delete)
         {
@@ -68,6 +68,13 @@ public class SupabaseRestClient
                     catch (JsonException)
                     {
                     }
+                }
+
+                if (serverRequest)
+                {
+                    throw new ApiException(response.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden
+                        ? ErrorCodes.JobMatchServerNotConfigured
+                        : ErrorCodes.JobMatchFailed);
                 }
 
                 var error = response.StatusCode switch

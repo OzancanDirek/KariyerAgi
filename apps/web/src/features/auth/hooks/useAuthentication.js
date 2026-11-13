@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { authenticationApi } from '../api/authenticationApi.js';
 import { sessionApi } from '../api/sessionApi.js';
 import { clearSavedSession, getSavedSession, isRemembered, saveSession } from '../storage/sessionStorage.js';
@@ -11,14 +11,14 @@ export function useAuthentication() {
   const [ready, setReady] = useState(false);
   const refreshInFlight = useRef(null);
 
-  function clearInvalidSession(error) {
+  const clearInvalidSession = useCallback((error) => {
     if (error.status === 400 || error.status === 401) {
       clearSavedSession();
       setSession(null);
     }
-  }
+  }, []);
 
-  function refreshSession(saved) {
+  const refreshSession = useCallback((saved) => {
     if (!refreshInFlight.current) {
       refreshInFlight.current = (async () => {
         const refreshed = await sessionApi.refresh(saved.refreshToken);
@@ -32,7 +32,7 @@ export function useAuthentication() {
       });
     }
     return refreshInFlight.current;
-  }
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -74,12 +74,9 @@ export function useAuthentication() {
       } catch (error) {
         try {
           if (error.status === 401) {
-            const refreshed = await sessionApi.refresh(saved.refreshToken);
-            const user = await sessionApi.currentUser(refreshed.accessToken);
+            const refreshed = await refreshSession(saved);
             if (active) {
-              const next = { ...refreshed, user };
-              saveSession(next, isRemembered());
-              setSession(next);
+              setSession(refreshed);
             }
           }
         } catch (refreshError) {
@@ -97,7 +94,7 @@ export function useAuthentication() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [clearInvalidSession, refreshSession]);
 
   async function login(credentials, rememberMe) {
     const result = await authenticationApi.login(credentials);
@@ -118,7 +115,7 @@ export function useAuthentication() {
     return result;
   }
 
-  async function runAuthenticated(action) {
+  const runAuthenticated = useCallback(async (action) => {
     const saved = getSavedSession();
     if (!saved) {
       throw new Error('Oturum bulunamadı. Yeniden giriş yapın.');
@@ -145,7 +142,7 @@ export function useAuthentication() {
       }
       return action(refreshed.accessToken);
     }
-  }
+  }, [clearInvalidSession, refreshSession]);
 
   async function logout() {
     try {
