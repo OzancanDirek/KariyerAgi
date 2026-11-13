@@ -14,7 +14,7 @@ Tarayıcı adresi: `http://localhost:3000`. Üretim derlemesi: `npm run build`.
 
 Kökteki `render.yaml`, web uygulamasını Render statik sitesi olarak kurar. `VITE_API_URL` mevcut API yayın adresine ayarlanmıştır. API adresi değişirse bu değeri güncelleyin. Bu değer derleme sırasında web dosyalarına yazılır; gizli anahtar girmeyin.
 
-API hizmetinin `Web__Origin` değerine web sitesinin Render'da oluşan tam HTTPS kök adresini girin (sonunda `/` olmadan). Web adresi değişirse bu değeri de güncelleyin. Ardından Supabase Authentication → URL Configuration altında Site URL ve Redirect URLs değerlerini web adresiyle uyumlu hale getirin; mobilin `careerpath://auth-callback` yönlendirmesini koruyun. Canlı alan adları kesinleşmeden `localhost` Site URL değerini kaldırmayın.
+API hizmetinin `Web__Origin` değeri `https://careerpath-web.onrender.com` adresidir (sonunda `/` yok). Supabase Authentication → URL Configuration altında Site URL aynı canlı adrese ayarlıdır. Redirect URLs listesinde canlı adres, `http://localhost:3000` ve mobilin `careerpath://auth-callback` adresi bulunur. Özel alan adı bağlandığında API, Supabase ve Render ayarlarını birlikte güncelleyin.
 
 ## Yapı
 
