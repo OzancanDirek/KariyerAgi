@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { authenticationApi } from '../api/authenticationApi.js';
 import { sessionApi } from '../api/sessionApi.js';
 import { clearSavedSession, getSavedSession, isRemembered, saveSession } from '../storage/sessionStorage.js';
@@ -9,6 +9,30 @@ let emailConfirmationSession = takeEmailConfirmationSession();
 export function useAuthentication() {
   const [session, setSession] = useState(getSavedSession);
   const [ready, setReady] = useState(false);
+  const refreshInFlight = useRef(null);
+
+  function clearInvalidSession(error) {
+    if (error.status === 400 || error.status === 401) {
+      clearSavedSession();
+      setSession(null);
+    }
+  }
+
+  function refreshSession(saved) {
+    if (!refreshInFlight.current) {
+      refreshInFlight.current = (async () => {
+        const refreshed = await sessionApi.refresh(saved.refreshToken);
+        const user = await sessionApi.currentUser(refreshed.accessToken);
+        const next = { ...refreshed, user };
+        saveSession(next, isRemembered());
+        setSession(next);
+        return next;
+      })().finally(() => {
+        refreshInFlight.current = null;
+      });
+    }
+    return refreshInFlight.current;
+  }
 
   useEffect(() => {
     let active = true;
@@ -47,19 +71,20 @@ export function useAuthentication() {
         if (active) {
           setSession({ ...saved, user });
         }
-      } catch {
+      } catch (error) {
         try {
-          const refreshed = await sessionApi.refresh(saved.refreshToken);
-          if (active) {
+          if (error.status === 401) {
+            const refreshed = await sessionApi.refresh(saved.refreshToken);
             const user = await sessionApi.currentUser(refreshed.accessToken);
-            const next = { ...refreshed, user };
-            saveSession(next, isRemembered());
-            setSession(next);
+            if (active) {
+              const next = { ...refreshed, user };
+              saveSession(next, isRemembered());
+              setSession(next);
+            }
           }
-        } catch {
+        } catch (refreshError) {
           if (active) {
-            clearSavedSession();
-            setSession(null);
+            clearInvalidSession(refreshError);
           }
         }
       } finally {
@@ -106,18 +131,19 @@ export function useAuthentication() {
         throw error;
       }
 
+      const latest = getSavedSession();
+      if (latest?.accessToken && latest.accessToken !== saved.accessToken) {
+        return action(latest.accessToken);
+      }
+
+      let refreshed;
       try {
-        const refreshed = await sessionApi.refresh(saved.refreshToken);
-        const user = await sessionApi.currentUser(refreshed.accessToken);
-        const next = { ...refreshed, user };
-        saveSession(next, isRemembered());
-        setSession(next);
-        return await action(next.accessToken);
+        refreshed = await refreshSession(saved);
       } catch (refreshError) {
-        clearSavedSession();
-        setSession(null);
+        clearInvalidSession(refreshError);
         throw refreshError;
       }
+      return action(refreshed.accessToken);
     }
   }
 
