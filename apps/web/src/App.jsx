@@ -16,12 +16,13 @@ import { LearningResourcesScreen } from './features/resources/LearningResourcesS
 import { CompanyWorkspace } from './features/marketplace/CompanyWorkspace.jsx';
 import { CompanyReviewScreen } from './features/marketplace/CompanyReviewScreen.jsx';
 import { EmployerJobsScreen } from './features/marketplace/EmployerJobsScreen.jsx';
+import { EmployerCandidatesScreen } from './features/marketplace/EmployerCandidatesScreen.jsx';
 import { CandidateJobsScreen } from './features/marketplace/CandidateJobsScreen.jsx';
 
 const signedInScreens = new Set([
   'dashboard', 'profile-overview', 'profile-edit', 'career-goals',
   'cv-analysis', 'cv-builder', 'skill-map', 'roadmap', 'learning-resources', 'records-experiences',
-  'records-educations', 'records-projects', 'records-cv', 'records-certificates', 'company', 'employer-jobs', 'company-review', 'candidate-jobs'
+  'records-educations', 'records-projects', 'records-cv', 'records-certificates', 'company', 'employer-jobs', 'employer-candidates', 'company-review', 'candidate-jobs'
 ]);
 
 function screenFromUrl() {
@@ -83,12 +84,14 @@ export default function App() {
     let page;
     const role = session.user?.role;
     const activeScreen = role === 'isveren'
-      ? signedInScreen === 'employer-jobs' ? 'employer-jobs' : 'company'
+      ? ['employer-jobs', 'employer-candidates'].includes(signedInScreen) ? signedInScreen : 'company'
       : role === 'yonetici' ? 'company-review' : signedInScreen;
     if (role === 'isveren') {
       page = activeScreen === 'employer-jobs'
-        ? <EmployerJobsScreen runAuthenticated={runAuthenticated} />
-        : <CompanyWorkspace runAuthenticated={runAuthenticated} />;
+        ? <EmployerJobsScreen runAuthenticated={runAuthenticated} onOpenCandidates={(jobId) => { window.location.hash = `/employer-candidates?job=${encodeURIComponent(jobId)}`; setSignedInScreen('employer-candidates'); }} />
+        : activeScreen === 'employer-candidates'
+          ? <EmployerCandidatesScreen runAuthenticated={runAuthenticated} />
+          : <CompanyWorkspace runAuthenticated={runAuthenticated} />;
     } else if (role === 'yonetici') {
       page = <CompanyReviewScreen runAuthenticated={runAuthenticated} />;
     } else if (signedInScreen === 'profile-edit') {
