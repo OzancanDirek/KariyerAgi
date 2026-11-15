@@ -28,15 +28,15 @@ function formatDate(value) {
   return new Intl.DateTimeFormat('tr-TR', { dateStyle: 'medium' }).format(new Date(value));
 }
 
-function CandidateRow({ application, match, saving, onStatusChange, onInspect }) {
+function CandidateRow({ application, match, matchesLoading, saving, onStatusChange, onInspect }) {
   const name = application.candidateName?.trim() || 'Aday';
   const matched = match?.evidence?.filter((item) => item.verdict === 'matched') ?? [];
   const options = nextStatuses[application.status] ?? [];
   return <tr className="border-t border-[#E7ECF2] align-top transition-colors hover:bg-[#FAFCFE]">
     <td className="px-5 py-5"><div className="flex min-w-48 items-start gap-3"><span aria-hidden="true" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#243B64] text-sm font-bold text-white">{name.charAt(0).toLocaleUpperCase('tr-TR')}</span><div><p className="font-bold text-[#243B64]">{name}</p><p className="mt-1 text-xs text-[#7B8AA1]">{application.cvFileId ? 'CV eklendi' : 'CV eklenmedi'}</p></div></div></td>
     <td className="px-5 py-5"><p className="min-w-40 font-semibold text-[#29384F]">{application.jobTitle}</p><p className="mt-1 text-xs text-[#8795A9]">{formatDate(application.createdAt)}</p></td>
-    <td className="px-5 py-5">{match ? <div><span className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-sm font-bold ${match.score >= 70 ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-blue-200 bg-blue-50 text-blue-700'}`}><Sparkles size={14} /> %{Math.min(100, Math.max(0, Number(match.score) || 0))}</span><p className="mt-1 text-[11px] text-[#8290A3]">Öneri puanı</p></div> : <span className="text-xs text-[#8290A3]">{application.cvFileId ? 'Değerlendirilmedi' : 'CV yok'}</span>}</td>
-    <td className="px-5 py-5">{matched.length ? <div className="flex max-w-64 flex-wrap gap-1.5">{matched.slice(0, 2).map((item, index) => <span key={`${item.title}-${index}`} className="max-w-48 truncate rounded-md border border-emerald-100 bg-emerald-50 px-2 py-1 text-xs font-medium text-emerald-800" title={item.title}>{item.title}</span>)}{matched.length > 2 && <span className="px-1 py-1 text-xs text-[#718096]">+{matched.length - 2}</span>}</div> : <span className="text-xs text-[#8290A3]">{match ? 'Tam eşleşen ölçüt yok' : 'Değerlendirme bekleniyor'}</span>}</td>
+    <td className="px-5 py-5">{match ? <div><span className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-sm font-bold ${match.score >= 70 ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-blue-200 bg-blue-50 text-blue-700'}`}><Sparkles size={14} /> %{Math.min(100, Math.max(0, Number(match.score) || 0))}</span><p className="mt-1 text-[11px] text-[#8290A3]">Öneri puanı</p></div> : <span className="text-xs text-[#8290A3]">{application.cvFileId ? matchesLoading ? 'Uyum yükleniyor...' : 'Değerlendirilmedi' : 'CV yok'}</span>}</td>
+    <td className="px-5 py-5">{matched.length ? <div className="flex max-w-64 flex-wrap gap-1.5">{matched.slice(0, 2).map((item, index) => <span key={`${item.title}-${index}`} className="max-w-48 truncate rounded-md border border-emerald-100 bg-emerald-50 px-2 py-1 text-xs font-medium text-emerald-800" title={item.title}>{item.title}</span>)}{matched.length > 2 && <span className="px-1 py-1 text-xs text-[#718096]">+{matched.length - 2}</span>}</div> : <span className="text-xs text-[#8290A3]">{match ? 'Tam eşleşen ölçüt yok' : matchesLoading && application.cvFileId ? 'Uyum yükleniyor...' : 'Değerlendirme bekleniyor'}</span>}</td>
     <td className="px-5 py-5">{options.length ? <select aria-label={`${name} başvuru aşaması`} value={application.status} disabled={saving} onChange={(event) => onStatusChange(application.id, event.target.value)} className={`max-w-48 rounded-xl border px-3 py-2 text-xs font-semibold disabled:opacity-50 ${statusColors[application.status] ?? statusColors.gonderildi}`}><option value={application.status}>{statusLabels[application.status] ?? application.status}</option>{options.map((status) => <option key={status} value={status}>{statusLabels[status]}</option>)}</select> : <span className={`inline-block rounded-xl border px-3 py-2 text-xs font-semibold ${statusColors[application.status] ?? statusColors.gonderildi}`}>{statusLabels[application.status] ?? application.status}</span>}</td>
     <td className="px-5 py-5"><button type="button" onClick={() => onInspect(application)} className="inline-flex min-w-32 items-center justify-center gap-2 rounded-xl border border-[#D8E2ED] bg-[#F3F6F9] px-3 py-2 text-sm font-semibold text-[#243B64] hover:bg-[#E8EEF5]"><Eye size={16} /> CV ve detay</button></td>
   </tr>;
@@ -46,6 +46,7 @@ export function EmployerCandidatesScreen({ runAuthenticated }) {
   const [jobs, setJobs] = useState([]);
   const [applications, setApplications] = useState([]);
   const [matches, setMatches] = useState({});
+  const [matchesLoading, setMatchesLoading] = useState(true);
   const [criteria, setCriteria] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -68,25 +69,28 @@ export function EmployerCandidatesScreen({ runAuthenticated }) {
     async function load() {
       try {
         const employerJobs = await runAuthenticated((token) => jobApi.mine(token));
-        const results = await Promise.all(employerJobs.map(async (job) => {
-          const items = await runAuthenticated((token) => jobApi.applications(token, job.id));
+        const results = await Promise.all(employerJobs.map(async (job) => ({
+          job,
+          items: await runAuthenticated((token) => jobApi.applications(token, job.id)),
+        })));
+        if (active) {
+          setJobs(employerJobs);
+          setApplications(results.flatMap(({ job, items }) => items.map((item) => ({ ...item, jobTitle: job.title, jobId: job.id }))));
+          setLoading(false);
+        }
+        await Promise.all(employerJobs.map(async (job) => {
           const [matchesResult, criteriaResult] = await Promise.allSettled([
             runAuthenticated((token) => jobApi.jobMatches(token, job.id)),
             runAuthenticated((token) => jobApi.matchCriteria(token, job.id)),
           ]);
-          return {
-            job,
-            items,
-            jobMatches: matchesResult.status === 'fulfilled' ? matchesResult.value : [],
-            jobCriteria: criteriaResult.status === 'fulfilled' ? criteriaResult.value : null,
-          };
+          if (!active) return;
+          if (matchesResult.status === 'fulfilled') {
+            setMatches((current) => ({ ...current, ...Object.fromEntries(matchesResult.value.map((match) => [match.applicationId, match])) }));
+          }
+          if (criteriaResult.status === 'fulfilled') {
+            setCriteria((current) => ({ ...current, [job.id]: criteriaResult.value }));
+          }
         }));
-        if (active) {
-          setJobs(employerJobs);
-          setApplications(results.flatMap(({ job, items }) => items.map((item) => ({ ...item, jobTitle: job.title, jobId: job.id }))));
-          setMatches(Object.fromEntries(results.flatMap(({ jobMatches }) => jobMatches.map((match) => [match.applicationId, match]))));
-          setCriteria(Object.fromEntries(results.map(({ job, jobCriteria }) => [job.id, jobCriteria])));
-        }
       } catch (cause) {
         if (active) {
           setError(cause.message);
@@ -94,6 +98,7 @@ export function EmployerCandidatesScreen({ runAuthenticated }) {
       } finally {
         if (active) {
           setLoading(false);
+          setMatchesLoading(false);
         }
       }
     }
@@ -184,9 +189,9 @@ export function EmployerCandidatesScreen({ runAuthenticated }) {
       <label className="relative"><Filter size={17} className="absolute left-3 top-3 text-[#8391A4]" /><span className="sr-only">Aşamaya göre filtrele</span><select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} className="w-full rounded-xl border border-[#D8E2ED] bg-white py-2.5 pl-10 pr-3 text-sm"><option value="all">Tüm aşamalar</option>{Object.entries(statusLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
     </div>
     <section className="overflow-hidden rounded-2xl border border-[#DFE6EE] bg-white shadow-sm"><div className="flex items-center justify-between border-b border-[#E7ECF2] px-5 py-4"><h2 className="font-bold text-[#243B64]">Başvurular</h2><span className="text-xs text-[#8290A3]">{visible.length} sonuç</span></div>
-      {loading ? <p className="p-10 text-center text-sm text-[#718096]">Başvurular yükleniyor...</p> : error && applications.length === 0 ? <p className="p-10 text-center text-sm text-[#718096]">Başvurular şu anda yüklenemiyor. Yukarıdaki hatayı giderip yeniden deneyin.</p> : visible.length === 0 ? <p className="p-10 text-center text-sm text-[#718096]">{applications.length ? 'Bu filtrelere uygun başvuru bulunamadı.' : 'Henüz başvuru bulunmuyor.'}</p> : <div className="overflow-x-auto"><table className="w-full min-w-[1100px] text-left text-sm"><thead className="bg-[#F7F9FC] text-[11px] font-bold uppercase tracking-wider text-[#6B7890]"><tr><th scope="col" className="px-5 py-4">Aday bilgileri</th><th scope="col" className="px-5 py-4">Başvurulan ilan</th><th scope="col" className="px-5 py-4">İlan uyumu</th><th scope="col" className="px-5 py-4">Eşleşen ölçütler</th><th scope="col" className="px-5 py-4">Başvuru durumu</th><th scope="col" className="px-5 py-4">İşlemler</th></tr></thead><tbody>{visible.map((application) => <CandidateRow key={application.id} application={application} match={matches[application.id]} saving={savingStatus === application.id} onStatusChange={updateStatus} onInspect={inspect} />)}</tbody></table></div>}
+      {loading ? <p className="p-10 text-center text-sm text-[#718096]">Başvurular yükleniyor...</p> : error && applications.length === 0 ? <p className="p-10 text-center text-sm text-[#718096]">Başvurular şu anda yüklenemiyor. Yukarıdaki hatayı giderip yeniden deneyin.</p> : visible.length === 0 ? <p className="p-10 text-center text-sm text-[#718096]">{applications.length ? 'Bu filtrelere uygun başvuru bulunamadı.' : 'Henüz başvuru bulunmuyor.'}</p> : <div className="overflow-x-auto"><table className="w-full min-w-[1100px] text-left text-sm"><thead className="bg-[#F7F9FC] text-[11px] font-bold uppercase tracking-wider text-[#6B7890]"><tr><th scope="col" className="px-5 py-4">Aday bilgileri</th><th scope="col" className="px-5 py-4">Başvurulan ilan</th><th scope="col" className="px-5 py-4">İlan uyumu</th><th scope="col" className="px-5 py-4">Eşleşen ölçütler</th><th scope="col" className="px-5 py-4">Başvuru durumu</th><th scope="col" className="px-5 py-4">İşlemler</th></tr></thead><tbody>{visible.map((application) => <CandidateRow key={application.id} application={application} match={matches[application.id]} matchesLoading={matchesLoading} saving={savingStatus === application.id} onStatusChange={updateStatus} onInspect={inspect} />)}</tbody></table></div>}
     </section>
-    {selected && <ApplicantDialog detail={detail} loading={detailLoading} error={detailError} cvLoading={cvLoading} onLoadCv={() => loadCv()} onDownloadCv={() => loadCv(true)} onClose={() => { setSelected(null); setCvUrl(null); setPreviewOpen(false); }} match={matches[selected.id]} matchBusy={matchBusy} onEvaluate={evaluate} criteriaReady={Boolean(criteria[selected.jobId]?.version)} criteria={criteria[selected.jobId]} />}
+    {selected && <ApplicantDialog detail={detail} loading={detailLoading} error={detailError} cvLoading={cvLoading} onLoadCv={() => loadCv()} onDownloadCv={() => loadCv(true)} onClose={() => { setSelected(null); setCvUrl(null); setPreviewOpen(false); }} match={matches[selected.id]} matchBusy={matchBusy} onEvaluate={evaluate} criteriaReady={Boolean(criteria[selected.jobId]?.version)} criteriaLoading={matchesLoading && !criteria[selected.jobId]} criteria={criteria[selected.jobId]} />}
     {previewOpen && cvUrl && <CvPreviewDialog url={cvUrl} fileName={detail?.cvFileName || 'CV'} onDownload={() => loadCv(true)} onClose={() => setPreviewOpen(false)} />}
   </main>;
 }
