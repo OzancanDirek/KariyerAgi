@@ -49,6 +49,8 @@ export function EmployerCandidatesScreen({ runAuthenticated }) {
   const [matchesLoading, setMatchesLoading] = useState(true);
   const [criteria, setCriteria] = useState({});
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
+  const [reloadKey, setReloadKey] = useState(0);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [jobFilter, setJobFilter] = useState(() => new URLSearchParams(window.location.hash.split('?')[1] ?? '').get('job') ?? 'all');
@@ -67,18 +69,30 @@ export function EmployerCandidatesScreen({ runAuthenticated }) {
   useEffect(() => {
     let active = true;
     async function load() {
+      setLoading(true);
+      setLoadError('');
+      setMatchesLoading(true);
+      setJobs([]);
+      setApplications([]);
+      setMatches({});
+      setCriteria({});
       try {
         const employerJobs = await runAuthenticated((token) => jobApi.mine(token));
-        const results = await Promise.all(employerJobs.map(async (job) => ({
-          job,
-          items: await runAuthenticated((token) => jobApi.applications(token, job.id)),
-        })));
+        const results = await Promise.allSettled(employerJobs.map((job) =>
+          runAuthenticated((token) => jobApi.applications(token, job.id))));
         if (active) {
           setJobs(employerJobs);
-          setApplications(results.flatMap(({ job, items }) => items.map((item) => ({ ...item, jobTitle: job.title, jobId: job.id }))));
+          setApplications(results.flatMap((result, index) => result.status === 'fulfilled'
+            ? result.value.map((item) => ({ ...item, jobTitle: employerJobs[index].title, jobId: employerJobs[index].id }))
+            : []));
+          const failedCount = results.filter((result) => result.status === 'rejected').length;
+          if (failedCount) {
+            setLoadError(`${failedCount} ilanın başvuruları yüklenemedi. Liste eksik olabilir.`);
+          }
           setLoading(false);
         }
-        await Promise.all(employerJobs.map(async (job) => {
+        const loadedJobs = employerJobs.filter((_, index) => results[index].status === 'fulfilled');
+        await Promise.all(loadedJobs.map(async (job) => {
           const [matchesResult, criteriaResult] = await Promise.allSettled([
             runAuthenticated((token) => jobApi.jobMatches(token, job.id)),
             runAuthenticated((token) => jobApi.matchCriteria(token, job.id)),
@@ -93,7 +107,7 @@ export function EmployerCandidatesScreen({ runAuthenticated }) {
         }));
       } catch (cause) {
         if (active) {
-          setError(cause.message);
+          setLoadError(cause.message);
         }
       } finally {
         if (active) {
@@ -104,7 +118,7 @@ export function EmployerCandidatesScreen({ runAuthenticated }) {
     }
     load();
     return () => { active = false; };
-  }, [runAuthenticated]);
+  }, [runAuthenticated, reloadKey]);
 
   useEffect(() => () => { if (cvUrl) { URL.revokeObjectURL(cvUrl); } }, [cvUrl]);
 
@@ -182,6 +196,7 @@ export function EmployerCandidatesScreen({ runAuthenticated }) {
   return <main className="mx-auto max-w-[1500px] px-5 py-9 sm:px-8">
     <div className="mb-7 flex flex-wrap items-end justify-between gap-4"><div><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#2F8F83]">İşveren alanı</p><h1 className="mt-2 text-3xl font-bold tracking-tight text-[#243B64]">Aday yönetimi</h1><p className="mt-2 text-sm text-[#718096]">Şirketinin ilanlarına gelen başvuruları tek ekrandan incele ve aşamalarını yönet.</p></div><div className="rounded-xl border border-[#DDE5ED] bg-white px-4 py-3 text-sm font-semibold text-[#243B64]"><Users size={17} className="mr-2 inline text-[#2F8F83]" />{applications.length} başvuru</div></div>
     {error && <p role="alert" className="mb-5 rounded-xl bg-red-50 p-4 text-sm text-red-700">{error}</p>}
+    {loadError && <div role="alert" className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-amber-50 p-4 text-sm text-amber-900"><span>{loadError}</span><button type="button" onClick={() => setReloadKey((current) => current + 1)} className="rounded-lg border border-amber-300 bg-white px-3 py-1.5 font-semibold hover:bg-amber-100">Yeniden dene</button></div>}
     {message && <p role="status" className="mb-5 rounded-xl bg-emerald-50 p-4 text-sm text-emerald-800">{message}</p>}
     <div className="mb-5 grid gap-3 rounded-2xl border border-[#DFE6EE] bg-white p-4 shadow-sm sm:grid-cols-[minmax(180px,1fr)_minmax(150px,220px)_minmax(150px,220px)]">
       <label className="relative"><Search size={18} className="absolute left-3 top-3 text-[#8391A4]" /><span className="sr-only">Aday veya ilan ara</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Aday veya ilan ara" className="w-full rounded-xl border border-[#D8E2ED] py-2.5 pl-10 pr-3 text-sm" /></label>
@@ -189,7 +204,7 @@ export function EmployerCandidatesScreen({ runAuthenticated }) {
       <label className="relative"><Filter size={17} className="absolute left-3 top-3 text-[#8391A4]" /><span className="sr-only">Aşamaya göre filtrele</span><select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} className="w-full rounded-xl border border-[#D8E2ED] bg-white py-2.5 pl-10 pr-3 text-sm"><option value="all">Tüm aşamalar</option>{Object.entries(statusLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
     </div>
     <section className="overflow-hidden rounded-2xl border border-[#DFE6EE] bg-white shadow-sm"><div className="flex items-center justify-between border-b border-[#E7ECF2] px-5 py-4"><h2 className="font-bold text-[#243B64]">Başvurular</h2><span className="text-xs text-[#8290A3]">{visible.length} sonuç</span></div>
-      {loading ? <p className="p-10 text-center text-sm text-[#718096]">Başvurular yükleniyor...</p> : error && applications.length === 0 ? <p className="p-10 text-center text-sm text-[#718096]">Başvurular şu anda yüklenemiyor. Yukarıdaki hatayı giderip yeniden deneyin.</p> : visible.length === 0 ? <p className="p-10 text-center text-sm text-[#718096]">{applications.length ? 'Bu filtrelere uygun başvuru bulunamadı.' : 'Henüz başvuru bulunmuyor.'}</p> : <div className="overflow-x-auto"><table className="w-full min-w-[1100px] text-left text-sm"><thead className="bg-[#F7F9FC] text-[11px] font-bold uppercase tracking-wider text-[#6B7890]"><tr><th scope="col" className="px-5 py-4">Aday bilgileri</th><th scope="col" className="px-5 py-4">Başvurulan ilan</th><th scope="col" className="px-5 py-4">İlan uyumu</th><th scope="col" className="px-5 py-4">Eşleşen ölçütler</th><th scope="col" className="px-5 py-4">Başvuru durumu</th><th scope="col" className="px-5 py-4">İşlemler</th></tr></thead><tbody>{visible.map((application) => <CandidateRow key={application.id} application={application} match={matches[application.id]} matchesLoading={matchesLoading} saving={savingStatus === application.id} onStatusChange={updateStatus} onInspect={inspect} />)}</tbody></table></div>}
+      {loading ? <p className="p-10 text-center text-sm text-[#718096]">Başvurular yükleniyor...</p> : visible.length === 0 ? <p className="p-10 text-center text-sm text-[#718096]">{loadError ? 'Başvuruların tamamı yüklenemedi. Yeniden deneyin.' : applications.length ? 'Bu filtrelere uygun başvuru bulunamadı.' : 'Henüz başvuru bulunmuyor.'}</p> : <div className="overflow-x-auto"><table className="w-full min-w-[1100px] text-left text-sm"><thead className="bg-[#F7F9FC] text-[11px] font-bold uppercase tracking-wider text-[#6B7890]"><tr><th scope="col" className="px-5 py-4">Aday bilgileri</th><th scope="col" className="px-5 py-4">Başvurulan ilan</th><th scope="col" className="px-5 py-4">İlan uyumu</th><th scope="col" className="px-5 py-4">Eşleşen ölçütler</th><th scope="col" className="px-5 py-4">Başvuru durumu</th><th scope="col" className="px-5 py-4">İşlemler</th></tr></thead><tbody>{visible.map((application) => <CandidateRow key={application.id} application={application} match={matches[application.id]} matchesLoading={matchesLoading} saving={savingStatus === application.id} onStatusChange={updateStatus} onInspect={inspect} />)}</tbody></table></div>}
     </section>
     {selected && <ApplicantDialog detail={detail} loading={detailLoading} error={detailError} cvLoading={cvLoading} onLoadCv={() => loadCv()} onDownloadCv={() => loadCv(true)} onClose={() => { setSelected(null); setCvUrl(null); setPreviewOpen(false); }} match={matches[selected.id]} matchBusy={matchBusy} onEvaluate={evaluate} criteriaReady={Boolean(criteria[selected.jobId]?.version)} criteriaLoading={matchesLoading && !criteria[selected.jobId]} criteria={criteria[selected.jobId]} />}
     {previewOpen && cvUrl && <CvPreviewDialog url={cvUrl} fileName={detail?.cvFileName || 'CV'} onDownload={() => loadCv(true)} onClose={() => setPreviewOpen(false)} />}
