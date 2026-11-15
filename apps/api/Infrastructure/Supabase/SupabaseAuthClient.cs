@@ -57,7 +57,8 @@ public class SupabaseAuthClient
                     {
                         HttpStatusCode.BadRequest => ErrorCodes.Validation,
                         HttpStatusCode.Unauthorized => ErrorCodes.InvalidCredentials,
-                        HttpStatusCode.Forbidden => ErrorCodes.EmailNotConfirmed,
+                        HttpStatusCode.Forbidden when path == "user" => ErrorCodes.InvalidCredentials,
+                        HttpStatusCode.Forbidden => ErrorCodes.AuthServiceFailed,
                         HttpStatusCode.Conflict => ErrorCodes.EmailAlreadyRegistered,
                         HttpStatusCode.TooManyRequests => ErrorCodes.TooManyRequests,
                         _ => ErrorCodes.AuthServiceFailed

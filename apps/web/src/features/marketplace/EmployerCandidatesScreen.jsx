@@ -69,12 +69,17 @@ export function EmployerCandidatesScreen({ runAuthenticated }) {
       try {
         const employerJobs = await runAuthenticated((token) => jobApi.mine(token));
         const results = await Promise.all(employerJobs.map(async (job) => {
-          const [items, jobMatches, jobCriteria] = await Promise.all([
-            runAuthenticated((token) => jobApi.applications(token, job.id)),
+          const items = await runAuthenticated((token) => jobApi.applications(token, job.id));
+          const [matchesResult, criteriaResult] = await Promise.allSettled([
             runAuthenticated((token) => jobApi.jobMatches(token, job.id)),
             runAuthenticated((token) => jobApi.matchCriteria(token, job.id)),
           ]);
-          return { job, items, jobMatches, jobCriteria };
+          return {
+            job,
+            items,
+            jobMatches: matchesResult.status === 'fulfilled' ? matchesResult.value : [],
+            jobCriteria: criteriaResult.status === 'fulfilled' ? criteriaResult.value : null,
+          };
         }));
         if (active) {
           setJobs(employerJobs);
@@ -179,7 +184,7 @@ export function EmployerCandidatesScreen({ runAuthenticated }) {
       <label className="relative"><Filter size={17} className="absolute left-3 top-3 text-[#8391A4]" /><span className="sr-only">Aşamaya göre filtrele</span><select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} className="w-full rounded-xl border border-[#D8E2ED] bg-white py-2.5 pl-10 pr-3 text-sm"><option value="all">Tüm aşamalar</option>{Object.entries(statusLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
     </div>
     <section className="overflow-hidden rounded-2xl border border-[#DFE6EE] bg-white shadow-sm"><div className="flex items-center justify-between border-b border-[#E7ECF2] px-5 py-4"><h2 className="font-bold text-[#243B64]">Başvurular</h2><span className="text-xs text-[#8290A3]">{visible.length} sonuç</span></div>
-      {loading ? <p className="p-10 text-center text-sm text-[#718096]">Başvurular yükleniyor...</p> : visible.length === 0 ? <p className="p-10 text-center text-sm text-[#718096]">{applications.length ? 'Bu filtrelere uygun başvuru bulunamadı.' : 'Henüz başvuru bulunmuyor.'}</p> : <div className="overflow-x-auto"><table className="w-full min-w-[1100px] text-left text-sm"><thead className="bg-[#F7F9FC] text-[11px] font-bold uppercase tracking-wider text-[#6B7890]"><tr><th scope="col" className="px-5 py-4">Aday bilgileri</th><th scope="col" className="px-5 py-4">Başvurulan ilan</th><th scope="col" className="px-5 py-4">İlan uyumu</th><th scope="col" className="px-5 py-4">Eşleşen ölçütler</th><th scope="col" className="px-5 py-4">Başvuru durumu</th><th scope="col" className="px-5 py-4">İşlemler</th></tr></thead><tbody>{visible.map((application) => <CandidateRow key={application.id} application={application} match={matches[application.id]} saving={savingStatus === application.id} onStatusChange={updateStatus} onInspect={inspect} />)}</tbody></table></div>}
+      {loading ? <p className="p-10 text-center text-sm text-[#718096]">Başvurular yükleniyor...</p> : error && applications.length === 0 ? <p className="p-10 text-center text-sm text-[#718096]">Başvurular şu anda yüklenemiyor. Yukarıdaki hatayı giderip yeniden deneyin.</p> : visible.length === 0 ? <p className="p-10 text-center text-sm text-[#718096]">{applications.length ? 'Bu filtrelere uygun başvuru bulunamadı.' : 'Henüz başvuru bulunmuyor.'}</p> : <div className="overflow-x-auto"><table className="w-full min-w-[1100px] text-left text-sm"><thead className="bg-[#F7F9FC] text-[11px] font-bold uppercase tracking-wider text-[#6B7890]"><tr><th scope="col" className="px-5 py-4">Aday bilgileri</th><th scope="col" className="px-5 py-4">Başvurulan ilan</th><th scope="col" className="px-5 py-4">İlan uyumu</th><th scope="col" className="px-5 py-4">Eşleşen ölçütler</th><th scope="col" className="px-5 py-4">Başvuru durumu</th><th scope="col" className="px-5 py-4">İşlemler</th></tr></thead><tbody>{visible.map((application) => <CandidateRow key={application.id} application={application} match={matches[application.id]} saving={savingStatus === application.id} onStatusChange={updateStatus} onInspect={inspect} />)}</tbody></table></div>}
     </section>
     {selected && <ApplicantDialog detail={detail} loading={detailLoading} error={detailError} cvLoading={cvLoading} onLoadCv={() => loadCv()} onDownloadCv={() => loadCv(true)} onClose={() => { setSelected(null); setCvUrl(null); setPreviewOpen(false); }} match={matches[selected.id]} matchBusy={matchBusy} onEvaluate={evaluate} criteriaReady={Boolean(criteria[selected.jobId]?.version)} criteria={criteria[selected.jobId]} />}
     {previewOpen && cvUrl && <CvPreviewDialog url={cvUrl} fileName={detail?.cvFileName || 'CV'} onDownload={() => loadCv(true)} onClose={() => setPreviewOpen(false)} />}
