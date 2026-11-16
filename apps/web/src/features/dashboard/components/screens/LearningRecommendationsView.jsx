@@ -82,7 +82,7 @@ const LearningRecommendationsView = ({
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 text-xs font-semibold text-[#5276A7]">
-              <span>MODÜL 05</span>
+              <span>KARİYER YOL HARİTASI</span>
               <span>·</span>
               <span>EĞİTİM & KAYNAK ÖNERİLERİ</span>
               <span>·</span>

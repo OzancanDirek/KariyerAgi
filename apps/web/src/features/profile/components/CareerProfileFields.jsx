@@ -67,7 +67,7 @@ export function CareerProfileFields({ form, updateField }) {
             <label className="block text-sm font-medium">Portfolyo<input className={fieldClass} type="url" value={form.portfolioUrl} maxLength={300} placeholder="https://..." onChange={(event) => updateField('portfolioUrl', event.target.value)} /></label>
             <label className="block text-sm font-medium">Profil görünürlüğü<select className={fieldClass} value={form.visibility} onChange={(event) => updateField('visibility', event.target.value)}><option value="gizli">Gizli</option><option value="basvurulanlar">Başvurulan ilanlar</option><option value="herkese_acik">Herkese açık</option></select></label>
           </div>
-          <p className="mt-3 text-xs leading-5 text-[#667085]">Görünürlük tercihi kaydedilir. İşveren erişim kuralları ilgili modülde devreye alınacak.</p>
+          <p className="mt-3 text-xs leading-5 text-[#667085]">Görünürlük tercihin kaydedilir.</p>
         </div>
 
     </section>

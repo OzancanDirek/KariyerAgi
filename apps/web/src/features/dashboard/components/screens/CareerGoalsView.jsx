@@ -337,7 +337,7 @@ const CareerGoalsView = ({
             <div className="mt-6 p-3 rounded-lg bg-[#EBF5F4] border border-[#2F8F83]/20 flex items-start gap-2.5">
               <TrendingUp className="w-4 h-4 text-[#2F8F83] shrink-0 mt-0.5" />
               <div className="text-[11px] text-[#202938]">
-                Bu hedefler, sonraki modüllerde yer alacak <strong>Yapay Zeka İş Eşleşme Skoru</strong> ve <strong>Beceri Haritası</strong> motorunda referans alınacaktır.
+                Bu hedefler, <strong>Yapay Zeka İş Eşleşme Skoru</strong> ve <strong>Beceri Haritası</strong> için referans alınır.
               </div>
             </div>
           </div>

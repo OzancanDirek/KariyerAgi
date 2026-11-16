@@ -235,7 +235,7 @@ const CareerDashboardView = ({
     onClick={() => onNavigate("job-listings")}
     className="text-xs font-semibold text-[#243B64] hover:text-[#1B2D4E] hover:underline flex items-center gap-1 cursor-pointer"
   >
-              <span>Eşleşen İlanlar (Modül 06)</span>
+              <span>Eşleşen İlanlar</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -266,7 +266,7 @@ const CareerDashboardView = ({
     onClick={() => onNavigate("knowledge-graph")}
     className="text-xs font-semibold text-[#243B64] hover:text-[#1B2D4E] bg-[#EEF2F6] hover:bg-[#E2E8F0] px-2.5 py-1 rounded-md transition-colors cursor-pointer"
   >
-              Haritada İncele (Modül 04)
+              Haritada İncele
             </button>
           </div>
 
@@ -302,7 +302,7 @@ const CareerDashboardView = ({
     onClick={() => onNavigate("career-roadmap")}
     className="inline-flex items-center gap-1 text-xs font-semibold text-[#243B64] hover:text-[#1B2D4E] hover:underline cursor-pointer"
   >
-                  <span>Kariyer Yol Haritasını Gör (Modül 05)</span>
+                  <span>Kariyer Yol Haritasını Gör</span>
                   <ArrowRight className="w-3 h-3" />
                 </button>
               </div>
@@ -360,7 +360,7 @@ const CareerDashboardView = ({
           </div>
 
           <div className="pt-4 mt-6 border-t border-[#E3E7ED] flex items-center justify-between text-xs text-[#667085]">
-            <span>Sistem: Modül 02 Etkin</span>
+            <span>Kariyer profilin güncel</span>
             <span className="text-[#2F8F83] font-medium">Veriler Güncel</span>
           </div>
         </div>

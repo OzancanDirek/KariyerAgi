@@ -100,7 +100,7 @@ const JobListingView = ({
 
           <div className="flex items-center gap-2 text-xs text-[#667085]">
             <span className="font-bold text-[#243B64] bg-[#EEF2F6] px-2.5 py-0.5 rounded text-[11px]">
-              Modül 06
+              İş İlanları
             </span>
             <span>İş İlanı Detayı</span>
           </div>
@@ -390,7 +390,7 @@ const JobListingView = ({
           <div>
             <div className="flex items-center gap-2 mb-1.5">
               <span className="text-[11px] font-bold uppercase tracking-wider text-[#243B64] bg-[#EEF2F6] px-2.5 py-0.5 rounded">
-                Modül 06 · İş İlanları & Eşleşme
+                İş İlanları & Eşleşme
               </span>
               <span className="text-xs text-[#667085]">CV & Becerilerle Eşleştirildi</span>
             </div>

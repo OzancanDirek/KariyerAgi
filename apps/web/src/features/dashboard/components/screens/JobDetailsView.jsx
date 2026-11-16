@@ -86,7 +86,7 @@ const JobDetailsView = ({
 
         <div className="flex items-center gap-2">
           <span className="text-[11px] font-bold uppercase tracking-wider text-[#243B64] bg-[#EEF2F6] px-2.5 py-0.5 rounded">
-            Modül 06 · Ekran 2 / 2
+            İlan Detayı
           </span>
           <span className="text-xs text-[#667085]">İlan Detayı & AI Analiz</span>
         </div>

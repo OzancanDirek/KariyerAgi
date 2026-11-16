@@ -154,7 +154,7 @@ const CreateJobListingView = ({
           <div>
             <div className="flex items-center gap-2 mb-1.5">
               <span className="text-[11px] font-bold uppercase tracking-wider text-[#243B64] bg-[#EEF2F6] px-2.5 py-0.5 rounded">
-                Modül 07 · Ekran 2 / 3
+                İlan Oluştur
               </span>
               <span className="text-xs text-[#667085]">İşveren Portalı</span>
             </div>

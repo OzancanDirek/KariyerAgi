@@ -94,7 +94,7 @@ const CvAnalysisView = ({
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="text-[11px] font-bold text-[#243B64] bg-[#EEF2F6] px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-              Modül 03 · CV Analizi
+              CV Analizi
             </span>
             <span className="text-xs text-[#667085]">AI CV Analiz Motoru</span>
           </div>

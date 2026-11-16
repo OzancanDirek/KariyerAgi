@@ -128,11 +128,11 @@ const Sidebar = ({
         </div>
 
         {
-    /* Section 1: Modül 02 */
+    /* Section 1: Kariyer ve Profil */
   }
         <div className="p-3 space-y-1">
           <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[#667085]">
-            Modül 02 · Kariyer & Profil
+            Kariyer ve Profil
           </div>
           {module2Items.map((item) => {
     const Icon = item.icon;
@@ -153,11 +153,11 @@ const Sidebar = ({
         </div>
 
         {
-    /* Section 2: Modül 03 */
+    /* Section 2: CV Merkezi */
   }
         <div className="p-3 pt-1 space-y-1">
           <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[#2F8F83] flex items-center justify-between">
-            <span>Modül 03 · AI CV Merkezi</span>
+            <span>CV Merkezi</span>
             <span className="text-[9px] bg-[#EBF5F4] px-1.5 py-0.2 rounded font-semibold text-[#2F8F83]">YENİ</span>
           </div>
           {module3Items.map((item) => {
@@ -182,11 +182,11 @@ const Sidebar = ({
         </div>
 
         {
-    /* Section 3: Modül 04 - Knowledge Graph & Beceriler */
+    /* Section 3: Beceri Haritası - Knowledge Graph & Beceriler */
   }
         <div className="p-3 pt-1 space-y-1">
           <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[#243B64] flex items-center justify-between">
-            <span>Modül 04 · Knowledge Graph</span>
+            <span>Beceri Haritası</span>
             <span className="text-[9px] bg-[#EEF2F6] px-1.5 py-0.2 rounded font-semibold text-[#243B64]">AKTİF</span>
           </div>
           {module4Items.map((item) => {
@@ -211,11 +211,11 @@ const Sidebar = ({
         </div>
 
         {
-    /* Section 4: Modül 05 - AI Kariyer Yol Haritası & Eğitimler */
+    /* Section 4: Yol Haritası - AI Kariyer Yol Haritası & Eğitimler */
   }
         <div className="p-3 pt-1 space-y-1">
           <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[#243B64] flex items-center justify-between">
-            <span>Modül 05 · Yol Haritası</span>
+            <span>Yol Haritası</span>
           </div>
           {module5Items.map((item) => {
     const Icon = item.icon;
@@ -239,11 +239,11 @@ const Sidebar = ({
         </div>
 
         {
-    /* Section 5: Modül 06 - AI İş İlanı Eşleştirme & Başvuru */
+    /* Section 5: İş İlanları - AI İş İlanı Eşleştirme & Başvuru */
   }
         <div className="p-3 pt-1 space-y-1">
           <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[#243B64] flex items-center justify-between">
-            <span>Modül 06 · İş İlanları</span>
+            <span>İş İlanları</span>
             <span className="text-[9px] bg-[#EBF5F4] text-[#134E4A] px-1.5 py-0.2 rounded font-semibold border border-[#2F8F83]/30">
               YENİ
             </span>
@@ -270,11 +270,11 @@ const Sidebar = ({
         </div>
 
         {
-    /* Section 6: Modül 07 - İşveren ve Şirket Yönetimi */
+    /* Section 6: İşveren - İşveren ve Şirket Yönetimi */
   }
         <div className="p-3 pt-1 space-y-1">
           <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[#243B64] flex items-center justify-between">
-            <span>Modül 07 · İşveren & Şirket</span>
+            <span>İşveren & Şirket</span>
             <span className="text-[9px] bg-[#EEF2F6] text-[#243B64] px-1.5 py-0.2 rounded font-bold">
               3 Ekran
             </span>
@@ -301,11 +301,11 @@ const Sidebar = ({
         </div>
 
         {
-    /* Section 7: Diğer Modüller */
+    /* Section 7: Diğer sayfalar */
   }
         <div className="p-3 pt-1 space-y-1">
           <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[#667085]">
-            Diğer Modüller
+            Diğer Sayfalar
           </div>
           {futureItems.map((item) => {
     const Icon = item.icon;

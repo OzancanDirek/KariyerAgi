@@ -351,42 +351,42 @@ Use Turkish UI text. Design practical layouts using components that can be imple
     onClick={() => onViewChange("dashboard")}
     className={`px-2 py-1 rounded font-medium transition-colors cursor-pointer ${!isModule3 && !isModule4 && !isModule5 ? "bg-[#243B64] text-white shadow-2xs font-semibold" : "text-[#667085] hover:text-[#202938]"}`}
   >
-            Modül 02
+            Kariyer ve Profil
           </button>
           <button
     type="button"
     onClick={() => onViewChange("cv-analysis")}
     className={`px-2 py-1 rounded font-medium transition-colors cursor-pointer ${isModule3 ? "bg-[#243B64] text-white shadow-2xs font-semibold" : "text-[#667085] hover:text-[#202938]"}`}
   >
-            Modül 03
+            CV Merkezi
           </button>
           <button
     type="button"
     onClick={() => onViewChange("knowledge-graph")}
     className={`px-2 py-1 rounded font-medium transition-colors cursor-pointer ${isModule4 ? "bg-[#243B64] text-white shadow-2xs font-semibold" : "text-[#667085] hover:text-[#202938]"}`}
   >
-            Modül 04
+            Beceri Haritası
           </button>
           <button
     type="button"
     onClick={() => onViewChange("career-roadmap")}
     className={`px-2 py-1 rounded font-medium transition-colors cursor-pointer ${isModule5 ? "bg-[#243B64] text-white shadow-2xs font-semibold" : "text-[#667085] hover:text-[#202938]"}`}
   >
-            Modül 05
+            Yol Haritası
           </button>
           <button
     type="button"
     onClick={() => onViewChange("job-listings")}
     className={`px-2 py-1 rounded font-medium transition-colors cursor-pointer ${isModule6 ? "bg-[#243B64] text-white shadow-2xs font-semibold" : "text-[#667085] hover:text-[#202938]"}`}
   >
-            Modül 06
+            İş İlanları
           </button>
           <button
     type="button"
     onClick={() => onViewChange("company-profile")}
     className={`px-2 py-1 rounded font-medium transition-colors cursor-pointer ${isModule7 ? "bg-[#243B64] text-white shadow-2xs font-semibold" : "text-[#667085] hover:text-[#202938]"}`}
   >
-            Modül 07
+            İşveren
           </button>
         </div>
 
@@ -456,7 +456,7 @@ Use Turkish UI text. Design practical layouts using components that can be imple
     isOpen={showFigmaModal}
     onClose={() => setShowFigmaModal(false)}
     title="Figma Tasarım Promptları"
-    subtitle="Seçtiğiniz modüle ait promptu kopyalayarak doğrudan Figma AI veya Claude / ChatGPT'ye aktarabilirsiniz."
+    subtitle="Seçtiğiniz ekrana ait promptu kopyalayarak doğrudan Figma AI veya Claude / ChatGPT'ye aktarabilirsiniz."
     maxWidth="lg"
   >
         <div className="space-y-4">
@@ -469,42 +469,42 @@ Use Turkish UI text. Design practical layouts using components that can be imple
     onClick={() => setSelectedPromptModule("mod7")}
     className={`w-full sm:flex-1 py-1.5 px-2 text-xs font-semibold rounded-md transition-colors cursor-pointer ${selectedPromptModule === "mod7" ? "bg-white text-[#243B64] shadow-xs border border-[#E3E7ED]" : "text-[#667085] hover:text-[#202938]"}`}
   >
-              Modül 07: İşveren (Yeni)
+              İşveren
             </button>
             <button
     type="button"
     onClick={() => setSelectedPromptModule("mod6")}
     className={`w-full sm:flex-1 py-1.5 px-2 text-xs font-semibold rounded-md transition-colors cursor-pointer ${selectedPromptModule === "mod6" ? "bg-white text-[#243B64] shadow-xs border border-[#E3E7ED]" : "text-[#667085] hover:text-[#202938]"}`}
   >
-              Modül 06: İş İlanı
+              İş İlanları
             </button>
             <button
     type="button"
     onClick={() => setSelectedPromptModule("mod5")}
     className={`w-full sm:flex-1 py-1.5 px-2 text-xs font-semibold rounded-md transition-colors cursor-pointer ${selectedPromptModule === "mod5" ? "bg-white text-[#243B64] shadow-xs border border-[#E3E7ED]" : "text-[#667085] hover:text-[#202938]"}`}
   >
-              Modül 05: Yol Haritası
+              Yol Haritası
             </button>
             <button
     type="button"
     onClick={() => setSelectedPromptModule("mod4")}
     className={`w-full sm:flex-1 py-1.5 px-2.5 text-xs font-semibold rounded-md transition-colors cursor-pointer ${selectedPromptModule === "mod4" ? "bg-white text-[#243B64] shadow-xs border border-[#E3E7ED]" : "text-[#667085] hover:text-[#202938]"}`}
   >
-              Modül 04: Knowledge Graph
+              Beceri Haritası
             </button>
             <button
     type="button"
     onClick={() => setSelectedPromptModule("mod3")}
     className={`w-full sm:flex-1 py-1.5 px-2.5 text-xs font-semibold rounded-md transition-colors cursor-pointer ${selectedPromptModule === "mod3" ? "bg-white text-[#243B64] shadow-xs border border-[#E3E7ED]" : "text-[#667085] hover:text-[#202938]"}`}
   >
-              Modül 03: AI CV
+              CV Merkezi
             </button>
             <button
     type="button"
     onClick={() => setSelectedPromptModule("mod2")}
     className={`w-full sm:flex-1 py-1.5 px-2.5 text-xs font-semibold rounded-md transition-colors cursor-pointer ${selectedPromptModule === "mod2" ? "bg-white text-[#243B64] shadow-xs border border-[#E3E7ED]" : "text-[#667085] hover:text-[#202938]"}`}
   >
-              Modül 02: Dashboard
+              Kariyer ve Profil
             </button>
           </div>
 

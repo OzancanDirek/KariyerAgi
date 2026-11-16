@@ -80,7 +80,7 @@ const KnowledgeGraphView = ({
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 text-xs text-[#5276A7] font-semibold mb-1">
-              <span>MODÜL 04</span>
+              <span>BECERİ HARİTASI</span>
               <span>·</span>
               <span>YETKİNLİK AĞI</span>
               <span>·</span>
