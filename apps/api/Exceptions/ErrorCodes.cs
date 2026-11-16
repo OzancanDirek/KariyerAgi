@@ -131,4 +131,5 @@ public static class ErrorCodes
     public static readonly ErrorDefinition CvDraftNotFound = new("CV-009", "CV taslağı bulunamadı.", 404);
     public static readonly ErrorDefinition CvDraftInvalid = new("CV-010", "CV taslağının adı, şablonu veya içeriği geçersiz.", 400);
     public static readonly ErrorDefinition CvAnalysisConsentRequired = new("CV-011", "CV'yi yapay zekâ ile analiz etmek için işlem bilgilendirmesini onaylayın.", 400);
+    public static readonly ErrorDefinition CvAiTransferUnavailable = new("CV-012", "CV'nin yapay zekâ ile işlenmesi şu anda kullanılamıyor.", 503);
 }

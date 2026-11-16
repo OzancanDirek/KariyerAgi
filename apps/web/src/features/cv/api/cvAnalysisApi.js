@@ -26,6 +26,9 @@ function toAnalysis(record) {
 }
 
 export const cvAnalysisApi = {
+  getTransferStatus() {
+    return request('privacy', 'cv-ai-status');
+  },
   getQuota(token) {
     return request('cv', 'analysis/quota', { token });
   },
