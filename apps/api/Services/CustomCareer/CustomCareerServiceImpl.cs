@@ -39,6 +39,11 @@ public class CustomCareerServiceImpl : ICustomCareerService
     {
         var title = CustomCareerValidator.NormalizeTitle(request.Title);
         var identity = await currentUser.ResolveAsync();
+        var activeCareers = await repository.GetActiveAsync(identity.UserId, identity.AccessToken, currentUser.CancellationToken);
+        if (activeCareers.Any(career => CustomCareerValidator.ComparisonKey(career.Title) == CustomCareerValidator.ComparisonKey(title)))
+        {
+            throw new ApiException(ErrorCodes.CustomCareerAlreadyExists);
+        }
         if (await repository.CountTodayAsync(identity.UserId, identity.AccessToken, currentUser.CancellationToken) >= 2)
         {
             throw new ApiException(ErrorCodes.CustomCareerDailyLimit);

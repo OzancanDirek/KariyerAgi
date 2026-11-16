@@ -6,6 +6,7 @@ public interface ILearningResourceService
 {
     Task<List<LearningResourceResponse>> ListAsync();
     Task<List<LearningResourceResponse>> ListForManagementAsync();
+    Task<List<LearningResourceSkillOption>> ListSkillsAsync();
     Task<LearningResourceResponse> CreateAsync(SaveLearningResourceRequest request);
     Task<LearningResourceResponse> UpdateAsync(Guid id, SaveLearningResourceRequest request);
 }

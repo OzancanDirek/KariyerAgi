@@ -27,6 +27,12 @@ public class LearningResourcesController : ControllerBase
         return await resources.ListForManagementAsync();
     }
 
+    [HttpGet("manage/skills")]
+    public async Task<ActionResult<List<LearningResourceSkillOption>>> ListSkills()
+    {
+        return await resources.ListSkillsAsync();
+    }
+
     [HttpPost]
     public async Task<ActionResult<LearningResourceResponse>> Create(SaveLearningResourceRequest request)
     {

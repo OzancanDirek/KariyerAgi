@@ -1,14 +1,18 @@
 using CareerPath.Api.Dtos.CustomCareer;
 using CareerPath.Api.Exceptions;
 using CareerPath.Api.Utils;
+using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace CareerPath.Api.Validation;
 
 public static class CustomCareerValidator
 {
+    public static string ComparisonKey(string title) => Regex.Replace(title.Trim(), @"\s+", " ").ToUpper(new CultureInfo("tr-TR"));
+
     public static string NormalizeTitle(string? title)
     {
-        var normalized = StringUtils.TrimRequired(title, ErrorCodes.CustomCareerTitleInvalid);
+        var normalized = Regex.Replace(StringUtils.TrimRequired(title, ErrorCodes.CustomCareerTitleInvalid), @"\s+", " ");
         if (normalized.Length is < 3 or > 100)
         {
             throw new ApiException(ErrorCodes.CustomCareerTitleInvalid);

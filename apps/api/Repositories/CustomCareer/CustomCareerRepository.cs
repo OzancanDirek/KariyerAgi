@@ -1,12 +1,15 @@
 using System.Text.Json.Serialization;
 using CareerPath.Api.Dtos.CustomCareer;
 using CareerPath.Api.Infrastructure.Supabase;
+using CareerPath.Api.Exceptions;
 
 namespace CareerPath.Api.Repositories.CustomCareer;
 
 public class CustomCareerRepository
 {
     private const string Columns = "id,meslek_adi,durum,oneriler,onaylananlar";
+    private static readonly IReadOnlyDictionary<string, ErrorDefinition> CreateErrors =
+        new Dictionary<string, ErrorDefinition> { ["Bu meslek zaten kayıtlı."] = ErrorCodes.CustomCareerAlreadyExists };
     private readonly SupabaseRestClient client;
 
     public CustomCareerRepository(SupabaseRestClient client)
@@ -33,6 +36,12 @@ public class CustomCareerRepository
         return SupabaseResponseReader.ReadList<CustomCareerRow>(result.RootElement);
     }
 
+    public async Task<List<CustomCareerRow>> GetActiveAsync(Guid candidateId, string token, CancellationToken cancellationToken)
+    {
+        using var result = await client.SendAsync(HttpMethod.Get, $"aday_ozel_meslek_taslaklari?aday_id=eq.{candidateId:D}&durum=in.(processing,draft,confirmed)&select={Columns}", null, token, cancellationToken);
+        return SupabaseResponseReader.ReadList<CustomCareerRow>(result.RootElement);
+    }
+
     public async Task<CustomCareerRow?> GetAsync(Guid candidateId, Guid id, string token, CancellationToken cancellationToken)
     {
         using var result = await client.SendAsync(HttpMethod.Get, $"aday_ozel_meslek_taslaklari?aday_id=eq.{candidateId:D}&id=eq.{id:D}&select={Columns}", null, token, cancellationToken);
@@ -41,7 +50,7 @@ public class CustomCareerRepository
 
     public async Task<CustomCareerRow?> CreateAsync(Guid candidateId, string title, string token, CancellationToken cancellationToken)
     {
-        using var result = await client.SendAsync(HttpMethod.Post, $"aday_ozel_meslek_taslaklari?select={Columns}", new { aday_id = candidateId, meslek_adi = title }, token, cancellationToken);
+        using var result = await client.SendAsync(HttpMethod.Post, $"aday_ozel_meslek_taslaklari?select={Columns}", new { aday_id = candidateId, meslek_adi = title }, token, cancellationToken, databaseErrors: CreateErrors);
         return SupabaseResponseReader.ReadSingle<CustomCareerRow>(result.RootElement);
     }
 

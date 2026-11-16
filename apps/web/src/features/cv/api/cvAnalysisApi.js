@@ -33,6 +33,6 @@ export const cvAnalysisApi = {
     return toAnalysis(await request('cv', `${cvFileId}/analysis`, { token }));
   },
   async analyze(token, cvFileId) {
-    return toAnalysis(await request('cv', `${cvFileId}/analysis`, { method: 'POST', token }));
+    return toAnalysis(await request('cv', `${cvFileId}/analysis`, { method: 'POST', token, body: { acknowledged: true } }));
   },
 };

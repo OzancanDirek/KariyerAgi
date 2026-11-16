@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { LoginScreen } from './features/auth/components/LoginScreen.jsx';
+import { PasswordResetScreen } from './features/auth/components/PasswordResetScreen.jsx';
+import { takePasswordRecoveryToken } from './features/auth/authRedirect.js';
 import { RegisterScreen } from './features/auth/components/RegisterScreen.jsx';
 import { useAuthentication } from './features/auth/hooks/useAuthentication.js';
-import { WelcomeDashboard } from './features/dashboard/components/WelcomeDashboard.jsx';
+import { CandidateStartScreen } from './features/onboarding/CandidateStartScreen.jsx';
 import { PersonalProfileScreen } from './features/profile/components/PersonalProfileScreen.jsx';
 import { ProfileOverviewScreen } from './features/profile/components/ProfileOverviewScreen.jsx';
 import { CareerGoalsScreen } from './features/profile/components/CareerGoalsScreen.jsx';
@@ -13,6 +15,7 @@ import { AuthenticatedLayout } from './shared/ui/AuthenticatedLayout.jsx';
 import { SkillMapScreen } from './features/skills/SkillMapScreen.jsx';
 import { RoadmapScreen } from './features/roadmap/RoadmapScreen.jsx';
 import { LearningResourcesScreen } from './features/resources/LearningResourcesScreen.jsx';
+import { ResourceManagementScreen } from './features/resources/ResourceManagementScreen.jsx';
 import { CompanyWorkspace } from './features/marketplace/CompanyWorkspace.jsx';
 import { CompanyReviewScreen } from './features/marketplace/CompanyReviewScreen.jsx';
 import { EmployerJobsScreen } from './features/marketplace/EmployerJobsScreen.jsx';
@@ -20,8 +23,8 @@ import { EmployerCandidatesScreen } from './features/marketplace/EmployerCandida
 import { CandidateJobsScreen } from './features/marketplace/CandidateJobsScreen.jsx';
 
 const signedInScreens = new Set([
-  'dashboard', 'profile-overview', 'profile-edit', 'career-goals',
-  'cv-analysis', 'cv-builder', 'skill-map', 'roadmap', 'learning-resources', 'records-experiences',
+  'dashboard', 'getting-started', 'profile-overview', 'profile-edit', 'career-goals',
+  'cv-analysis', 'cv-builder', 'skill-map', 'roadmap', 'learning-resources', 'resource-management', 'records-experiences',
   'records-educations', 'records-projects', 'records-cv', 'records-certificates', 'company', 'employer-jobs', 'employer-candidates', 'company-review', 'candidate-jobs'
 ]);
 
@@ -31,6 +34,7 @@ function screenFromUrl() {
 }
 
 export default function App() {
+  const [recoveryToken, setRecoveryToken] = useState(takePasswordRecoveryToken);
   const { session, ready, login, register, logout, runAuthenticated } = useAuthentication();
   const [screen, setScreen] = useState('login');
   const [isEmployer, setIsEmployer] = useState(false);
@@ -80,12 +84,16 @@ export default function App() {
     return <p className="p-8">Oturum kontrol ediliyor...</p>;
   }
 
+  if (recoveryToken) {
+    return <PasswordResetScreen recoveryToken={recoveryToken} onBack={() => { setRecoveryToken(null); setScreen('login'); }} onDone={async () => { await logout(); setRecoveryToken(null); setNotice('Şifren güncellendi. Yeni şifrenle giriş yapabilirsin.'); setScreen('login'); }} />;
+  }
+
   if (session) {
     let page;
     const role = session.user?.role;
     const activeScreen = role === 'isveren'
       ? ['employer-jobs', 'employer-candidates'].includes(signedInScreen) ? signedInScreen : 'company'
-      : role === 'yonetici' ? 'company-review' : signedInScreen;
+      : role === 'yonetici' ? signedInScreen === 'resource-management' ? 'resource-management' : 'company-review' : signedInScreen;
     if (role === 'isveren') {
       page = activeScreen === 'employer-jobs'
         ? <EmployerJobsScreen runAuthenticated={runAuthenticated} onOpenCandidates={(jobId) => { window.location.hash = `/employer-candidates?job=${encodeURIComponent(jobId)}`; setSignedInScreen('employer-candidates'); }} />
@@ -93,7 +101,7 @@ export default function App() {
           ? <EmployerCandidatesScreen runAuthenticated={runAuthenticated} />
           : <CompanyWorkspace runAuthenticated={runAuthenticated} />;
     } else if (role === 'yonetici') {
-      page = <CompanyReviewScreen runAuthenticated={runAuthenticated} />;
+      page = activeScreen === 'resource-management' ? <ResourceManagementScreen runAuthenticated={runAuthenticated} /> : <CompanyReviewScreen runAuthenticated={runAuthenticated} />;
     } else if (signedInScreen === 'profile-edit') {
       page = <PersonalProfileScreen runAuthenticated={runAuthenticated} onBack={() => navigateSignedIn('profile-overview')} />;
     } else if (signedInScreen === 'career-goals') {
@@ -107,7 +115,7 @@ export default function App() {
     } else if (signedInScreen === 'skill-map') {
       page = <SkillMapScreen runAuthenticated={runAuthenticated} />;
     } else if (signedInScreen === 'roadmap') {
-      page = <RoadmapScreen runAuthenticated={runAuthenticated} onOpenSkills={() => navigateSignedIn('skill-map')} onOpenGoals={() => navigateSignedIn('career-goals')} onOpenResources={() => navigateSignedIn('learning-resources')} />;
+      page = <RoadmapScreen runAuthenticated={runAuthenticated} onOpenSkills={() => navigateSignedIn('skill-map')} onOpenGoals={() => navigateSignedIn('career-goals')} onOpenResources={() => navigateSignedIn('learning-resources')} onOpenCustomCareer={() => { window.location.hash = '/learning-resources?custom=1'; setSignedInScreen('learning-resources'); }} />;
     } else if (signedInScreen === 'learning-resources') {
       page = <LearningResourcesScreen runAuthenticated={runAuthenticated} onOpenRoadmap={() => navigateSignedIn('roadmap')} />;
     } else if (signedInScreen === 'candidate-jobs') {
@@ -115,7 +123,7 @@ export default function App() {
     } else if (signedInScreen === 'profile-overview') {
       page = <ProfileOverviewScreen runAuthenticated={runAuthenticated} onEdit={() => navigateSignedIn('profile-edit')} onOpenGoals={() => navigateSignedIn('career-goals')} onOpenRecords={(kind) => navigateSignedIn(`records-${kind}`)} />;
     } else {
-      page = <WelcomeDashboard user={session.user} onOpenProfile={() => navigateSignedIn('profile-overview')} onOpenGoals={() => navigateSignedIn('career-goals')} />;
+      page = <CandidateStartScreen user={session.user} runAuthenticated={runAuthenticated} onNavigate={navigateSignedIn} showWhenComplete={signedInScreen === 'getting-started'} />;
     }
 
     return <AuthenticatedLayout screen={activeScreen} role={role} user={session.user} onNavigate={navigateSignedIn} onLogout={handleLogout}>{page}</AuthenticatedLayout>;
@@ -123,6 +131,10 @@ export default function App() {
 
   if (screen === 'register') {
     return <RegisterScreen onNavigate={handleNavigate} onRegister={handleRegister} isEmployer={isEmployer} onToggleEmployer={() => setIsEmployer((value) => !value)} />;
+  }
+
+  if (screen === 'forgot-password') {
+    return <PasswordResetScreen onBack={() => setScreen('login')} />;
   }
 
   return <LoginScreen onNavigate={handleNavigate} onLogin={login} notice={notice} />;

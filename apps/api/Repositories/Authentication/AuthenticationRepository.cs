@@ -38,4 +38,14 @@ public class AuthenticationRepository
         using var result = await client.SendAsync(HttpMethod.Post, "logout", null, accessToken, cancellationToken);
     }
 
+    public async Task RequestPasswordResetAsync(string email, string redirectUrl, CancellationToken cancellationToken)
+    {
+        using var result = await client.SendAsync(HttpMethod.Post, $"recover?redirect_to={Uri.EscapeDataString(redirectUrl)}", new { email }, null, cancellationToken);
+    }
+
+    public async Task UpdatePasswordAsync(string password, string accessToken, CancellationToken cancellationToken)
+    {
+        using var result = await client.SendAsync(HttpMethod.Put, "user", new { password }, accessToken, cancellationToken);
+    }
+
 }

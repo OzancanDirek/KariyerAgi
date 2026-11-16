@@ -56,7 +56,8 @@ export function LearningResourcesScreen({ runAuthenticated, onOpenRoadmap }) {
           setResources(nextResources);
           setCareer(latestCareer);
           const customTarget = isCustomTarget(nextRoadmap);
-          setMode((current) => current ?? (customTarget ? 'custom' : 'catalog'));
+          const openCustom = new URLSearchParams(window.location.hash.split('?')[1] ?? '').get('custom') === '1';
+          setMode((current) => openCustom ? 'custom' : current ?? (customTarget ? 'custom' : 'catalog'));
           setCustomTitle((current) => current || (customTarget ? nextRoadmap.targetTitle : ''));
           if (latestCareer?.status === 'draft') {
             setSelectedIndexes(latestCareer.suggestedSkills.map((_, index) => index));

@@ -62,6 +62,7 @@ export function LoginScreen({ onNavigate, onLogin, notice }) {
                 <input type="checkbox" checked={rememberMe} onChange={(event) => setRememberMe(event.target.checked)} className="h-4 w-4 accent-[#243B64]" />
                 Beni hatırla
               </label>
+              <button type="button" onClick={() => onNavigate('forgot-password')} className="text-sm font-semibold text-[#5276A7] underline-offset-4 hover:underline">Şifremi unuttum</button>
               <Button type="submit" variant="primary" isLoading={isLoading} className="auth-submit mt-2 w-full">Giriş Yap</Button>
             </form>
     </AuthFrame>

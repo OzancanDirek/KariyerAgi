@@ -39,8 +39,13 @@ public class CvAnalysisServiceImpl : ICvAnalysisService
         return await analysisRepository.GetQuotaAsync(identity.AccessToken, currentUser.CancellationToken);
     }
 
-    public async Task<CvAnalysisResponse> AnalyzeCvAsync(Guid cvFileId)
+    public async Task<CvAnalysisResponse> AnalyzeCvAsync(Guid cvFileId, bool acknowledged)
     {
+        if (!acknowledged)
+        {
+            throw new ApiException(ErrorCodes.CvAnalysisConsentRequired);
+        }
+        var acknowledgedAt = DateTimeOffset.UtcNow;
         var identity = await currentUser.ResolveAsync();
         var cv = await GetOwnedCvAsync(identity.UserId, cvFileId, identity.AccessToken, currentUser.CancellationToken);
         var (bytes, _) = await storage.DownloadAsync(Bucket, cv.StoragePath, identity.AccessToken, currentUser.CancellationToken);
@@ -51,7 +56,7 @@ public class CvAnalysisServiceImpl : ICvAnalysisService
             throw new ApiException(ErrorCodes.CvDailyLimitReached);
         }
         var result = await analyzer.AnalyzeAsync(bytes, cv.ContentType, currentUser.CancellationToken);
-        var created = await analysisRepository.CreateAsync(identity.UserId, cvFileId, quotaRequestId.Value, GeminiCvAnalyzer.Model, result, identity.AccessToken, currentUser.CancellationToken);
+        var created = await analysisRepository.CreateAsync(identity.UserId, cvFileId, quotaRequestId.Value, GeminiCvAnalyzer.Model, result, acknowledgedAt, identity.AccessToken, currentUser.CancellationToken);
         if (created is null)
         {
             throw new ApiException(ErrorCodes.CvAnalysisFailed);

@@ -6,5 +6,5 @@ public interface ICvAnalysisService
 {
     Task<CvAnalysisResponse?> GetLatestAnalysisAsync(Guid cvFileId);
     Task<CvAnalysisQuotaResponse> GetAnalysisQuotaAsync();
-    Task<CvAnalysisResponse> AnalyzeCvAsync(Guid cvFileId);
+    Task<CvAnalysisResponse> AnalyzeCvAsync(Guid cvFileId, bool acknowledged);
 }

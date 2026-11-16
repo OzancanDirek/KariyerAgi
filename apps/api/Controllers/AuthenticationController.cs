@@ -33,4 +33,21 @@ public class AuthenticationController : ControllerBase
         await authentication.LogoutAsync();
         return NoContent();
     }
+
+    [HttpPost("password-reset")]
+    public async Task<IActionResult> RequestPasswordReset(PasswordResetRequest request)
+    {
+        await authentication.RequestPasswordResetAsync(request.Email);
+        return NoContent();
+    }
+
+    [HttpPut("password")]
+    public async Task<IActionResult> UpdatePassword(UpdatePasswordRequest request)
+    {
+        await authentication.UpdatePasswordAsync(request.Password);
+        return NoContent();
+    }
 }
+
+public sealed record PasswordResetRequest(string? Email);
+public sealed record UpdatePasswordRequest(string? Password);

@@ -10,4 +10,10 @@ export const authenticationApi = {
   logout(token) {
     return request('auth', 'logout', { method: 'POST', token });
   },
+  requestPasswordReset(email) {
+    return request('auth', 'password-reset', { method: 'POST', body: { email } });
+  },
+  updatePassword(token, password) {
+    return request('auth', 'password', { method: 'PUT', token, body: { password } });
+  },
 };

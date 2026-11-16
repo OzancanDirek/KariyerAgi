@@ -6,6 +6,7 @@ using CareerPath.Api.Repositories.Roadmap;
 using CareerPath.Api.Repositories.Skill;
 using CareerPath.Api.Security;
 using CareerPath.Api.Services.Skill;
+using CareerPath.Api.Validation;
 
 namespace CareerPath.Api.Services.Roadmap;
 
@@ -46,9 +47,14 @@ public class RoadmapServiceImpl : IRoadmapService
             Roles = roles.Select(role => new RoadmapRoleResponse { Id = role.Id, Name = role.Name, Description = role.Description }).ToList()
         };
 
+        var listedNames = roles.Select(role => CustomCareerValidator.ComparisonKey(role.Name)).ToHashSet(StringComparer.Ordinal);
         foreach (var personalCareer in customCareersForUser)
         {
-            response.Roles.Add(new RoadmapRoleResponse { Id = personalCareer.Id, Name = personalCareer.Title, Description = "Onayladığın mesleğe özel beceriler" });
+            var name = personalCareer.Title.Trim();
+            if (listedNames.Add(CustomCareerValidator.ComparisonKey(name)))
+            {
+                response.Roles.Add(new RoadmapRoleResponse { Id = personalCareer.Id, Name = name, Description = "Onayladığın mesleğe özel beceriler" });
+            }
         }
 
         if (custom is not null)

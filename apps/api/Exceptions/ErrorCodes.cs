@@ -117,6 +117,7 @@ public static class ErrorCodes
     public static readonly ErrorDefinition CustomCareerDailyLimit = new("CCR-002", "Bugün için 2 meslek taslağı hakkınız doldu.", 429);
     public static readonly ErrorDefinition CustomCareerGenerationFailed = new("CCR-003", "Meslek becerileri oluşturulamadı. Lütfen tekrar deneyin.", 502);
     public static readonly ErrorDefinition CustomCareerNotFound = new("CCR-004", "Meslek taslağı bulunamadı.", 404);
+    public static readonly ErrorDefinition CustomCareerAlreadyExists = new("CCR-005", "Bu meslek zaten kayıtlı. Yol haritandan seçebilir veya mevcut taslağını açabilirsin.", 409);
     public static readonly ErrorDefinition CvNotFound = new("CV-001", "CV dosyası bulunamadı.", 404);
     public static readonly ErrorDefinition CvFileInvalid = new("CV-002", "En fazla 10 MB boyutunda bir PDF dosyası yükleyin.", 400);
     public static readonly ErrorDefinition CvAnalysisNotConfigured = new("CV-006", "CV analizi henüz yapılandırılmadı.", 503);
@@ -125,4 +126,5 @@ public static class ErrorCodes
     public static readonly ErrorDefinition CvOperationFailed = new("CV-005", "CV işlemi tamamlanamadı.", 502);
     public static readonly ErrorDefinition CvDraftNotFound = new("CV-009", "CV taslağı bulunamadı.", 404);
     public static readonly ErrorDefinition CvDraftInvalid = new("CV-010", "CV taslağının adı, şablonu veya içeriği geçersiz.", 400);
+    public static readonly ErrorDefinition CvAnalysisConsentRequired = new("CV-011", "CV'yi yapay zekâ ile analiz etmek için işlem bilgilendirmesini onaylayın.", 400);
 }

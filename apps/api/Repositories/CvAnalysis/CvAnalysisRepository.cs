@@ -38,7 +38,7 @@ public class CvAnalysisRepository
         return result.RootElement.GetGuid();
     }
 
-    public async Task<CvAnalysisResponse?> CreateAsync(Guid candidateId, Guid cvFileId, Guid quotaRequestId, string model, CvAnalysisResult analysis, string token, CancellationToken cancellationToken)
+    public async Task<CvAnalysisResponse?> CreateAsync(Guid candidateId, Guid cvFileId, Guid quotaRequestId, string model, CvAnalysisResult analysis, DateTimeOffset acknowledgedAt, string token, CancellationToken cancellationToken)
     {
         var content = analysis.Content;
         var body = new Dictionary<string, object?>
@@ -62,7 +62,8 @@ public class CvAnalysisRepository
             ["bicim_skoru"] = analysis.Scores.FormatScore,
             ["icerik_skoru"] = analysis.Scores.ContentScore,
             ["genel_skor"] = analysis.Scores.OverallScore,
-            ["puan_detaylari"] = analysis.Scores
+            ["puan_detaylari"] = analysis.Scores,
+            ["ai_islem_onayi_tarihi"] = acknowledgedAt
         };
         using var result = await client.SendAsync(HttpMethod.Post, $"cv_analizleri?select={Columns}", body, token, cancellationToken);
         return SupabaseResponseReader.ReadSingle<CvAnalysisResponse>(result.RootElement);

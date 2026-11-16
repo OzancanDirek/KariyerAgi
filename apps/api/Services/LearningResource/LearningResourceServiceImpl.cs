@@ -35,6 +35,15 @@ public class LearningResourceServiceImpl : ILearningResourceService
         return rows.Select(LearningResourceMapper.ToResponse).ToList();
     }
 
+    public async Task<List<LearningResourceSkillOption>> ListSkillsAsync()
+    {
+        var identity = await RequireAdministratorAsync();
+        var catalog = await skills.GetCatalogAsync(identity.AccessToken, currentUser.CancellationToken);
+        return catalog.Where(skill => !string.IsNullOrWhiteSpace(skill.Name))
+            .Select(skill => new LearningResourceSkillOption(skill.Id, skill.Name!))
+            .OrderBy(skill => skill.Name, StringComparer.Create(new System.Globalization.CultureInfo("tr-TR"), true)).ToList();
+    }
+
     public async Task<LearningResourceResponse> CreateAsync(SaveLearningResourceRequest request)
     {
         return await SaveAsync(null, request);

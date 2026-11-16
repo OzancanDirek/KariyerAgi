@@ -12,11 +12,13 @@ public class AuthenticationServiceImpl : IAuthenticationService
 {
     private readonly AuthenticationRepository repository;
     private readonly HttpRequestContext requestContext;
+    private readonly IConfiguration configuration;
 
-    public AuthenticationServiceImpl(AuthenticationRepository repository, HttpRequestContext requestContext)
+    public AuthenticationServiceImpl(AuthenticationRepository repository, HttpRequestContext requestContext, IConfiguration configuration)
     {
         this.repository = repository;
         this.requestContext = requestContext;
+        this.configuration = configuration;
     }
 
     public Task<RegisterResponse> RegisterAsync(RegisterRequest request)
@@ -47,17 +49,43 @@ public class AuthenticationServiceImpl : IAuthenticationService
         return repository.LogoutAsync(requestContext.AccessToken, requestContext.CancellationToken);
     }
 
+    public Task RequestPasswordResetAsync(string? email)
+    {
+        var normalizedEmail = ValidateEmail(email);
+        var origin = configuration["Web:Origin"]?.TrimEnd('/') ?? "http://localhost:3000";
+        return repository.RequestPasswordResetAsync(normalizedEmail, origin, requestContext.CancellationToken);
+    }
+
+    public Task UpdatePasswordAsync(string? password)
+    {
+        if (StringUtils.IsBlank(password) || password!.Length < 6)
+        {
+            throw new ApiException(ErrorCodes.PasswordTooShort);
+        }
+        if (StringUtils.IsBlank(requestContext.AccessToken))
+        {
+            throw new ApiException(ErrorCodes.MissingToken);
+        }
+        return repository.UpdatePasswordAsync(password!, requestContext.AccessToken, requestContext.CancellationToken);
+    }
+
     private static string ValidateCredentials(string? email, string? password)
+    {
+        var normalizedEmail = ValidateEmail(email);
+        if (StringUtils.IsBlank(password) || password!.Length < 6)
+        {
+            throw new ApiException(ErrorCodes.PasswordTooShort);
+        }
+
+        return normalizedEmail;
+    }
+
+    private static string ValidateEmail(string? email)
     {
         var normalizedEmail = StringUtils.TrimRequired(email, ErrorCodes.InvalidEmail);
         if (!MailAddress.TryCreate(normalizedEmail, out var parsed) || parsed.Address != normalizedEmail)
         {
             throw new ApiException(ErrorCodes.InvalidEmail);
-        }
-
-        if (StringUtils.IsBlank(password) || password!.Length < 6)
-        {
-            throw new ApiException(ErrorCodes.PasswordTooShort);
         }
 
         return normalizedEmail;

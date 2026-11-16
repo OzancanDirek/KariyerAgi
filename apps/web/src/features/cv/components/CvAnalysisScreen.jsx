@@ -39,6 +39,7 @@ export function CvAnalysisScreen({ runAuthenticated, onOpenCvs }) {
   const [quota, setQuota] = useState(null);
   const [loading, setLoading] = useState(true);
   const [analyzing, setAnalyzing] = useState(false);
+  const [acknowledged, setAcknowledged] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -100,11 +101,16 @@ export function CvAnalysisScreen({ runAuthenticated, onOpenCvs }) {
   }, [selectedId, runAuthenticated]);
 
   async function analyze() {
+    if (!acknowledged) {
+      setError('Analizden önce CV işleme bilgilendirmesini onayla.');
+      return;
+    }
     setAnalyzing(true);
     setError('');
     try {
       const result = await runAuthenticated((token) => cvAnalysisApi.analyze(token, selectedId));
       setAnalysis(result);
+      setAcknowledged(false);
       runAuthenticated(cvAnalysisApi.getQuota).then(setQuota).catch(() => {});
     } catch (failure) {
       setError(failure.message);
@@ -122,7 +128,7 @@ export function CvAnalysisScreen({ runAuthenticated, onOpenCvs }) {
     <div className="mt-5 rounded-2xl border border-[#E3E7ED] bg-white p-6 shadow-sm sm:p-8">
       <div className="flex items-start gap-4"><span className="rounded-xl bg-[#E8F5F2] p-3 text-[#2F8F83]"><FileSearch size={25} /></span><div><span className="text-xs font-bold uppercase tracking-widest text-[#2F8F83]">Modül 03 · AI CV Merkezi</span><h1 className="mt-1 text-2xl font-bold text-[#243B64]">CV Analiz Raporu</h1><p className="mt-2 text-sm text-[#667085]">CV’ndeki beceri, eğitim ve deneyim bilgilerini incele. Öneriler yapay zekâ değerlendirmesidir.</p></div></div>
       {error && <p role="alert" className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">{error}</p>}
-      {files.length > 0 && <div className="mt-7 border-t border-[#E3E7ED] pt-6"><div className="flex flex-wrap items-end gap-3"><label className="min-w-64 flex-1 text-sm font-semibold text-[#243B64]">Analiz edilecek CV<select value={selectedId} onChange={(event) => setSelectedId(event.target.value)} className="mt-2 w-full rounded-xl border border-[#D6DEE9] bg-white px-4 py-3 text-sm font-normal text-[#202938]">{files.map((file) => <option key={file.id} value={file.id}>{file.fileName}{file.isPrimary ? ' · Birincil' : ''}</option>)}</select></label><button type="button" disabled={!selectedId || analyzing || quota?.remaining === 0} onClick={analyze} className="inline-flex items-center gap-2 rounded-xl bg-[#243B64] px-5 py-3 text-sm font-semibold text-white hover:bg-[#1B2D4E] disabled:opacity-50">{analyzing ? <LoaderCircle size={17} className="animate-spin" /> : <Sparkles size={17} />}{analyzing ? 'Analiz ediliyor...' : analysis ? 'Yeniden analiz et' : 'CV’yi analiz et'}</button></div>{quota && <p className="mt-3 text-sm text-[#667085]">Bugün kalan analiz hakkı: <strong className="text-[#243B64]">{quota.remaining}/{quota.dailyLimit}</strong>{quota.remaining === 0 && ` · ${new Date(quota.resetsAt).toLocaleString('tr-TR')} tarihinde yenilenir.`}</p>}</div>}
+      {files.length > 0 && <div className="mt-7 border-t border-[#E3E7ED] pt-6"><div className="flex flex-wrap items-end gap-3"><label className="min-w-64 flex-1 text-sm font-semibold text-[#243B64]">Analiz edilecek CV<select value={selectedId} onChange={(event) => { setSelectedId(event.target.value); setAcknowledged(false); }} className="mt-2 w-full rounded-xl border border-[#D6DEE9] bg-white px-4 py-3 text-sm font-normal text-[#202938]">{files.map((file) => <option key={file.id} value={file.id}>{file.fileName}{file.isPrimary ? ' · Birincil' : ''}</option>)}</select></label><button type="button" disabled={!selectedId || analyzing || quota?.remaining === 0 || !acknowledged} onClick={analyze} className="inline-flex items-center gap-2 rounded-xl bg-[#243B64] px-5 py-3 text-sm font-semibold text-white hover:bg-[#1B2D4E] disabled:opacity-50">{analyzing ? <LoaderCircle size={17} className="animate-spin" /> : <Sparkles size={17} />}{analyzing ? 'Analiz ediliyor...' : analysis ? 'Yeniden analiz et' : 'CV’yi analiz et'}</button></div><label className="mt-5 flex items-start gap-3 rounded-xl border border-[#D7E6E3] bg-[#F2FAF8] p-4 text-sm leading-6 text-[#355C57]"><input type="checkbox" checked={acknowledged} onChange={(event) => setAcknowledged(event.target.checked)} className="mt-1 accent-[#2F8F83]" /><span>Seçtiğim CV dosyasının analiz için Google Gemini hizmetine gönderileceğini ve analiz sonucunun hesabımda saklanacağını anladım. Bu işlem isteğe bağlıdır; onay vermeden diğer özellikleri kullanabilirim.</span></label>{quota && <p className="mt-3 text-sm text-[#667085]">Bugün kalan analiz hakkı: <strong className="text-[#243B64]">{quota.remaining}/{quota.dailyLimit}</strong>{quota.remaining === 0 && ` · ${new Date(quota.resetsAt).toLocaleString('tr-TR')} tarihinde yenilenir.`}</p>}</div>}
     </div>
     {loading && <p className="mt-6 text-sm text-[#667085]">CV bilgileri yükleniyor...</p>}
     {!loading && files.length === 0 && <div className="mt-6 rounded-2xl border border-dashed border-[#D6DEE9] bg-white p-8 text-center"><p className="font-semibold text-[#243B64]">Analiz için önce CV yükle.</p><button type="button" onClick={onOpenCvs} className="mt-4 rounded-lg bg-[#243B64] px-4 py-2 text-sm font-semibold text-white">CV yükle</button></div>}

@@ -33,9 +33,11 @@ public class CvAnalysisController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<CvAnalysisResponse>> Analyze(Guid cvFileId)
+    public async Task<ActionResult<CvAnalysisResponse>> Analyze(Guid cvFileId, CvAnalysisConsentRequest request)
     {
-        var created = await analysis.AnalyzeCvAsync(cvFileId);
+        var created = await analysis.AnalyzeCvAsync(cvFileId, request.Acknowledged);
         return StatusCode(201, created);
     }
 }
+
+public sealed record CvAnalysisConsentRequest(bool Acknowledged);

@@ -8,4 +8,6 @@ public interface IAuthenticationService
     Task<RegisterResponse> RegisterAsync(RegisterRequest request);
     Task<AuthSession> LoginAsync(LoginRequest request);
     Task LogoutAsync();
+    Task RequestPasswordResetAsync(string? email);
+    Task UpdatePasswordAsync(string? password);
 }
