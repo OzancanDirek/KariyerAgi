@@ -121,7 +121,6 @@ builder.Services.AddScoped<IAuthenticationService, AuthenticationServiceImpl>();
 builder.Services.AddScoped<ISessionService, SessionServiceImpl>();
 builder.Services.AddScoped<HttpRequestContext>();
 builder.Services.AddScoped<CurrentUserContextProvider>();
-builder.Services.AddSingleton<CvAiTransferPolicy>();
 builder.Services.AddScoped<IProfileService, ProfileServiceImpl>();
 builder.Services.AddScoped<ICareerProfileService, CareerProfileServiceImpl>();
 builder.Services.AddScoped<IExperienceService, ExperienceServiceImpl>();

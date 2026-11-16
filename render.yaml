@@ -17,8 +17,6 @@ services:
         sync: false
       - key: Gemini__ApiKey
         sync: false
-      - key: Privacy__CvAiTransferEnabled
-        value: "false"
       - key: Web__Origin
         sync: false
   - type: web

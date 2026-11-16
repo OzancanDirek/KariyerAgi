@@ -19,10 +19,9 @@ public class JobMatchService
     private readonly GeminiJobMatcher gemini;
     private readonly SupabasePrivateStorageClient storage;
     private readonly CurrentUserContextProvider currentUser;
-    private readonly CvAiTransferPolicy transferPolicy;
 
     public JobMatchService(HiringAccessService access, JobMatchRepository repository, JobApplicationRepository applications,
-        GeminiJobMatcher gemini, SupabasePrivateStorageClient storage, CurrentUserContextProvider currentUser, CvAiTransferPolicy transferPolicy)
+        GeminiJobMatcher gemini, SupabasePrivateStorageClient storage, CurrentUserContextProvider currentUser)
     {
         this.access = access;
         this.repository = repository;
@@ -30,7 +29,6 @@ public class JobMatchService
         this.gemini = gemini;
         this.storage = storage;
         this.currentUser = currentUser;
-        this.transferPolicy = transferPolicy;
     }
 
     public async Task<MatchCriteriaResponse?> GetCriteriaAsync(Guid jobId)
@@ -86,7 +84,6 @@ public class JobMatchService
 
     public async Task<ApplicationMatchResponse> EvaluateAsync(Guid applicationId)
     {
-        transferPolicy.RequireEnabled();
         var (user, detail) = await GetApplicantAsync(applicationId);
         if (detail.Status == "geri_cekildi" || string.IsNullOrWhiteSpace(detail.CvStoragePath) || detail.CvContentType != "application/pdf")
         {

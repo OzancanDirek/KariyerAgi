@@ -16,16 +16,14 @@ public class CvAnalysisServiceImpl : ICvAnalysisService
     private readonly CurrentUserContextProvider currentUser;
     private readonly SupabasePrivateStorageClient storage;
     private readonly GeminiCvAnalyzer analyzer;
-    private readonly CvAiTransferPolicy transferPolicy;
 
-    public CvAnalysisServiceImpl(CvRepository cvRepository, CvAnalysisRepository analysisRepository, CurrentUserContextProvider currentUser, SupabasePrivateStorageClient storage, GeminiCvAnalyzer analyzer, CvAiTransferPolicy transferPolicy)
+    public CvAnalysisServiceImpl(CvRepository cvRepository, CvAnalysisRepository analysisRepository, CurrentUserContextProvider currentUser, SupabasePrivateStorageClient storage, GeminiCvAnalyzer analyzer)
     {
         this.cvRepository = cvRepository;
         this.analysisRepository = analysisRepository;
         this.currentUser = currentUser;
         this.storage = storage;
         this.analyzer = analyzer;
-        this.transferPolicy = transferPolicy;
     }
 
     public async Task<CvAnalysisResponse?> GetLatestAnalysisAsync(Guid cvFileId)
@@ -43,7 +41,6 @@ public class CvAnalysisServiceImpl : ICvAnalysisService
 
     public async Task<CvAnalysisResponse> AnalyzeCvAsync(Guid cvFileId, bool acknowledged)
     {
-        transferPolicy.RequireEnabled();
         if (!acknowledged)
         {
             throw new ApiException(ErrorCodes.CvAnalysisConsentRequired);
