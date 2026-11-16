@@ -69,6 +69,16 @@ public class CompanyMembershipServiceImpl : ICompanyMembershipService
         }
     }
 
+    public async Task TransferOwnershipAsync(Guid companyId, Guid membershipId)
+    {
+        if (membershipId == Guid.Empty)
+        {
+            throw new ApiException(ErrorCodes.CompanyTransferRecipientInvalid);
+        }
+        var user = await RequireOwnerAsync(companyId);
+        await repository.TransferOwnershipAsync(companyId, membershipId, user.AccessToken, currentUser.CancellationToken);
+    }
+
     private async Task RespondAsync(Guid membershipId, string status)
     {
         var user = await access.RequireRoleAsync(AccountRole.Isveren);

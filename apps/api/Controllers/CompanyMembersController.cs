@@ -54,4 +54,11 @@ public class CompanyMembersController : ControllerBase
         await memberships.RemoveAsync(companyId, membershipId);
         return NoContent();
     }
+
+    [HttpPost("company/{companyId:guid}/transfer-ownership")]
+    public async Task<IActionResult> TransferOwnership(Guid companyId, TransferCompanyOwnershipRequest request)
+    {
+        await memberships.TransferOwnershipAsync(companyId, request.MembershipId);
+        return NoContent();
+    }
 }

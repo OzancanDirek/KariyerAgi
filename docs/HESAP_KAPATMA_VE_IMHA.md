@@ -8,7 +8,11 @@ Mobil istemci aynı işlemi `POST /api/account/closure` ve
 Yanıt `requestId` ve `scheduledDeletionAt` içerir. Kapatma anında aktif
 başvurular görünümden kaldırılır, şirket üyeliği silinir ve hesapla yapılan
 uygulama veri erişimi kesilir. Şirket sahibi önce sahipliği devretmelidir
-(`ACC-003`, 409). Kapanmış hesapla giriş ve oturum yenileme `ACC-001` (403)
+(`ACC-003`, 409). Şirket ekranındaki **Şirket ekibi** bölümünden daveti kabul
+etmiş aktif işe alım çalışanı seçilir. `POST
+/api/company-members/company/{companyId}/transfer-ownership` isteği
+`{"membershipId":"..."}` gövdesiyle atomik devir yapar; mobil istemci de aynı
+API'yi kullanabilir. Kapanmış hesapla giriş ve oturum yenileme `ACC-001` (403)
 döner. İstemci bu kodu alınca kayıtlı oturumu temizlemelidir.
 
 ## İmha
@@ -46,5 +50,6 @@ soft-delete kuralıyla çalışmaya devam eder; iki aylık fiziksel imha kuralı
    kullanılır; kalıcı silme için test hesabının süresini öne almak üretim
    verilerinde yapılmamalıdır.
 
-Not: Şirket sahibi hesabı için sahiplik devri ekranı henüz yoktur. Bu hesaplar
-`ACC-003` alır; yöneticinin güvenli devri tamamlaması gerekir.
+Sahipliği devretmek için şirketin en az bir aktif işe alım çalışanı olmalıdır.
+Daveti bekleyen veya arşivlenmiş üyeler seçilemez. Şirket sahibi hesabı,
+devir tamamlanana kadar kapatılamaz.

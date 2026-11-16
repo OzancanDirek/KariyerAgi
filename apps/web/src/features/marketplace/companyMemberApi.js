@@ -19,4 +19,7 @@ export const companyMemberApi = {
   remove(token, companyId, membershipId) {
     return request('company-members', `company/${companyId}/${membershipId}`, { method: 'DELETE', token });
   },
+  transferOwnership(token, companyId, membershipId) {
+    return request('company-members', `company/${companyId}/transfer-ownership`, { method: 'POST', token, body: { membershipId } });
+  },
 };

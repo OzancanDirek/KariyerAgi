@@ -13,6 +13,12 @@ public class CompanyMembershipRepository
         ["Geçersiz şirket daveti"] = ErrorCodes.CompanyInviteInvalid,
         ["Şirket sahibi değilsiniz"] = ErrorCodes.RecruitmentForbidden
     };
+    private static readonly IReadOnlyDictionary<string, ErrorDefinition> TransferErrors = new Dictionary<string, ErrorDefinition>
+    {
+        ["Şirket sahibi değilsiniz"] = ErrorCodes.CompanyNotFound,
+        ["Aktif işe alım çalışanı seçin"] = ErrorCodes.CompanyTransferRecipientInvalid,
+        ["Şirket sahibi üyeliği bulunamadı"] = ErrorCodes.CompanyTransferFailed
+    };
     private readonly SupabaseRestClient client;
 
     public CompanyMembershipRepository(SupabaseRestClient client)
@@ -28,13 +34,20 @@ public class CompanyMembershipRepository
 
     public async Task<List<CompanyMembershipRow>> ListForCompanyAsync(Guid companyId, string token, CancellationToken cancellationToken)
     {
-        using var result = await client.SendAsync(HttpMethod.Get, $"sirket_uyelikleri?sirket_id=eq.{companyId:D}&is_deleted=eq.false&select={Columns}&order=olusturma_tarihi.asc", null, token, cancellationToken);
+        using var result = await client.SendAsync(HttpMethod.Post, "rpc/sirket_uyelerini_listele", new { p_sirket_id = companyId }, token, cancellationToken);
         return SupabaseResponseReader.ReadList<CompanyMembershipRow>(result.RootElement);
     }
 
     public async Task InviteAsync(Guid companyId, string email, string token, CancellationToken cancellationToken)
     {
         using var result = await client.SendAsync(HttpMethod.Post, "rpc/sirket_calisani_davet_et", new { p_sirket_id = companyId, p_eposta = email }, token, cancellationToken, databaseErrors: InviteErrors);
+    }
+
+    public async Task TransferOwnershipAsync(Guid companyId, Guid membershipId, string token, CancellationToken cancellationToken)
+    {
+        using var result = await client.SendAsync(HttpMethod.Post, "rpc/sirket_sahipligini_devret",
+            new { p_sirket_id = companyId, p_yeni_sahip_uyelik_id = membershipId }, token, cancellationToken,
+            databaseErrors: TransferErrors);
     }
 
     public async Task<bool> RespondAsync(Guid membershipId, Guid userId, string status, string token, CancellationToken cancellationToken)

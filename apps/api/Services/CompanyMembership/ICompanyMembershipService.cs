@@ -10,4 +10,5 @@ public interface ICompanyMembershipService
     Task AcceptAsync(Guid membershipId);
     Task DeclineAsync(Guid membershipId);
     Task RemoveAsync(Guid companyId, Guid membershipId);
+    Task TransferOwnershipAsync(Guid companyId, Guid membershipId);
 }

@@ -53,6 +53,8 @@ public static class ErrorCodes
     public static readonly ErrorDefinition CompanyMemberNotFound = new("COM-005", "Şirket üyeliği veya daveti bulunamadı.", 404);
     public static readonly ErrorDefinition CompanyInviteAccountNotFound = new("COM-006", "Bu e-posta adresiyle kayıtlı işveren hesabı bulunamadı. Davet edilecek kişi önce kurumsal hesap açmalıdır.", 404);
     public static readonly ErrorDefinition CompanyInviteInvalid = new("COM-007", "Şirket daveti oluşturulamadı. Hesap türünü ve şirket yetkinizi kontrol edin.", 400);
+    public static readonly ErrorDefinition CompanyTransferRecipientInvalid = new("COM-008", "Sahiplik yalnızca daveti kabul etmiş aktif bir işe alım çalışanına devredilebilir.", 400);
+    public static readonly ErrorDefinition CompanyTransferFailed = new("COM-009", "Şirket sahipliği devredilemedi.", 502);
     public static readonly ErrorDefinition JobInvalid = new("JOB-001", "İlan bilgileri geçersiz.", 400);
     public static readonly ErrorDefinition JobNotFound = new("JOB-002", "İlan bulunamadı veya erişim izniniz yok.", 404);
     public static readonly ErrorDefinition JobOperationFailed = new("JOB-003", "İlan işlemi tamamlanamadı.", 502);
