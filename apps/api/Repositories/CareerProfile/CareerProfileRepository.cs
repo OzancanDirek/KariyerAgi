@@ -5,7 +5,7 @@ namespace CareerPath.Api.Repositories.CareerProfile;
 
 public class CareerProfileRepository
 {
-    private const string Columns = "id,unvan,ozet,deneyim_seviyesi,linkedin_url,github_url,portfolyo_url,hedef_unvan,hedef_sektor,calisma_modelleri,tercih_edilen_konumlar,hedef_kidem,kariyer_notlari,profil_gorunurlugu";
+    private const string Columns = "id,unvan,ozet,deneyim_seviyesi,linkedin_url,github_url,portfolyo_url,hedef_unvan,ilk_kurulum_tamamlandi_mi,hedef_sektor,calisma_modelleri,tercih_edilen_konumlar,hedef_kidem,kariyer_notlari,profil_gorunurlugu";
     private readonly SupabaseRestClient client;
 
     public CareerProfileRepository(SupabaseRestClient client)
@@ -38,6 +38,12 @@ public class CareerProfileRepository
             ["profil_gorunurlugu"] = profile.Visibility
         };
         using var result = await client.SendAsync(HttpMethod.Patch, BuildPath(userId), values, accessToken, cancellationToken);
+        return SupabaseResponseReader.ReadSingle<CandidateProfile>(result.RootElement);
+    }
+
+    public async Task<CandidateProfile?> CompleteInitialSetupAsync(Guid userId, string accessToken, CancellationToken cancellationToken)
+    {
+        using var result = await client.SendAsync(HttpMethod.Patch, BuildPath(userId), new { ilk_kurulum_tamamlandi_mi = true }, accessToken, cancellationToken);
         return SupabaseResponseReader.ReadSingle<CandidateProfile>(result.RootElement);
     }
 

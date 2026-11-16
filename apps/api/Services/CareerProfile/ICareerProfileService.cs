@@ -6,4 +6,5 @@ public interface ICareerProfileService
 {
     Task<CareerProfileResponse> GetCareerProfileAsync();
     Task<CareerProfileResponse> UpdateCareerProfileAsync(UpdateCareerProfileRequest request);
+    Task CompleteInitialSetupAsync();
 }

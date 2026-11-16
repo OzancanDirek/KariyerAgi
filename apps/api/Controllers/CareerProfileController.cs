@@ -26,4 +26,11 @@ public class CareerProfileController : ControllerBase
     {
         return await profile.UpdateCareerProfileAsync(request);
     }
+
+    [HttpPost("me/initial-setup/complete")]
+    public async Task<IActionResult> CompleteInitialSetup()
+    {
+        await profile.CompleteInitialSetupAsync();
+        return NoContent();
+    }
 }

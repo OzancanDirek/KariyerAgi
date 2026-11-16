@@ -17,6 +17,7 @@ public static class CareerProfileMapper
             GitHubUrl = profile.GitHubUrl,
             PortfolioUrl = profile.PortfolioUrl,
             TargetTitle = profile.TargetTitle,
+            InitialSetupCompleted = profile.InitialSetupCompleted,
             TargetIndustry = profile.TargetIndustry,
             WorkModels = profile.WorkModels,
             PreferredLocations = profile.PreferredLocations,

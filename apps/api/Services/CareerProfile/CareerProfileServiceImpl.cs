@@ -45,4 +45,14 @@ public class CareerProfileServiceImpl : ICareerProfileService
         return CareerProfileMapper.ToResponse(updated);
     }
 
+    public async Task CompleteInitialSetupAsync()
+    {
+        var identity = await currentUser.ResolveAsync();
+        var profile = await repository.CompleteInitialSetupAsync(identity.UserId, identity.AccessToken, currentUser.CancellationToken);
+        if (profile is null)
+        {
+            throw new ApiException(ErrorCodes.CareerProfileNotFound);
+        }
+    }
+
 }

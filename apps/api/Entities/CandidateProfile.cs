@@ -28,6 +28,9 @@ public class CandidateProfile
     [JsonPropertyName("hedef_unvan")]
     public string? TargetTitle { get; set; }
 
+    [JsonPropertyName("ilk_kurulum_tamamlandi_mi")]
+    public bool InitialSetupCompleted { get; set; }
+
     [JsonPropertyName("hedef_sektor")]
     public string? TargetIndustry { get; set; }
 

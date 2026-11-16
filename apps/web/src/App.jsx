@@ -5,6 +5,8 @@ import { takePasswordRecoveryToken } from './features/auth/authRedirect.js';
 import { RegisterScreen } from './features/auth/components/RegisterScreen.jsx';
 import { useAuthentication } from './features/auth/hooks/useAuthentication.js';
 import { CandidateStartScreen } from './features/onboarding/CandidateStartScreen.jsx';
+import { WelcomeDashboard } from './features/dashboard/components/WelcomeDashboard.jsx';
+import { careerProfileApi } from './features/profile/api/careerProfileApi.js';
 import { PersonalProfileScreen } from './features/profile/components/PersonalProfileScreen.jsx';
 import { ProfileOverviewScreen } from './features/profile/components/ProfileOverviewScreen.jsx';
 import { CareerGoalsScreen } from './features/profile/components/CareerGoalsScreen.jsx';
@@ -23,7 +25,7 @@ import { EmployerCandidatesScreen } from './features/marketplace/EmployerCandida
 import { CandidateJobsScreen } from './features/marketplace/CandidateJobsScreen.jsx';
 
 const signedInScreens = new Set([
-  'dashboard', 'getting-started', 'profile-overview', 'profile-edit', 'career-goals',
+  'dashboard', 'profile-overview', 'profile-edit', 'career-goals',
   'cv-analysis', 'cv-builder', 'skill-map', 'roadmap', 'learning-resources', 'resource-management', 'records-experiences',
   'records-educations', 'records-projects', 'records-cv', 'records-certificates', 'company', 'employer-jobs', 'employer-candidates', 'company-review', 'candidate-jobs'
 ]);
@@ -40,6 +42,18 @@ export default function App() {
   const [isEmployer, setIsEmployer] = useState(false);
   const [notice, setNotice] = useState('');
   const [signedInScreen, setSignedInScreen] = useState(screenFromUrl);
+  const [setupStatus, setSetupStatus] = useState(null);
+
+  useEffect(() => {
+    if (session?.user?.role !== 'aday' || !session.user.id) { return; }
+    let active = true;
+    runAuthenticated(careerProfileApi.getCareerProfile).then((profile) => {
+      if (active) { setSetupStatus({ userId: session.user.id, completed: profile.initialSetupCompleted }); }
+    }).catch(() => {
+      if (active) { setSetupStatus({ userId: session.user.id, error: true }); }
+    });
+    return () => { active = false; };
+  }, [session?.user?.id, session?.user?.role, runAuthenticated]);
 
   useEffect(() => {
     function syncScreen() {
@@ -91,6 +105,17 @@ export default function App() {
   if (session) {
     let page;
     const role = session.user?.role;
+    if (role === 'aday' && signedInScreen === 'dashboard') {
+      if (setupStatus?.userId !== session.user.id) {
+        return <p className="p-8">Başlangıç ekranı yükleniyor...</p>;
+      }
+      if (setupStatus.error) {
+        return <main className="p-8"><p>Başlangıç bilgileri yüklenemedi.</p><button type="button" onClick={() => window.location.reload()} className="mt-3 underline">Tekrar dene</button></main>;
+      }
+      if (!setupStatus.completed) {
+        return <CandidateStartScreen runAuthenticated={runAuthenticated} onNavigate={navigateSignedIn} onLogout={handleLogout} onComplete={() => setSetupStatus({ userId: session.user.id, completed: true })} />;
+      }
+    }
     const activeScreen = role === 'isveren'
       ? ['employer-jobs', 'employer-candidates'].includes(signedInScreen) ? signedInScreen : 'company'
       : role === 'yonetici' ? signedInScreen === 'resource-management' ? 'resource-management' : 'company-review' : signedInScreen;
@@ -123,7 +148,7 @@ export default function App() {
     } else if (signedInScreen === 'profile-overview') {
       page = <ProfileOverviewScreen runAuthenticated={runAuthenticated} onEdit={() => navigateSignedIn('profile-edit')} onOpenGoals={() => navigateSignedIn('career-goals')} onOpenRecords={(kind) => navigateSignedIn(`records-${kind}`)} />;
     } else {
-      page = <CandidateStartScreen user={session.user} runAuthenticated={runAuthenticated} onNavigate={navigateSignedIn} showWhenComplete={signedInScreen === 'getting-started'} />;
+      page = <WelcomeDashboard user={session.user} onOpenProfile={() => navigateSignedIn('profile-overview')} onOpenGoals={() => navigateSignedIn('career-goals')} />;
     }
 
     return <AuthenticatedLayout screen={activeScreen} role={role} user={session.user} onNavigate={navigateSignedIn} onLogout={handleLogout}>{page}</AuthenticatedLayout>;

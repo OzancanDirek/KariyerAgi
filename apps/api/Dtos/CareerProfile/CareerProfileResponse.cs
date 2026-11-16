@@ -10,6 +10,7 @@ public class CareerProfileResponse
     public string? GitHubUrl { get; set; }
     public string? PortfolioUrl { get; set; }
     public string? TargetTitle { get; set; }
+    public bool InitialSetupCompleted { get; set; }
     public string? TargetIndustry { get; set; }
     public List<string> WorkModels { get; set; } = new();
     public List<string> PreferredLocations { get; set; } = new();

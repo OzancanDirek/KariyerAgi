@@ -7,4 +7,7 @@ export const careerProfileApi = {
   updateCareerProfile(token, details) {
     return request('career-profile', 'me', { method: 'PUT', token, body: details });
   },
+  completeInitialSetup(token) {
+    return request('career-profile', 'me/initial-setup/complete', { method: 'POST', token });
+  },
 };
