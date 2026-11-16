@@ -27,7 +27,7 @@ Tamamlandı diyebilmek için her aktarım yönü bakımından şu kanıtların s
 5. Tam açık adres, ilgili kişi başvuru yöntemi, veri kategorileri, amaçlar, alıcılar, yurt dışı aktarım dayanağı ve gerçek saklama süreleriyle son aydınlatma metni; web ve mobilde aynı sürümün yayımlandığını gösteren kayıt.
 6. Hesap kapatma talebi, iki takvim ayı sonrasına planlanan fiziksel silme, Storage nesneleri, analiz/eşleşme kayıtları ve yedekler için kanıtlanmış imha süreci.
 
-**Şu an eksik:** 1–6'nın tamamlanmış kanıtı bulunmuyor. Özellikle imzalar, tedarikçi tarafın katılımı ve KVKK bildirimi kod veya kullanıcı kutucuğuyla oluşturulamaz. Hesap kapatmadan iki ay sonra kalıcı silme kararı verilmiş olsa da uygulamada bu işi yapan güvenilir akış henüz yoktur. Mevcut “sil” düğmeleri bazı kayıtları yalnızca görünümden kaldırır.
+**Şu an eksik:** 1–6'nın tamamlanmış kanıtı bulunmuyor. Özellikle imzalar, tedarikçi tarafın katılımı ve KVKK bildirimi kod veya kullanıcı kutucuğuyla oluşturulamaz. Hesap kapatma ve iki ay sonra kalıcı imha için uygulama akışı `HESAP_KAPATMA_VE_IMHA.md` içinde açıklanır. Tek tek kayıtlar için mevcut “sil” düğmeleri bazı kayıtları yalnızca görünümden kaldırır.
 
 ## Tedarikçilerle doğrulanacak sorular
 

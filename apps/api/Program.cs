@@ -48,6 +48,8 @@ using CareerPath.Api.Services.Job;
 using CareerPath.Api.Services.JobApplication;
 using CareerPath.Api.Services.CompanyMembership;
 using CareerPath.Api.Services.HiringAccess;
+using CareerPath.Api.Repositories.AccountClosure;
+using CareerPath.Api.Services.AccountClosure;
 using CvDraftEntity = CareerPath.Api.Entities.CvDraft;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -89,6 +91,8 @@ builder.Services.AddScoped<JobRepository>();
 builder.Services.AddScoped<JobApplicationRepository>();
 builder.Services.AddScoped<JobMatchRepository>();
 builder.Services.AddScoped<JobMatchService>();
+builder.Services.AddScoped<AccountClosureRepository>();
+builder.Services.AddScoped<IAccountClosureService, AccountClosureServiceImpl>();
 builder.Services.AddHttpClient<GeminiJobMatcher>();
 builder.Services.AddScoped<CompanyMembershipRepository>();
 builder.Services.AddScoped<HiringAccessService>();

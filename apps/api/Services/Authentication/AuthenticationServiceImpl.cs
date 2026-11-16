@@ -3,6 +3,7 @@ using System.Net.Mail;
 using CareerPath.Api.Dtos;
 using CareerPath.Api.Exceptions;
 using CareerPath.Api.Repositories.Authentication;
+using CareerPath.Api.Repositories.AccountClosure;
 using CareerPath.Api.Security;
 using CareerPath.Api.Utils;
 
@@ -13,12 +14,14 @@ public class AuthenticationServiceImpl : IAuthenticationService
     private readonly AuthenticationRepository repository;
     private readonly HttpRequestContext requestContext;
     private readonly IConfiguration configuration;
+    private readonly AccountClosureRepository accountClosure;
 
-    public AuthenticationServiceImpl(AuthenticationRepository repository, HttpRequestContext requestContext, IConfiguration configuration)
+    public AuthenticationServiceImpl(AuthenticationRepository repository, HttpRequestContext requestContext, IConfiguration configuration, AccountClosureRepository accountClosure)
     {
         this.repository = repository;
         this.requestContext = requestContext;
         this.configuration = configuration;
+        this.accountClosure = accountClosure;
     }
 
     public Task<RegisterResponse> RegisterAsync(RegisterRequest request)
@@ -38,10 +41,15 @@ public class AuthenticationServiceImpl : IAuthenticationService
         return repository.RegisterAsync(request, requestContext.CancellationToken);
     }
 
-    public Task<AuthSession> LoginAsync(LoginRequest request)
+    public async Task<AuthSession> LoginAsync(LoginRequest request)
     {
         request.Email = ValidateCredentials(request.Email, request.Password);
-        return repository.LoginAsync(request, requestContext.CancellationToken);
+        var session = await repository.LoginAsync(request, requestContext.CancellationToken);
+        if (!await accountClosure.IsOpenAsync(session.AccessToken, requestContext.CancellationToken))
+        {
+            throw new ApiException(ErrorCodes.AccountClosed);
+        }
+        return session;
     }
 
     public Task LogoutAsync()

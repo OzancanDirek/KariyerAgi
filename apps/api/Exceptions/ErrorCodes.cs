@@ -16,6 +16,10 @@ public class ErrorDefinition
 
 public static class ErrorCodes
 {
+    public static readonly ErrorDefinition AccountClosed = new("ACC-001", "Bu hesap kapatılmıştır.", 403);
+    public static readonly ErrorDefinition AccountClosureConfirmationRequired = new("ACC-002", "Hesabı kapatmak için onay metnini yazın.", 400);
+    public static readonly ErrorDefinition AccountOwnsCompany = new("ACC-003", "Şirket sahibi hesabı kapatmadan önce sahipliği devretmelidir.", 409);
+    public static readonly ErrorDefinition AccountClosureFailed = new("ACC-004", "Hesap kapatma işlemi tamamlanamadı.", 502);
     public static readonly ErrorDefinition Validation = new("VAL-001", "Gönderilen bilgiler geçersiz.", 400);
     public static readonly ErrorDefinition FullNameRequired = new("AUTH-001", "Ad ve soyad gereklidir.", 400);
     public static readonly ErrorDefinition InvalidRole = new("AUTH-002", "Hesap türü aday veya isveren olmalıdır.", 400);

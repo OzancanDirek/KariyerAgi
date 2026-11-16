@@ -12,7 +12,7 @@ export function useAuthentication() {
   const refreshInFlight = useRef(null);
 
   const clearInvalidSession = useCallback((error) => {
-    if (error.status === 400 || error.status === 401) {
+    if (error.status === 400 || error.status === 401 || error.code === 'ACC-001') {
       clearSavedSession();
       setSession(null);
     }
