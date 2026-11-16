@@ -53,6 +53,9 @@ public class SupabaseAuthClient
                     "invalid_credentials" => ErrorCodes.InvalidCredentials,
                     "email_not_confirmed" => ErrorCodes.EmailNotConfirmed,
                     "user_already_exists" => ErrorCodes.EmailAlreadyRegistered,
+                    "same_password" => ErrorCodes.PasswordUnchanged,
+                    "weak_password" => ErrorCodes.PasswordWeak,
+                    "reauthentication_needed" or "session_expired" or "session_not_found" or "token_expired" => ErrorCodes.PasswordRecoveryExpired,
                     _ => response.StatusCode switch
                     {
                         HttpStatusCode.BadRequest => ErrorCodes.Validation,
@@ -61,6 +64,8 @@ public class SupabaseAuthClient
                         HttpStatusCode.Forbidden => ErrorCodes.AuthServiceFailed,
                         HttpStatusCode.Conflict => ErrorCodes.EmailAlreadyRegistered,
                         HttpStatusCode.TooManyRequests => ErrorCodes.TooManyRequests,
+                        HttpStatusCode.UnprocessableEntity when path == "user" => ErrorCodes.PasswordUpdateRejected,
+                        HttpStatusCode.UnprocessableEntity => ErrorCodes.Validation,
                         _ => ErrorCodes.AuthServiceFailed
                     }
                 };

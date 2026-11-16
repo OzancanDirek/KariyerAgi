@@ -34,6 +34,10 @@ public static class ErrorCodes
     public static readonly ErrorDefinition AuthServiceUnavailable = new("AUTH-012", "Kimlik servisine ulaşılamıyor.", 503);
     public static readonly ErrorDefinition InvalidAuthResponse = new("AUTH-013", "Kimlik servisinden geçerli oturum bilgisi gelmedi.", 502);
     public static readonly ErrorDefinition AuthServiceFailed = new("AUTH-014", "Kimlik servisi işlemi tamamlayamadı.", 502);
+    public static readonly ErrorDefinition PasswordUnchanged = new("AUTH-018", "Yeni şifre mevcut şifrenden farklı olmalıdır.", 422);
+    public static readonly ErrorDefinition PasswordWeak = new("AUTH-019", "Bu şifre güvenlik koşullarını karşılamıyor. Daha güçlü bir şifre belirle.", 422);
+    public static readonly ErrorDefinition PasswordRecoveryExpired = new("AUTH-020", "Şifre yenileme bağlantısının süresi dolmuş. Yeni bağlantı iste.", 401);
+    public static readonly ErrorDefinition PasswordUpdateRejected = new("AUTH-021", "Bu şifre kaydedilemedi. Mevcut şifrenden farklı ve daha güçlü bir şifre dene.", 422);
     public static readonly ErrorDefinition LearningResourceForbidden = new("RES-001", "Kaynak yönetimi yetkiniz yok.", 403);
     public static readonly ErrorDefinition LearningResourceNotFound = new("RES-002", "Eğitim kaynağı bulunamadı.", 404);
     public static readonly ErrorDefinition LearningResourceUrlInvalid = new("RES-003", "Geçerli bir HTTPS kaynak bağlantısı girin.", 400);

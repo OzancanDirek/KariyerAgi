@@ -34,7 +34,7 @@ export function PasswordResetScreen({ recoveryToken, onBack, onDone }) {
     }
   }
 
-  return <AuthFrame isEmployer={false} heading={recoveryToken ? 'Yeni şifre oluştur' : 'Şifreni yenile'} supportingText={recoveryToken ? 'Hesabın için yeni bir şifre belirle.' : 'Hesabının e-posta adresine yenileme bağlantısı göndereceğiz.'} brandHeading="Kariyer yolculuğuna devam et." brandText="Hesabına güvenle yeniden eriş." footer={<button type="button" onClick={onBack} className="font-semibold text-[#243B64] hover:underline">Giriş ekranına dön</button>}>
+  return <AuthFrame isEmployer={false} heading={recoveryToken ? 'Yeni şifre oluştur' : 'Şifreni yenile'} supportingText={recoveryToken ? 'Mevcut şifrenden farklı, en az 6 karakterli yeni bir şifre belirle.' : 'Hesabının e-posta adresine yenileme bağlantısı göndereceğiz.'} brandHeading="Kariyer yolculuğuna devam et." brandText="Hesabına güvenle yeniden eriş." footer={<button type="button" onClick={onBack} className="font-semibold text-[#243B64] hover:underline">Giriş ekranına dön</button>}>
     {error && <p role="alert" className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}
     {message && <p role="status" className="mb-4 rounded-lg bg-emerald-50 p-3 text-sm text-emerald-800">{message}</p>}
     <form onSubmit={submit} className="space-y-4">
