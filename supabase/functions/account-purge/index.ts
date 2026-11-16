@@ -50,15 +50,13 @@ Deno.serve(async (request) => {
         if (databaseError) throw databaseError;
       }
 
-      if (item.kullanici_id) {
-        const { error: authError } = await client.auth.admin.deleteUser(item.kullanici_id, false);
-        if (authError && !/not found/i.test(authError.message)) throw authError;
-      }
+      const { error: authError } = await client.rpc('hesap_imha_auth', { p_talep_id: item.talep_id });
+      if (authError) throw authError;
       const { error: completeError } = await client.rpc('hesap_imha_tamamla', { p_talep_id: item.talep_id });
       if (completeError) throw completeError;
       completed.push(item.talep_id);
     } catch (error) {
-      failed.push({ requestId: item.talep_id, message: error instanceof Error ? error.message : String(error) });
+      failed.push({ requestId: item.talep_id, message: error instanceof Error ? error.message : JSON.stringify(error) });
     }
   }
   return Response.json({ completed, failed }, { status: failed.length ? 500 : 200 });

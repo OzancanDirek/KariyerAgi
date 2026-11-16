@@ -21,8 +21,9 @@ döner. İstemci bu kodu alınca kayıtlı oturumu temizlemelidir.
 alınmasından **iki takvim ayı** sonradır. Günlük `account-purge` görevi yalnızca
 süresi dolmuş talepleri alır. Önce Supabase Storage API aracılığıyla kullanıcı
 dosyalarını kaldırır; depoda dosya kaldıysa veritabanı silmesini reddeder.
-Ardından aday/üyelik/başvuru ve bağlı kayıtları, son olarak Supabase Auth hesabını
-siler. Başarısız adımlar bir sonraki çalışmada yeniden denenir. Audit satırında
+Ardından aday/üyelik/başvuru ve bağlı kayıtları, son olarak yalnızca süresi dolmuş
+ve uygulama verisi silinmiş talep için yetkili `hesap_imha_auth` işlemiyle Supabase
+Auth hesabını siler. Başarısız adımlar bir sonraki çalışmada yeniden denenir. Audit satırında
 kimlik ve e-posta tutulmaz; silme tamamlanınca Auth kullanıcı FK'si boşalır.
 
 Storage dosyaları SQL ile doğrudan silinmez. Storage'daki nesne silinmesi ve
@@ -33,7 +34,8 @@ soft-delete kuralıyla çalışmaya devam eder; iki aylık fiziksel imha kuralı
 
 ## Kurulum ve kontrol
 
-1. `sql/migrations/20261116_account_closure_retention.sql` uygulanır.
+1. `sql/migrations/20261116_account_closure_retention.sql` ve
+   `sql/migrations/20261116_account_purge_auth_rpc.sql` uygulanır.
 2. `supabase/functions/account-purge` JWT doğrulaması açık olarak yayımlanır.
    İşlevde güçlü `PURGE_CRON_SECRET`, Vault'ta aynı değerde
    `careerpath_account_purge_cron` ve ayrıca projenin legacy anon JWT'si
@@ -52,4 +54,6 @@ soft-delete kuralıyla çalışmaya devam eder; iki aylık fiziksel imha kuralı
 
 Sahipliği devretmek için şirketin en az bir aktif işe alım çalışanı olmalıdır.
 Daveti bekleyen veya arşivlenmiş üyeler seçilemez. Şirket sahibi hesabı,
-devir tamamlanana kadar kapatılamaz.
+devir tamamlanana kadar kapatılamaz. Arşivlenmiş şirketler de sahibinin
+hesabında yalnızca sahiplik devri amacıyla listelenir; devir şirketi yeniden
+yayına açmaz.

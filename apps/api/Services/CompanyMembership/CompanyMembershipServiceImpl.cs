@@ -34,7 +34,7 @@ public class CompanyMembershipServiceImpl : ICompanyMembershipService
 
     public async Task<List<CompanyMembershipResponse>> GetCompanyMembersAsync(Guid companyId)
     {
-        var user = await RequireOwnerAsync(companyId);
+        var user = await RequireOwnerMembershipAsync(companyId);
         var rows = await repository.ListForCompanyAsync(companyId, user.AccessToken, currentUser.CancellationToken);
         return rows.Select(row => row.ToResponse()).ToList();
     }
@@ -75,7 +75,7 @@ public class CompanyMembershipServiceImpl : ICompanyMembershipService
         {
             throw new ApiException(ErrorCodes.CompanyTransferRecipientInvalid);
         }
-        var user = await RequireOwnerAsync(companyId);
+        var user = await RequireOwnerMembershipAsync(companyId);
         await repository.TransferOwnershipAsync(companyId, membershipId, user.AccessToken, currentUser.CancellationToken);
     }
 
@@ -93,6 +93,17 @@ public class CompanyMembershipServiceImpl : ICompanyMembershipService
         var user = await access.RequireRoleAsync(AccountRole.Isveren);
         var company = await companies.GetCompanyAsync(companyId, user.AccessToken, currentUser.CancellationToken);
         if (company is null || company.OwnerId != user.UserId)
+        {
+            throw new ApiException(ErrorCodes.CompanyNotFound);
+        }
+        return user;
+    }
+
+    private async Task<CurrentUserContext> RequireOwnerMembershipAsync(Guid companyId)
+    {
+        var user = await access.RequireRoleAsync(AccountRole.Isveren);
+        var mine = await repository.ListForUserAsync(user.UserId, user.AccessToken, currentUser.CancellationToken);
+        if (!mine.Any(member => member.CompanyId == companyId && member.Role == "sahip" && member.Status == "aktif"))
         {
             throw new ApiException(ErrorCodes.CompanyNotFound);
         }
