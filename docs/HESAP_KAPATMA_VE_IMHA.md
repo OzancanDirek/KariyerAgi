@@ -30,11 +30,14 @@ soft-delete kuralıyla çalışmaya devam eder; iki aylık fiziksel imha kuralı
 ## Kurulum ve kontrol
 
 1. `sql/migrations/20261116_account_closure_retention.sql` uygulanır.
-2. `supabase/functions/account-purge` yayımlanır. `verify_jwt` kapalıysa
-   güçlü `PURGE_CRON_SECRET` zorunludur; işlev ayrıca gelen `x-cron-secret`
-   başlığını doğrular. Gizli değer kodda veya Git'te tutulmaz.
-3. Supabase Cron/pg_net, görevi her gün çağıracak şekilde kurulur. Çağrı
-   Supabase Vault'ta saklanan gizli değeri kullanır. Render'ın boşta uyuması
+2. `supabase/functions/account-purge` JWT doğrulaması açık olarak yayımlanır.
+   İşlevde güçlü `PURGE_CRON_SECRET`, Vault'ta aynı değerde
+   `careerpath_account_purge_cron` ve ayrıca projenin legacy anon JWT'si
+   `careerpath_account_purge_anon_key` adlarıyla saklanır. Gizli değerler
+   kodda veya Git'te tutulmaz. İşlev hem JWT'yi hem `x-cron-secret` başlığını
+   doğrular.
+3. `sql/migrations/20261116_account_purge_schedule.sql` uygulanır; Supabase
+   Cron/pg_net görevi her gün 03:00 UTC'de çağırır. Render'ın boşta uyuması
    bu görevi etkilemez.
 4. `select * from public.hesap_imha_kuyrugu()` yalnızca `service_role` ile
    erişilebilir. İşlev yanıtı `completed` ve `failed` listelerini gösterir.
