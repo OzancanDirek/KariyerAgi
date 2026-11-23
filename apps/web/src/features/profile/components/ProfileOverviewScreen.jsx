@@ -1,3 +1,4 @@
+import i18n from '../../../i18n.js';
 import { useEffect, useState } from 'react';
 import {
   ArrowRight, Award, BriefcaseBusiness, FileText, FolderGit2, GraduationCap,
@@ -80,7 +81,7 @@ export function ProfileOverviewScreen({ runAuthenticated, onEdit, onOpenGoals, o
   return (
     <div className="text-[#202938]">
         <main className="mx-auto max-w-7xl space-y-7 px-5 py-8 sm:px-8 lg:py-10">
-          {loading && <p role="status" className="rounded-2xl bg-white p-8 text-sm text-[#667085]">Profil bilgilerin yükleniyor...</p>}
+          {loading && <p role="status" className="rounded-2xl bg-white p-8 text-sm text-[#667085]">{i18n.t("Profil bilgilerin yükleniyor...")}</p>}
           {error && <p role="alert" className="rounded-xl border border-[#EFCACA] bg-[#FFF5F5] px-5 py-4 text-sm text-[#B42318]">{error}</p>}
 
           {personal && <>
@@ -88,11 +89,11 @@ export function ProfileOverviewScreen({ runAuthenticated, onEdit, onOpenGoals, o
               <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
                 <div className="flex items-start gap-5">
                   <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-[#243B64] text-xl font-bold text-white shadow-sm">
-                    {photoSource ? <img src={photoSource} alt="Profil fotoğrafı" className="h-full w-full object-cover" /> : initials}
+                    {photoSource ? <img src={photoSource} alt={i18n.t("Profil fotoğrafı")} className="h-full w-full object-cover" /> : initials}
                   </div>
                   <div>
                     <h1 className="text-2xl font-bold tracking-tight text-[#202938]">{`${firstName} ${lastName}`.trim() || 'Profilim'}</h1>
-                    <p className="mt-1 text-sm font-medium text-[#5276A7]">{career?.title || 'Henüz unvan eklenmedi'}</p>
+                    <p className="mt-1 text-sm font-medium text-[#5276A7]">{career?.title || i18n.t("Henüz unvan eklenmedi")}</p>
                     <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-xs text-[#667085]">
                       <Contact icon={MapPin}>{personal.location}</Contact>
                       <Contact icon={Mail}>{personal.email}</Contact>
@@ -100,24 +101,24 @@ export function ProfileOverviewScreen({ runAuthenticated, onEdit, onOpenGoals, o
                     </div>
                   </div>
                 </div>
-                <button type="button" onClick={onEdit} className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-[#243B64] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1B2D4E]"><Pencil size={16} />Bilgileri Düzenle</button>
+                <button type="button" onClick={onEdit} className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-[#243B64] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1B2D4E]"><Pencil size={16} />{i18n.t("Bilgileri Düzenle")}</button>
               </div>
               <div className="mt-7 border-t border-[#E3E7ED] pt-6">
-                <h2 className="text-sm font-semibold">Kariyer Özeti</h2>
-                <p className="mt-2 max-w-4xl text-sm leading-7 text-[#667085]">{career?.summary || 'Henüz kariyer özeti eklenmedi. Bilgileri Düzenle bölümünden kendini anlatabilirsin.'}</p>
+                <h2 className="text-sm font-semibold">{i18n.t("Kariyer Özeti")}</h2>
+                <p className="mt-2 max-w-4xl text-sm leading-7 text-[#667085]">{career?.summary || i18n.t("Henüz kariyer özeti eklenmedi. Bilgileri Düzenle bölümünden kendini anlatabilirsin.")}</p>
               </div>
             </section>
 
             <div className="grid gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
               <div className="space-y-6">
-                <SectionCard icon={BriefcaseBusiness} title="İş & Staj Deneyimleri"><ExperienceManager runAuthenticated={runAuthenticated} previewLimit={PROFILE_OVERVIEW_LIMIT} onShowAll={() => onOpenRecords('experiences')} /></SectionCard>
-                <SectionCard icon={GraduationCap} title="Eğitim Geçmişi"><EducationManager runAuthenticated={runAuthenticated} previewLimit={PROFILE_OVERVIEW_LIMIT} onShowAll={() => onOpenRecords('educations')} /></SectionCard>
-                <SectionCard icon={FolderGit2} title="Projeler & Portfolyo"><ProjectManager runAuthenticated={runAuthenticated} previewLimit={PROFILE_OVERVIEW_LIMIT} onShowAll={() => onOpenRecords('projects')} />{career?.portfolioUrl && <a href={career.portfolioUrl} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-[#243B64] hover:underline">Portfolyomu aç <ArrowRight size={15} /></a>}</SectionCard>
+                <SectionCard icon={BriefcaseBusiness} title={i18n.t("İş & Staj Deneyimleri")}><ExperienceManager runAuthenticated={runAuthenticated} previewLimit={PROFILE_OVERVIEW_LIMIT} onShowAll={() => onOpenRecords('experiences')} /></SectionCard>
+                <SectionCard icon={GraduationCap} title={i18n.t("Eğitim Geçmişi")}><EducationManager runAuthenticated={runAuthenticated} previewLimit={PROFILE_OVERVIEW_LIMIT} onShowAll={() => onOpenRecords('educations')} /></SectionCard>
+                <SectionCard icon={FolderGit2} title="Projeler & Portfolyo"><ProjectManager runAuthenticated={runAuthenticated} previewLimit={PROFILE_OVERVIEW_LIMIT} onShowAll={() => onOpenRecords('projects')} />{career?.portfolioUrl && <a href={career.portfolioUrl} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-[#243B64] hover:underline">{i18n.t("Portfolyomu aç")} <ArrowRight size={15} /></a>}</SectionCard>
               </div>
               <div className="space-y-6">
-                <SectionCard icon={FileText} title="CV Yönetimi"><CvManager runAuthenticated={runAuthenticated} previewLimit={PROFILE_OVERVIEW_LIMIT} onShowAll={() => onOpenRecords('cv')} /></SectionCard>
+                <SectionCard icon={FileText} title={i18n.t("CV Yönetimi")}><CvManager runAuthenticated={runAuthenticated} previewLimit={PROFILE_OVERVIEW_LIMIT} onShowAll={() => onOpenRecords('cv')} /></SectionCard>
                 <SectionCard icon={Award} title="Sertifikalar"><CertificateManager runAuthenticated={runAuthenticated} previewLimit={PROFILE_OVERVIEW_LIMIT} onShowAll={() => onOpenRecords('certificates')} /></SectionCard>
-                <SectionCard icon={Target} title="Kariyer Hedefleri"><p className="text-xs text-[#667085]">Hedef unvan</p><p className="mt-1 text-sm font-semibold">{career?.targetTitle || 'Henüz belirlenmedi'}</p><p className="mt-4 text-xs text-[#667085]">Hedef sektör</p><p className="mt-1 text-sm font-semibold">{career?.targetIndustry || 'Henüz belirlenmedi'}</p><button type="button" onClick={onOpenGoals} className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-[#243B64] hover:underline">Tüm hedeflerimi gör <ArrowRight size={15} /></button></SectionCard>
+                <SectionCard icon={Target} title="Kariyer Hedefleri"><p className="text-xs text-[#667085]">{i18n.t("Hedef unvan")}</p><p className="mt-1 text-sm font-semibold">{career?.targetTitle || i18n.t("Henüz belirlenmedi")}</p><p className="mt-4 text-xs text-[#667085]">{i18n.t("Hedef sektör")}</p><p className="mt-1 text-sm font-semibold">{career?.targetIndustry || i18n.t("Henüz belirlenmedi")}</p><button type="button" onClick={onOpenGoals} className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-[#243B64] hover:underline">{i18n.t("Tüm hedeflerimi gör")} <ArrowRight size={15} /></button></SectionCard>
               </div>
             </div>
           </>}

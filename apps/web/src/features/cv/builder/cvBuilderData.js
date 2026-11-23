@@ -1,3 +1,5 @@
+import i18n from '../../../i18n.js';
+
 export const sectionDefinitions = [
   { id: 'summary', label: 'Hakkımda' },
   { id: 'experience', label: 'Deneyim' },
@@ -31,6 +33,7 @@ export function createCvDraft({ person, career, experiences, educations, project
     gitHub: text(career.gitHubUrl),
     portfolio: text(career.portfolioUrl),
     summary: text(career.summary),
+    photoDataUrl: '',
     sections: sectionDefinitions.map(({ id }) => ({ id, visible: true })),
     experience: experiences.map((record) => item(record.id, record.position, [record.company, record.location].filter(Boolean).join(' · '), record.startDate, record.endDate, record.description)),
     education: educations.map((record) => item(record.id, record.institution, [record.degree, record.fieldOfStudy].filter(Boolean).join(' · '), record.startDate, record.endDate, record.description)),
@@ -67,7 +70,7 @@ export function formatCvDate(value) {
   if (Number.isNaN(date.getTime())) {
     return value;
   }
-  return new Intl.DateTimeFormat('tr-TR', { month: 'long', year: 'numeric' }).format(date);
+  return new Intl.DateTimeFormat(i18n.language === 'en' ? 'en-US' : 'tr-TR', { month: 'long', year: 'numeric' }).format(date);
 }
 
 export function formatCvPeriod(entry) {
@@ -76,5 +79,5 @@ export function formatCvPeriod(entry) {
   if (!start) {
     return end;
   }
-  return `${start} – ${end || 'Devam ediyor'}`;
+  return `${start} – ${end || i18n.t('Devam ediyor')}`;
 }

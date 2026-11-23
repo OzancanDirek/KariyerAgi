@@ -1,23 +1,29 @@
+import i18n from '../../i18n.js';
+import { useTranslation } from 'react-i18next';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Compass, Plus, Sparkles } from 'lucide-react';
 import { SkillCatalogModal } from './SkillCatalogModal.jsx';
 import { SkillGraph } from './SkillGraph.jsx';
 import { skillsApi } from './skillsApi.js';
+import { roadmapApi } from '../roadmap/roadmapApi.js';
 
 const views = [
   ['all', 'Tüm harita'],
   ['saved', 'Kaydettiklerim'],
   ['cv', 'CV keşifleri'],
+  ['role', 'Hedef rol'],
 ];
 
-export function SkillMapScreen({ runAuthenticated }) {
+export function SkillMapScreen({ runAuthenticated, roleId, onSelectRole }) {
+  const { t } = useTranslation();
   const [map, setMap] = useState(null);
+  const [roadmap, setRoadmap] = useState(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState('');
   const [catalogOpen, setCatalogOpen] = useState(false);
   const [suggestionToAdd, setSuggestionToAdd] = useState(null);
   const [suggestionCategoryId, setSuggestionCategoryId] = useState('');
-  const [view, setView] = useState('all');
+  const [view, setView] = useState(roleId ? 'role' : 'all');
   const requestVersion = useRef(0);
   const mutationInProgress = useRef(false);
 
@@ -37,6 +43,16 @@ export function SkillMapScreen({ runAuthenticated }) {
   }
 
   useEffect(() => { load(); }, []);
+
+  useEffect(() => {
+    let active = true;
+    runAuthenticated((token) => roadmapApi.get(token, roleId)).then((result) => {
+      if (active) setRoadmap(result);
+    }).catch((failure) => {
+      if (active) setError(failure.message);
+    });
+    return () => { active = false; };
+  }, [roleId, runAuthenticated]);
 
   async function perform(skill, action) {
     if (action === 'add' && skill.unmatched) {
@@ -111,8 +127,12 @@ export function SkillMapScreen({ runAuthenticated }) {
     const all = [...catalogSkills, ...cvOnly];
     if (view === 'saved') return all.filter((skill) => skill.selected);
     if (view === 'cv') return all.filter((skill) => skill.suggestedFromCv && !skill.selected);
+    if (view === 'role') {
+      const requirements = new Map(roadmap?.skills.map((skill) => [skill.id, skill]) ?? []);
+      return map.skills.filter((skill) => requirements.has(skill.id)).map((skill) => ({ ...skill, required: requirements.get(skill.id).required }));
+    }
     return all;
-  }, [map, view]);
+  }, [map, view, roadmap]);
   const cvCount = map ? map.skills.filter((skill) => skill.suggestedFromCv && !skill.selected).length + map.unmatchedCvSkills.length : 0;
   const shownCategoryCount = new Set(graphSkills.filter((skill) => !skill.unmatched).map((skill) => skill.categoryId || 'other')).size;
 
@@ -120,20 +140,21 @@ export function SkillMapScreen({ runAuthenticated }) {
     <section className="relative overflow-hidden rounded-[28px] border border-[#DDE7F2] bg-white p-6 shadow-sm sm:p-8">
       <div className="pointer-events-none absolute -right-12 -top-24 h-72 w-72 rounded-full bg-cyan-100/70 blur-3xl" />
       <div className="relative flex flex-wrap items-center justify-between gap-6">
-        <div className="max-w-2xl"><div className="mb-4 inline-flex items-center gap-2 rounded-full bg-[#E8F7F3] px-3 py-1.5 text-xs font-bold uppercase tracking-[.13em] text-[#238274]"><Sparkles size={14} />Beceri Ağacı</div><h1 className="text-3xl font-bold tracking-tight text-[#172F53] sm:text-4xl">Becerilerin <span className="text-[#2C9B8C]">bir arada.</span></h1><p className="mt-3 max-w-xl text-sm leading-6 text-[#63748B]">Kaydettiğin ve CV’nden keşfedilen becerileri alanlarına ayrılmış dallarda gör. Kartlardaki düğmelerle beceri ekle veya kaldır; ağacını kendine göre büyüt.</p></div>
-        <button type="button" onClick={() => setCatalogOpen(true)} className="inline-flex items-center gap-2 rounded-xl bg-[#243B64] px-5 py-3.5 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(36,59,100,.18)] transition hover:-translate-y-0.5 hover:bg-[#1B2F52]"><Plus size={18} />Beceri ekle</button>
+        <div className="max-w-2xl"><div className="mb-4 inline-flex items-center gap-2 rounded-full bg-[#E8F7F3] px-3 py-1.5 text-xs font-bold uppercase tracking-[.13em] text-[#238274]"><Sparkles size={14} />{t("Beceri Ağacı")}</div><h1 className="text-3xl font-bold tracking-tight text-[#172F53] sm:text-4xl">Becerilerin <span className="text-[#2C9B8C]">{t('bir arada.')}</span></h1><p className="mt-3 max-w-xl text-sm leading-6 text-[#63748B]">{i18n.t("Kaydettiğin ve CV’nden keşfedilen becerileri alanlarına ayrılmış dallarda gör. Kartlardaki düğmelerle beceri ekle veya kaldır; ağacını kendine göre büyüt.")}</p></div>
+        <button type="button" onClick={() => setCatalogOpen(true)} className="inline-flex items-center gap-2 rounded-xl bg-[#243B64] px-5 py-3.5 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(36,59,100,.18)] transition hover:-translate-y-0.5 hover:bg-[#1B2F52]"><Plus size={18} />{t('Beceri ekle')}</button>
       </div>
-      <div className="relative mt-7 flex flex-wrap gap-3 border-t border-[#E7ECF2] pt-5"><div className="rounded-xl bg-[#F2F6FA] px-4 py-3"><span className="text-2xl font-bold text-[#243B64]">{savedCount}</span><span className="ml-2 text-xs font-semibold text-[#667085]">kayıtlı beceri</span></div><div className="rounded-xl bg-[#FDF4E8] px-4 py-3"><span className="text-2xl font-bold text-[#B66C21]">{cvCount}</span><span className="ml-2 text-xs font-semibold text-[#8C7255]">CV keşfi</span></div><div className="rounded-xl bg-[#EBF7F4] px-4 py-3"><span className="text-2xl font-bold text-[#278B7E]">{shownCategoryCount}</span><span className="ml-2 text-xs font-semibold text-[#5E817C]">beceri alanı</span></div></div>
+      <div className="relative mt-7 flex flex-wrap gap-3 border-t border-[#E7ECF2] pt-5"><div className="rounded-xl bg-[#F2F6FA] px-4 py-3"><span className="text-2xl font-bold text-[#243B64]">{savedCount}</span><span className="ml-2 text-xs font-semibold text-[#667085]">{t("kayıtlı beceri")}</span></div><div className="rounded-xl bg-[#FDF4E8] px-4 py-3"><span className="text-2xl font-bold text-[#B66C21]">{cvCount}</span><span className="ml-2 text-xs font-semibold text-[#8C7255]">{t("CV keşfi")}</span></div><div className="rounded-xl bg-[#EBF7F4] px-4 py-3"><span className="text-2xl font-bold text-[#278B7E]">{shownCategoryCount}</span><span className="ml-2 text-xs font-semibold text-[#5E817C]">{t("beceri alanı")}</span></div></div>
     </section>
 
     {error && <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">{error}</p>}
-    {!map && !error && <p role="status" className="text-sm text-[#667085]">Beceri haritan yükleniyor...</p>}
+    {!map && !error && <p role="status" className="text-sm text-[#667085]">{t("Beceri haritan yükleniyor...")}</p>}
     {map && <>
-      <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="text-lg font-bold text-[#243B64]">Haritanı keşfet</h2><p className="mt-0.5 text-xs text-[#77849A]">CV’den gelen beceriler öneridir; kayıtlı becerilerin ayrı işaretlenir.</p></div><div className="inline-flex flex-wrap gap-1 rounded-xl border border-[#E0E7EE] bg-white p-1">{views.map(([key, label]) => <button key={key} type="button" onClick={() => setView(key)} aria-pressed={view === key} className={`rounded-lg px-3 py-2 text-xs font-semibold transition ${view === key ? 'bg-[#243B64] text-white shadow-sm' : 'text-[#667085] hover:bg-[#F2F5F8]'}`}>{label}</button>)}</div></div>
-      {graphSkills.length === 0 ? <div className="rounded-[28px] border border-dashed border-[#CBD5E1] bg-white px-6 py-20 text-center"><Compass size={42} className="mx-auto text-[#78A9AA]" /><h2 className="mt-4 text-lg font-semibold text-[#243B64]">Bu görünümde henüz beceri yok</h2><p className="mt-2 text-sm text-[#667085]">Katalogdan bir beceri ekleyerek kendi ağacını oluşturmaya başlayabilirsin.</p><button type="button" onClick={() => setCatalogOpen(true)} className="mt-5 rounded-lg bg-[#243B64] px-4 py-2.5 text-sm font-semibold text-white">Beceri seç</button></div> : <SkillGraph skills={graphSkills} categories={map.categories} onAdd={(skill) => perform(skill, 'add')} onRemove={(skill) => perform(skill, 'remove')} onDismiss={(skill) => perform(skill, 'dismiss')} busyId={busy} />}
+      {roadmap && <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-[#DDE7F2] bg-white p-4"><label htmlFor="skill-map-role" className="text-sm font-semibold text-[#243B64]">{t("İncelenen rol")}</label><select id="skill-map-role" value={roadmap.roleId ?? ''} onChange={(event) => { onSelectRole(event.target.value); setView('role'); }} className="min-w-56 rounded-lg border border-[#D6E0EB] bg-white px-3 py-2 text-sm text-[#243B64]"><option value="" disabled>{i18n.t("Rol seç")}</option>{roadmap.roles.map((role) => <option key={role.id} value={role.id}>{role.name}</option>)}</select><span className="text-xs text-[#77849A]">{i18n.t("Hedef rol görünümünde bu rolün gerekli becerileri gösterilir. Kayıtlı becerilerin tüm rollerde seninle kalır.")}</span></div>}
+      <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="text-lg font-bold text-[#243B64]">{t("Haritanı keşfet")}</h2><p className="mt-0.5 text-xs text-[#77849A]">{i18n.t("CV’den gelen beceriler öneridir; kayıtlı becerilerin ayrı işaretlenir.")}</p></div><div className="inline-flex flex-wrap gap-1 rounded-xl border border-[#E0E7EE] bg-white p-1">{views.map(([key, label]) => <button key={key} type="button" onClick={() => setView(key)} aria-pressed={view === key} className={`rounded-lg px-3 py-2 text-xs font-semibold transition ${view === key ? 'bg-[#243B64] text-white shadow-sm' : 'text-[#667085] hover:bg-[#F2F5F8]'}`}>{t(label)}</button>)}</div></div>
+      {graphSkills.length === 0 ? <div className="rounded-[28px] border border-dashed border-[#CBD5E1] bg-white px-6 py-20 text-center"><Compass size={42} className="mx-auto text-[#78A9AA]" /><h2 className="mt-4 text-lg font-semibold text-[#243B64]">{t("Bu görünümde henüz beceri yok")}</h2><p className="mt-2 text-sm text-[#667085]">{i18n.t("Katalogdan bir beceri ekleyerek kendi ağacını oluşturmaya başlayabilirsin.")}</p><button type="button" onClick={() => setCatalogOpen(true)} className="mt-5 rounded-lg bg-[#243B64] px-4 py-2.5 text-sm font-semibold text-white">{t("Beceri seç")}</button></div> : <SkillGraph skills={graphSkills} categories={map.categories} onAdd={(skill) => perform(skill, 'add')} onRemove={(skill) => perform(skill, 'remove')} onDismiss={(skill) => perform(skill, 'dismiss')} busyId={busy} />}
     </>}
 
     <SkillCatalogModal isOpen={catalogOpen} onClose={() => setCatalogOpen(false)} categories={map?.categories || []} skills={map?.skills || []} busy={busy} error={error} onAdd={(skill) => perform(skill, 'add')} onAddCustom={addNamedSkill} />
-    {suggestionToAdd && <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#172640]/65 px-4" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setSuggestionToAdd(null); }}><div role="dialog" aria-modal="true" aria-labelledby="skill-category-title" className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl"><h2 id="skill-category-title" className="text-xl font-bold text-[#243B64]">{suggestionToAdd.name} hangi alana ait?</h2><p className="mt-2 text-sm text-[#667085]">CV’de bulunan bu beceriyi ağacında doğru dalda göstermek için alanını seç.</p>{error && <p role="alert" className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}<select aria-label="Beceri alanı" value={suggestionCategoryId} onChange={(event) => setSuggestionCategoryId(event.target.value)} className="mt-5 w-full rounded-xl border border-[#D8E0EA] bg-white px-4 py-3"><option value="">Alan seç</option>{map.categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</select><div className="mt-5 flex justify-end gap-2"><button type="button" onClick={() => setSuggestionToAdd(null)} className="rounded-lg border border-[#D8E0EA] px-4 py-2 text-sm font-semibold">Vazgeç</button><button type="button" onClick={confirmSuggestion} disabled={!suggestionCategoryId || Boolean(busy)} className="rounded-lg bg-[#243B64] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">Becerilerime ekle</button></div></div></div>}
+    {suggestionToAdd && <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#172640]/65 px-4" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setSuggestionToAdd(null); }}><div role="dialog" aria-modal="true" aria-labelledby="skill-category-title" className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl"><h2 id="skill-category-title" className="text-xl font-bold text-[#243B64]">{suggestionToAdd.name} {i18n.t("hangi alana ait?")}</h2><p className="mt-2 text-sm text-[#667085]">{i18n.t("CV’de bulunan bu beceriyi ağacında doğru dalda göstermek için alanını seç.")}</p>{error && <p role="alert" className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}<select aria-label={i18n.t("Beceri alanı")} value={suggestionCategoryId} onChange={(event) => setSuggestionCategoryId(event.target.value)} className="mt-5 w-full rounded-xl border border-[#D8E0EA] bg-white px-4 py-3"><option value="">{i18n.t("Alan seç")}</option>{map.categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</select><div className="mt-5 flex justify-end gap-2"><button type="button" onClick={() => setSuggestionToAdd(null)} className="rounded-lg border border-[#D8E0EA] px-4 py-2 text-sm font-semibold">{t("Vazgeç")}</button><button type="button" onClick={confirmSuggestion} disabled={!suggestionCategoryId || Boolean(busy)} className="rounded-lg bg-[#243B64] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">{t('Becerilerime ekle')}</button></div></div></div>}
   </main>;
 }

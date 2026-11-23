@@ -1,3 +1,4 @@
+import i18n from '../../../i18n.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Check, ChevronDown, Search } from 'lucide-react';
 
@@ -49,7 +50,7 @@ export function SearchableSelect({ label, value, options, onChange, placeholder 
     {open && <div className="absolute z-20 mt-1 w-full rounded-xl border border-[#D8DEE8] bg-white p-2 shadow-xl">
       <div className="flex items-center gap-2 border-b border-[#E3E7ED] px-2 pb-2 text-[#667085]"><Search size={16} /><input ref={searchInput} type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Listede ara..." className="w-full bg-transparent text-sm text-[#202938] outline-none" /></div>
       <div role="listbox" aria-label={label} className="mt-2 max-h-56 overflow-y-auto overscroll-contain">
-        {filtered.length === 0 && <p className="px-3 py-4 text-sm text-[#667085]">Sonuç bulunamadı.</p>}
+        {filtered.length === 0 && <p className="px-3 py-4 text-sm text-[#667085]">{i18n.t("Sonuç bulunamadı.")}</p>}
         {filtered.map((option) => <button key={option} type="button" role="option" aria-selected={option.localeCompare(value, 'tr', { sensitivity: 'base' }) === 0} onClick={() => { onChange(option); setOpen(false); }} className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm text-[#202938] hover:bg-[#EDF5F3] focus:bg-[#EDF5F3] focus:outline-none"><span>{displayName(option)}</span>{option.localeCompare(value, 'tr', { sensitivity: 'base' }) === 0 && <Check size={15} className="text-[#2F8F83]" />}</button>)}
       </div>
     </div>}

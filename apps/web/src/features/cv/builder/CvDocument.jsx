@@ -1,11 +1,12 @@
+import i18n from '../../../i18n.js';
 import { formatCvPeriod, sectionDefinitions } from './cvBuilderData.js';
 
 function CvEntries({ entries }) {
   if (!entries.length) {
-    return <p className="cv-empty">Bu bölüme henüz bilgi eklenmedi.</p>;
+    return <p className="cv-empty">{i18n.t("Bu bölüme henüz bilgi eklenmedi.")}</p>;
   }
   return <div className="cv-entry-list">{entries.map((entry) => <article className="cv-entry" key={entry.id}>
-    <div className="cv-entry-heading"><strong>{entry.title || 'Başlık girilmedi'}</strong><span>{formatCvPeriod(entry)}</span></div>
+    <div className="cv-entry-heading"><strong>{entry.title || i18n.t("Başlık girilmedi")}</strong><span>{formatCvPeriod(entry)}</span></div>
     {entry.subtitle && <p className="cv-entry-subtitle">{entry.subtitle}</p>}
     {entry.description && <p className="cv-entry-description">{entry.description}</p>}
     {entry.link && <p className="cv-entry-link">{entry.link}</p>}
@@ -14,9 +15,10 @@ function CvEntries({ entries }) {
 
 export function CvDocument({ draft }) {
   const sections = Object.fromEntries(sectionDefinitions.map((section) => [section.id, section]));
-  return <article id="cv-print-document" className={`cv-document cv-document--${draft.template}`} aria-label="CV önizlemesi">
+  return <article id="cv-print-document" className={`cv-document cv-document--${draft.template}`} aria-label={i18n.t("CV önizlemesi")}>
     <header className="cv-document-header">
-      <h1>{draft.fullName || 'Ad Soyad'}</h1>
+      {draft.photoDataUrl && <img className="cv-document-photo" src={draft.photoDataUrl} alt="" />}
+      <h1>{draft.fullName || i18n.t('Ad Soyad')}</h1>
       {draft.title && <p className="cv-document-title">{draft.title}</p>}
       <div className="cv-document-contact">{[draft.email, draft.phone, draft.location].filter(Boolean).map((value) => <span key={value}>{value}</span>)}</div>
       <div className="cv-document-links">{[draft.linkedIn, draft.gitHub, draft.portfolio].filter(Boolean).map((value) => <span key={value}>{value}</span>)}</div>
@@ -30,7 +32,7 @@ export function CvDocument({ draft }) {
         return null;
       }
       return <section className="cv-document-section" key={id}>
-        <h2>{sections[id].label}</h2>
+        <h2>{i18n.t(sections[id].label)}</h2>
         {id === 'summary' ? <p className="cv-entry-description">{draft.summary}</p> : <CvEntries entries={entries} />}
       </section>;
     })}

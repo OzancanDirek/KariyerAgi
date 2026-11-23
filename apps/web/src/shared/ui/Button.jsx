@@ -1,3 +1,4 @@
+import i18n from '../../i18n.js';
 import { Loader2 } from "lucide-react";
 const Button = ({
   variant = "primary",
@@ -27,7 +28,7 @@ const Button = ({
   >
       {isLoading ? <span className="flex items-center gap-2">
           <Loader2 className="w-4 h-4 animate-spin shrink-0" />
-          <span>Lütfen bekleyin...</span>
+          <span>{i18n.t("Lütfen bekleyin...")}</span>
         </span> : children}
     </button>;
 };

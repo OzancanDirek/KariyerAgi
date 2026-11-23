@@ -1,3 +1,4 @@
+import i18n from '../../i18n.js';
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 const FormInput = ({
@@ -19,7 +20,7 @@ const FormInput = ({
     htmlFor={id}
     className="block text-xs font-medium text-[#202938]"
   >
-          {label}
+          {i18n.t(label)}
           {required && <span className="text-[#C74747] ml-0.5" aria-hidden="true">*</span>}
         </label>
       </div>
@@ -41,7 +42,7 @@ const FormInput = ({
     type="button"
     onClick={() => setShowPassword(!showPassword)}
     className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-[#667085] hover:text-[#202938] transition-colors focus:outline-none"
-    aria-label={showPassword ? "\u015Eifreyi gizle" : "\u015Eifreyi g\xF6ster"}
+    aria-label={showPassword ? i18n.t("Şifreyi gizle") : i18n.t("Şifreyi göster")}
     tabIndex={-1}
   >
             {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -50,9 +51,9 @@ const FormInput = ({
 
       {error ? <p id={`${id}-error`} className="mt-1.5 text-xs text-[#C74747] flex items-center gap-1">
           <span className="w-1 h-1 rounded-full bg-[#C74747]" />
-          {error}
+          {i18n.t(error)}
         </p> : helperText ? <p id={`${id}-helper`} className="mt-1.5 text-xs text-[#667085]">
-          {helperText}
+          {i18n.t(helperText)}
         </p> : null}
     </div>;
 };

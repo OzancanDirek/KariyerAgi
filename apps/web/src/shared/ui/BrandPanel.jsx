@@ -1,9 +1,10 @@
+import i18n from '../../i18n.js';
 import { Logo } from "./Logo.jsx";
 import { Compass, Network, Award } from "lucide-react";
 const BrandPanel = ({
   heading,
   supportingText,
-  contextTag = "Mod\xFCl 01 \xB7 Kimlik & CV Kurulumu"
+  contextTag = "Kariyer ve CV"
 }) => {
   return <div className="auth-brand-panel relative h-full flex flex-col justify-between p-8 lg:p-12 bg-[#EEF2F6] overflow-hidden border-r border-[#E3E7ED]/80">
       {
@@ -74,7 +75,7 @@ const BrandPanel = ({
       <div className="relative z-10 my-8 lg:my-12 max-w-lg">
         <span className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#BDD4D0] bg-white/65 px-3 py-1.5 text-[11px] font-semibold tracking-wide text-[#2F8F83]">
           <span className="h-1.5 w-1.5 rounded-full bg-[#2F8F83]" />
-          {contextTag}
+          {i18n.t(contextTag)}
         </span>
         <h1 className="text-2xl lg:text-3xl font-semibold text-[#202938] tracking-tight leading-tight mb-4">
           {heading}
@@ -92,8 +93,8 @@ const BrandPanel = ({
               <Network className="w-4 h-4" />
             </div>
             <div>
-              <div className="text-sm font-medium text-[#202938]">Beceri Tabanlı Haritalandırma</div>
-              <div className="text-xs text-[#667085] mt-0.5">Özgeçmişinizi analiz ederek güçlü yönlerinizi ve gelişim alanlarınızı belirler.</div>
+              <div className="text-sm font-medium text-[#202938]">{i18n.t("Beceri Tabanlı Haritalandırma")}</div>
+              <div className="text-xs text-[#667085] mt-0.5">{i18n.t("Özgeçmişinizi analiz ederek güçlü yönlerinizi ve gelişim alanlarınızı belirler.")}</div>
             </div>
           </div>
 
@@ -102,8 +103,8 @@ const BrandPanel = ({
               <Compass className="w-4 h-4" />
             </div>
             <div>
-              <div className="text-sm font-medium text-[#202938]">Hedefe Yönelik Kariyer Rotası</div>
-              <div className="text-xs text-[#667085] mt-0.5">İstediğiniz pozisyona ulaşmak için edinmeniz gereken yetkinlikleri sunar.</div>
+              <div className="text-sm font-medium text-[#202938]">{i18n.t("Hedefe Yönelik Kariyer Rotası")}</div>
+              <div className="text-xs text-[#667085] mt-0.5">{i18n.t("İstediğiniz pozisyona ulaşmak için edinmeniz gereken yetkinlikleri sunar.")}</div>
             </div>
           </div>
 
@@ -112,8 +113,8 @@ const BrandPanel = ({
               <Award className="w-4 h-4" />
             </div>
             <div>
-              <div className="text-sm font-medium text-[#202938]">Yetkinlik & Sektörel Uyum</div>
-              <div className="text-xs text-[#667085] mt-0.5">Sektör gereksinimlerine göre beceri gelişimi ve kariyer uyumu.</div>
+              <div className="text-sm font-medium text-[#202938]">{i18n.t("Yetkinlik & Sektörel Uyum")}</div>
+              <div className="text-xs text-[#667085] mt-0.5">{i18n.t("Sektör gereksinimlerine göre beceri gelişimi ve kariyer uyumu.")}</div>
             </div>
           </div>
         </div>
@@ -123,8 +124,8 @@ const BrandPanel = ({
     /* Bottom Footnote */
   }
       <div className="relative z-10 pt-4 border-t border-[#E3E7ED]/70 flex items-center justify-between text-xs text-[#667085]">
-        <span>Kariyer gelişimin için tasarlandı</span>
-        <span className="text-[#5276A7] font-medium">CareerPath Platformu</span>
+        <span>{i18n.t("Kariyer gelişimin için tasarlandı")}</span>
+        <span className="text-[#5276A7] font-medium">{i18n.t("CareerPath Platformu")}</span>
       </div>
     </div>;
 };

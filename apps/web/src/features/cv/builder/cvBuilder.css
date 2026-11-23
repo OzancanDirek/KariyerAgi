@@ -22,6 +22,17 @@
   padding-bottom: 5mm;
 }
 
+.cv-document-photo {
+  float: right;
+  width: 28mm;
+  height: 34mm;
+  margin-left: 5mm;
+  border-radius: 2mm;
+  object-fit: cover;
+}
+
+.cv-document-header::after { content: ''; display: block; clear: both; }
+
 .cv-document-header h1 {
   margin: 0;
   color: #243b64;

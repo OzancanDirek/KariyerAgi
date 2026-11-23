@@ -1,4 +1,6 @@
+import i18n from './i18n.js';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { LoginScreen } from './features/auth/components/LoginScreen.jsx';
 import { PasswordResetScreen } from './features/auth/components/PasswordResetScreen.jsx';
 import { takePasswordRecoveryToken } from './features/auth/authRedirect.js';
@@ -36,13 +38,26 @@ function screenFromUrl() {
 }
 
 export default function App() {
+  useTranslation();
   const [recoveryToken, setRecoveryToken] = useState(takePasswordRecoveryToken);
   const { session, ready, login, register, logout, runAuthenticated } = useAuthentication();
   const [screen, setScreen] = useState('login');
   const [isEmployer, setIsEmployer] = useState(false);
   const [notice, setNotice] = useState('');
   const [signedInScreen, setSignedInScreen] = useState(screenFromUrl);
+  const [selectedRoleId, setSelectedRoleId] = useState(() => window.sessionStorage.getItem('careerpath:selectedRoleId') || null);
   const [setupStatus, setSetupStatus] = useState(null);
+
+  useEffect(() => {
+    const userId = session?.user?.id;
+    if (!userId) return;
+    const storedUserId = window.sessionStorage.getItem('careerpath:selectedRoleUserId');
+    if (storedUserId && storedUserId !== userId) {
+      setSelectedRoleId(null);
+      window.sessionStorage.removeItem('careerpath:selectedRoleId');
+    }
+    window.sessionStorage.setItem('careerpath:selectedRoleUserId', userId);
+  }, [session?.user?.id]);
 
   useEffect(() => {
     if (session?.user?.role !== 'aday' || !session.user.id) { return; }
@@ -73,8 +88,19 @@ export default function App() {
     setSignedInScreen(nextScreen);
   }
 
+  function selectRole(roleId) {
+    setSelectedRoleId(roleId);
+    if (roleId) {
+      window.sessionStorage.setItem('careerpath:selectedRoleId', roleId);
+      if (session?.user?.id) window.sessionStorage.setItem('careerpath:selectedRoleUserId', session.user.id);
+    } else {
+      window.sessionStorage.removeItem('careerpath:selectedRoleId');
+    }
+  }
+
   async function handleLogout() {
     await logout();
+    selectRole(null);
     window.history.replaceState(null, '', window.location.pathname + window.location.search);
     setSignedInScreen('dashboard');
   }
@@ -95,11 +121,11 @@ export default function App() {
   }
 
   if (!ready) {
-    return <p className="p-8">Oturum kontrol ediliyor...</p>;
+    return <p className="p-8">{i18n.t("Oturum kontrol ediliyor...")}</p>;
   }
 
   if (recoveryToken) {
-    return <PasswordResetScreen recoveryToken={recoveryToken} onBack={() => { setRecoveryToken(null); setScreen('login'); }} onDone={async () => { await logout(); setRecoveryToken(null); setNotice('Şifren güncellendi. Yeni şifrenle giriş yapabilirsin.'); setScreen('login'); }} />;
+    return <PasswordResetScreen recoveryToken={recoveryToken} onBack={() => { setRecoveryToken(null); setScreen('login'); }} onDone={async () => { await logout(); setRecoveryToken(null); setNotice(i18n.t("Şifren güncellendi. Yeni şifrenle giriş yapabilirsin.")); setScreen('login'); }} />;
   }
 
   if (session) {
@@ -107,10 +133,10 @@ export default function App() {
     const role = session.user?.role;
     if (role === 'aday' && signedInScreen === 'dashboard') {
       if (setupStatus?.userId !== session.user.id) {
-        return <p className="p-8">Başlangıç ekranı yükleniyor...</p>;
+        return <p className="p-8">{i18n.t("Başlangıç ekranı yükleniyor...")}</p>;
       }
       if (setupStatus.error) {
-        return <main className="p-8"><p>Başlangıç bilgileri yüklenemedi.</p><button type="button" onClick={() => window.location.reload()} className="mt-3 underline">Tekrar dene</button></main>;
+        return <main className="p-8"><p>{i18n.t("Başlangıç bilgileri yüklenemedi.")}</p><button type="button" onClick={() => window.location.reload()} className="mt-3 underline">{i18n.t('Tekrar dene')}</button></main>;
       }
       if (!setupStatus.completed) {
         return <CandidateStartScreen runAuthenticated={runAuthenticated} onNavigate={navigateSignedIn} onLogout={handleLogout} onComplete={() => setSetupStatus({ userId: session.user.id, completed: true })} />;
@@ -138,11 +164,11 @@ export default function App() {
     } else if (signedInScreen === 'cv-builder') {
       page = <CvBuilderScreen runAuthenticated={runAuthenticated} onBack={() => navigateSignedIn('profile-overview')} />;
     } else if (signedInScreen === 'skill-map') {
-      page = <SkillMapScreen runAuthenticated={runAuthenticated} />;
+      page = <SkillMapScreen runAuthenticated={runAuthenticated} roleId={selectedRoleId} onSelectRole={selectRole} />;
     } else if (signedInScreen === 'roadmap') {
-      page = <RoadmapScreen runAuthenticated={runAuthenticated} onOpenSkills={() => navigateSignedIn('skill-map')} onOpenGoals={() => navigateSignedIn('career-goals')} onOpenResources={() => navigateSignedIn('learning-resources')} onOpenCustomCareer={() => { window.location.hash = '/learning-resources?custom=1'; setSignedInScreen('learning-resources'); }} />;
+      page = <RoadmapScreen runAuthenticated={runAuthenticated} selectedRoleId={selectedRoleId} onSelectRole={selectRole} onOpenSkills={() => navigateSignedIn('skill-map')} onOpenGoals={() => navigateSignedIn('career-goals')} onOpenResources={() => navigateSignedIn('learning-resources')} onOpenCustomCareer={() => { window.location.hash = '/learning-resources?custom=1'; setSignedInScreen('learning-resources'); }} />;
     } else if (signedInScreen === 'learning-resources') {
-      page = <LearningResourcesScreen runAuthenticated={runAuthenticated} onOpenRoadmap={() => navigateSignedIn('roadmap')} />;
+      page = <LearningResourcesScreen runAuthenticated={runAuthenticated} selectedRoleId={selectedRoleId} onSelectRole={selectRole} onOpenRoadmap={() => navigateSignedIn('roadmap')} />;
     } else if (signedInScreen === 'candidate-jobs') {
       page = <CandidateJobsScreen runAuthenticated={runAuthenticated} onOpenCvs={() => navigateSignedIn('records-cv')} />;
     } else if (signedInScreen === 'profile-overview') {

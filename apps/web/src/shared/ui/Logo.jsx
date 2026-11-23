@@ -1,3 +1,4 @@
+import i18n from '../../i18n.js';
 const Logo = ({
   className = "",
   size = "md",
@@ -61,10 +62,10 @@ const Logo = ({
 
       <div className="flex flex-col leading-none">
         <span className={`font-bold tracking-tight ${textSizes[size]} ${textColor}`}>
-          Career<span className="text-[#5276A7] font-semibold">Path</span>
+          {i18n.t("Career")}<span className="text-[#5276A7] font-semibold">{i18n.t("Path")}</span>
         </span>
         {showSubtitle && <span className={`text-[10px] tracking-wider uppercase font-medium mt-0.5 ${subtitleColor}`}>
-            Kariyer & Beceri Platformu
+            {i18n.t("Kariyer & Beceri Platformu")}
           </span>}
       </div>
     </div>;

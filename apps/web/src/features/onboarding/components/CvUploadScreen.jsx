@@ -1,3 +1,4 @@
+import i18n from '../../../i18n.js';
 import { useState, useRef } from "react";
 import { Button } from "../../../shared/ui/Button.jsx";
 import { Modal } from "../../../shared/ui/Modal.jsx";
@@ -160,7 +161,7 @@ const CvUploadScreen = ({
             <div className="w-6 h-6 rounded-full bg-[#EBF5F4] text-[#2F8F83] flex items-center justify-center text-xs font-semibold">
               ✓
             </div>
-            <span className="text-xs font-medium text-[#202938]">1. Hesap Oluşturuldu</span>
+            <span className="text-xs font-medium text-[#202938]">{i18n.t("1. Hesap Oluşturuldu")}</span>
           </div>
 
           <div className="hidden sm:block text-[#CBD3E1]">→</div>
@@ -169,7 +170,7 @@ const CvUploadScreen = ({
             <div className="w-6 h-6 rounded-full bg-[#243B64] text-white flex items-center justify-center text-xs font-semibold">
               2
             </div>
-            <span className="text-xs font-semibold text-[#243B64]">2. CV ve Kariyer Profili</span>
+            <span className="text-xs font-semibold text-[#243B64]">{i18n.t("2. CV ve Kariyer Profili")}</span>
           </div>
 
           <div className="hidden sm:block text-[#CBD3E1]">→</div>
@@ -178,7 +179,7 @@ const CvUploadScreen = ({
             <div className="w-6 h-6 rounded-full bg-[#F7F8FA] border border-[#E3E7ED] text-[#667085] flex items-center justify-center text-xs font-medium">
               3
             </div>
-            <span className="text-xs font-medium text-[#667085]">3. Profil Tamamlandı</span>
+            <span className="text-xs font-medium text-[#667085]">{i18n.t("3. Profil Tamamlandı")}</span>
           </div>
         </div>
 
@@ -193,10 +194,10 @@ const CvUploadScreen = ({
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
                 <h1 className="text-2xl font-semibold text-[#202938] tracking-tight">
-                  Kariyer profilini tamamla
+                  {i18n.t("Kariyer profilini tamamla")}
                 </h1>
                 <p className="text-sm text-[#667085] mt-1">
-                  Yapay zeka analiz motorumuzun becerilerini haritalandırması için mevcut bir özgeçmiş yükle veya bilgilerini manuel olarak gir.
+                  {i18n.t("Yapay zeka analiz motorumuzun becerilerini haritalandırması için mevcut bir özgeçmiş yükle veya bilgilerini manuel olarak gir.")}
                 </p>
               </div>
               {user.firstName && <div className="text-xs text-[#5276A7] font-medium bg-[#EEF2F6] px-3 py-1.5 rounded-lg border border-[#E3E7ED] self-start sm:self-auto">
@@ -213,14 +214,14 @@ const CvUploadScreen = ({
     onClick={() => setActiveTab("upload")}
     className={`flex-1 py-2 px-3 text-xs font-medium rounded-md transition-colors cursor-pointer text-center ${activeTab === "upload" ? "bg-white text-[#243B64] shadow-xs border border-[#E3E7ED]" : "text-[#667085] hover:text-[#202938]"}`}
   >
-                Özgeçmiş Yükle (Önerilen)
+                {i18n.t("Özgeçmiş Yükle (Önerilen)")}
               </button>
               <button
     type="button"
     onClick={() => setActiveTab("manual")}
     className={`flex-1 py-2 px-3 text-xs font-medium rounded-md transition-colors cursor-pointer text-center ${activeTab === "manual" ? "bg-white text-[#243B64] shadow-xs border border-[#E3E7ED]" : "text-[#667085] hover:text-[#202938]"}`}
   >
-                Manuel Profil Oluştur
+                {i18n.t("Manuel Profil Oluştur")}
               </button>
             </div>
           </div>
@@ -256,15 +257,15 @@ const CvUploadScreen = ({
                     </div>
 
                     <h3 className="text-sm font-semibold text-[#202938]">
-                      Özgeçmişinizi buraya sürükleyin veya bilgisayarınızdan seçin
+                      {i18n.t("Özgeçmişinizi buraya sürükleyin veya bilgisayarınızdan seçin")}
                     </h3>
                     <p className="text-xs text-[#667085] mt-1 max-w-sm mx-auto">
-                      Yalnızca PDF formatında, en fazla 10 MB boyutunda belgeler desteklenmektedir.
+                      {i18n.t("Yalnızca PDF formatında, en fazla 10 MB boyutunda belgeler desteklenmektedir.")}
                     </p>
 
                     <div className="mt-4">
                       <span className="inline-flex items-center px-3.5 py-1.5 text-xs font-medium text-[#243B64] bg-white border border-[#E3E7ED] rounded-lg shadow-xs hover:bg-[#F9FAFB]">
-                        Dosya Seç
+                        {i18n.t("Dosya Seç")}
                       </span>
                     </div>
                   </div>
@@ -277,7 +278,7 @@ const CvUploadScreen = ({
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-medium text-[#202938] flex items-center gap-2">
                       <Sparkles className="w-4 h-4 text-[#2F8F83] animate-pulse" />
-                      Yapay Zeka Analiz Motoru CV'nizi Ayrıştırıyor...
+                      {i18n.t("Yapay Zeka Analiz Motoru CV'nizi Ayrıştırıyor...")}
                     </span>
                     <span className="text-[#667085]">{uploadProgress}%</span>
                   </div>
@@ -288,7 +289,7 @@ const CvUploadScreen = ({
   />
                   </div>
                   <p className="text-[11px] text-[#667085]">
-                    Yetkinlikler, eğitim geçmişi ve hedef pozisyon haritalandırılıyor.
+                    {i18n.t("Yetkinlikler, eğitim geçmişi ve hedef pozisyon haritalandırılıyor.")}
                   </p>
                 </div>}
 
@@ -307,7 +308,7 @@ const CvUploadScreen = ({
                       <div>
                         <div className="text-sm font-semibold text-[#202938]">{extractedData.fileName}</div>
                         <div className="text-xs text-[#667085] mt-0.5">
-                          {extractedData.fileSize} · {extractedData.uploadDate} · <span className="text-[#2F8F83] font-medium">Başarıyla Analiz Edildi</span>
+                          {extractedData.fileSize} · {extractedData.uploadDate} · <span className="text-[#2F8F83] font-medium">{i18n.t("Başarıyla Analiz Edildi")}</span>
                         </div>
                       </div>
                     </div>
@@ -320,10 +321,10 @@ const CvUploadScreen = ({
       setFile(null);
     }}
     className="text-xs text-[#C74747] hover:bg-white px-2.5 py-1.5 rounded-md border border-transparent hover:border-[#E3E7ED] transition-colors flex items-center gap-1 cursor-pointer"
-    title="Dosyayı kaldır"
+    title={i18n.t("Dosyayı kaldır")}
   >
                         <Trash2 className="w-3.5 h-3.5" />
-                        <span>Kaldır</span>
+                        <span>{i18n.t("Kaldır")}</span>
                       </button>
                     </div>
                   </div>
@@ -335,26 +336,26 @@ const CvUploadScreen = ({
                     <div className="p-4 rounded-xl border border-[#E3E7ED] bg-white">
                       <div className="flex items-center gap-2 text-xs font-medium text-[#5276A7] mb-2">
                         <Briefcase className="w-3.5 h-3.5 text-[#243B64]" />
-                        <span>Tespit Edilen Unvan & Deneyim</span>
+                        <span>{i18n.t("Tespit Edilen Unvan & Deneyim")}</span>
                       </div>
                       <div className="text-base font-semibold text-[#202938]">
                         {extractedData.detectedRole}
                       </div>
                       <div className="text-xs text-[#667085] mt-1">
-                        Seviye: {extractedData.experienceLevel}
+                        {i18n.t("Seviye:")} {extractedData.experienceLevel}
                       </div>
                     </div>
 
                     <div className="p-4 rounded-xl border border-[#E3E7ED] bg-white">
                       <div className="flex items-center gap-2 text-xs font-medium text-[#5276A7] mb-2">
                         <GraduationCap className="w-3.5 h-3.5 text-[#243B64]" />
-                        <span>Eğitim Geçmişi</span>
+                        <span>{i18n.t("Eğitim Geçmişi")}</span>
                       </div>
                       <div className="text-base font-semibold text-[#202938]">
                         {extractedData.education}
                       </div>
                       <div className="text-xs text-[#667085] mt-1">
-                        Otomatik tespit edilen son akademik derece
+                        {i18n.t("Otomatik tespit edilen son akademik derece")}
                       </div>
                     </div>
                   </div>
@@ -367,10 +368,10 @@ const CvUploadScreen = ({
                       <div>
                         <h4 className="text-sm font-semibold text-[#202938] flex items-center gap-2">
                           <Layers className="w-4 h-4 text-[#2F8F83]" />
-                          <span>Çıkarılan Yetkinlikler ({skills.length})</span>
+                          <span>{i18n.t("Çıkarılan Yetkinlikler (")}{skills.length})</span>
                         </h4>
                         <p className="text-xs text-[#667085] mt-0.5">
-                          CV'nizden tespit edilen beceriler. İhtiyacınıza göre çıkarabilir veya yeni beceri ekleyebilirsiniz.
+                          {i18n.t("CV'nizden tespit edilen beceriler. İhtiyacınıza göre çıkarabilir veya yeni beceri ekleyebilirsiniz.")}
                         </p>
                       </div>
                     </div>
@@ -401,7 +402,7 @@ const CvUploadScreen = ({
                     <div className="flex gap-2">
                       <input
     type="text"
-    placeholder="Örn: Docker, GraphQL, Proje Yönetimi..."
+    placeholder={i18n.t("Örn: Docker, GraphQL, Proje Yönetimi...")}
     value={newSkillInput}
     onChange={(e) => setNewSkillInput(e.target.value)}
     onKeyDown={(e) => {
@@ -419,7 +420,7 @@ const CvUploadScreen = ({
     onClick={handleAddSkill}
   >
                         <Plus className="w-3.5 h-3.5 mr-1" />
-                        Ekle
+                        {i18n.t("Ekle")}
                       </Button>
                     </div>
                   </div>
@@ -429,7 +430,7 @@ const CvUploadScreen = ({
   }
                   <div className="p-4 rounded-xl border border-[#E3E7ED] bg-white">
                     <label className="block text-xs font-medium text-[#202938] mb-1.5">
-                      Özet & Kariyer Hedefi
+                      {i18n.t("Özet & Kariyer Hedefi")}
                     </label>
                     <textarea
     rows={3}
@@ -448,11 +449,11 @@ const CvUploadScreen = ({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-[#202938] mb-1.5">
-                    Hedeflenen Pozisyon / Rol
+                    {i18n.t("Hedeflenen Pozisyon / Rol")}
                   </label>
                   <input
     type="text"
-    placeholder="Örn: Yazılım Geliştirici, Veri Analisti, Ürün Yöneticisi"
+    placeholder={i18n.t("Örn: Yazılım Geliştirici, Veri Analisti, Ürün Yöneticisi")}
     value={manualRole}
     onChange={(e) => setManualRole(e.target.value)}
     className="w-full px-3.5 py-2.5 text-sm bg-white border border-[#E3E7ED] rounded-lg focus:border-[#243B64] focus:ring-2 focus:ring-[#243B64]/15 outline-none"
@@ -461,28 +462,28 @@ const CvUploadScreen = ({
 
                 <div>
                   <label className="block text-xs font-medium text-[#202938] mb-1.5">
-                    Deneyim Düzeyi
+                    {i18n.t("Deneyim Düzeyi")}
                   </label>
                   <select
     value={manualExperience}
     onChange={(e) => setManualExperience(e.target.value)}
     className="w-full px-3.5 py-2.5 text-sm bg-white border border-[#E3E7ED] rounded-lg focus:border-[#243B64] focus:ring-2 focus:ring-[#243B64]/15 outline-none text-[#202938]"
   >
-                    <option value="Öğrenci / Yeni Mezun">Öğrenci / Yeni Mezun</option>
-                    <option value="0-2 Yıl (Junior)">0-2 Yıl (Junior)</option>
-                    <option value="3-5 Yıl (Mid-Level)">3-5 Yıl (Mid-Level)</option>
-                    <option value="5+ Yıl (Senior)">5+ Yıl (Senior)</option>
+                    <option value="Öğrenci / Yeni Mezun">{i18n.t("Öğrenci / Yeni Mezun")}</option>
+                    <option value="0-2 Yıl (Junior)">{i18n.t("0-2 Yıl (Junior)")}</option>
+                    <option value="3-5 Yıl (Mid-Level)">{i18n.t("3-5 Yıl (Mid-Level)")}</option>
+                    <option value="5+ Yıl (Senior)">{i18n.t("5+ Yıl (Senior)")}</option>
                   </select>
                 </div>
               </div>
 
               <div>
                 <label className="block text-xs font-medium text-[#202938] mb-1.5">
-                  Eğitim Durumu
+                  {i18n.t("Eğitim Durumu")}
                 </label>
                 <input
     type="text"
-    placeholder="Örn: Bilgisayar Mühendisliği Lisans, 4. Sınıf"
+    placeholder={i18n.t("Örn: Bilgisayar Mühendisliği Lisans, 4. Sınıf")}
     value={manualEducation}
     onChange={(e) => setManualEducation(e.target.value)}
     className="w-full px-3.5 py-2.5 text-sm bg-white border border-[#E3E7ED] rounded-lg focus:border-[#243B64] focus:ring-2 focus:ring-[#243B64]/15 outline-none"
@@ -494,10 +495,10 @@ const CvUploadScreen = ({
   }
               <div className="p-4 rounded-xl border border-[#E3E7ED] bg-[#F7F8FA]">
                 <label className="block text-xs font-medium text-[#202938] mb-1">
-                  En Çok Güvendiğiniz Beceriler
+                  {i18n.t("En Çok Güvendiğiniz Beceriler")}
                 </label>
                 <p className="text-xs text-[#667085] mb-3">
-                  Kariyer eşleşmelerinde değerlendirilecek temel teknik ve sosyal yetkinlikleriniz.
+                  {i18n.t("Kariyer eşleşmelerinde değerlendirilecek temel teknik ve sosyal yetkinlikleriniz.")}
                 </p>
 
                 <div className="flex flex-wrap gap-2 mb-3">
@@ -520,7 +521,7 @@ const CvUploadScreen = ({
                 <div className="flex gap-2 mb-3">
                   <input
     type="text"
-    placeholder="Yeni beceri yazın..."
+    placeholder={i18n.t("Yeni beceri yazın...")}
     value={newSkillInput}
     onChange={(e) => setNewSkillInput(e.target.value)}
     onKeyDown={(e) => {
@@ -538,7 +539,7 @@ const CvUploadScreen = ({
     onClick={handleAddSkill}
   >
                     <Plus className="w-3.5 h-3.5 mr-1" />
-                    Ekle
+                    {i18n.t("Ekle")}
                   </Button>
                 </div>
 
@@ -546,7 +547,7 @@ const CvUploadScreen = ({
     /* Popular suggestions */
   }
                 <div className="pt-2 border-t border-[#E3E7ED]">
-                  <span className="text-[11px] text-[#667085] block mb-1.5">Önerilen Beceriler (Tıklayarak Ekleyin):</span>
+                  <span className="text-[11px] text-[#667085] block mb-1.5">{i18n.t("Önerilen Beceriler (Tıklayarak Ekleyin):")}</span>
                   <div className="flex flex-wrap gap-1.5">
                     {popularSuggestedSkills.map((s) => <button
     key={s}
@@ -563,11 +564,11 @@ const CvUploadScreen = ({
 
               <div>
                 <label className="block text-xs font-medium text-[#202938] mb-1.5">
-                  Kariyer Hedefi / Kısa Açıklama
+                  {i18n.t("Kariyer Hedefi / Kısa Açıklama")}
                 </label>
                 <textarea
     rows={3}
-    placeholder="Kısa ve orta vadede hangi uzmanlık alanına odaklanmak istiyorsunuz?"
+    placeholder={i18n.t("Kısa ve orta vadede hangi uzmanlık alanına odaklanmak istiyorsunuz?")}
     value={manualSummary}
     onChange={(e) => setManualSummary(e.target.value)}
     className="w-full p-3 text-sm bg-white border border-[#E3E7ED] rounded-lg text-[#202938] focus:border-[#243B64] focus:ring-2 focus:ring-[#243B64]/15 outline-none"
@@ -581,7 +582,7 @@ const CvUploadScreen = ({
           <div className="mt-8 pt-6 border-t border-[#E3E7ED] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-2 text-xs text-[#667085]">
               <ShieldCheck className="w-4 h-4 text-[#2F8F83] shrink-0" />
-              <span>Verileriniz KVKK standartlarına uygun şifreli ortamda analiz edilir.</span>
+              <span>{i18n.t("Verileriniz KVKK standartlarına uygun şifreli ortamda analiz edilir.")}</span>
             </div>
 
             <div className="flex items-center gap-3">
@@ -591,7 +592,7 @@ const CvUploadScreen = ({
     size="md"
     onClick={() => handleFinalSave()}
   >
-                Daha sonra tamamla
+                {i18n.t("Daha sonra tamamla")}
               </Button>
 
               <Button
@@ -601,7 +602,7 @@ const CvUploadScreen = ({
     onClick={handleFinalSave}
     className="gap-2"
   >
-                <span>Profili Kaydet ve Tamamla</span>
+                <span>{i18n.t("Profili Kaydet ve Tamamla")}</span>
                 <ArrowRight className="w-4 h-4" />
               </Button>
             </div>
@@ -615,7 +616,7 @@ const CvUploadScreen = ({
       <Modal
     isOpen={isSuccessModalOpen}
     onClose={() => setIsSuccessModalOpen(false)}
-    title="Kariyer Profiliniz Hazır"
+    title={i18n.t("Kariyer Profiliniz Hazır")}
     subtitle="Özgeçmişiniz ve yetkinlik haritanız başarıyla sisteme kaydedildi."
     maxWidth="lg"
   >
@@ -623,34 +624,34 @@ const CvUploadScreen = ({
           <div className="p-4 rounded-xl bg-[#EBF5F4] border border-[#2F8F83]/30 flex items-start gap-3">
             <CheckCircle2 className="w-5 h-5 text-[#2F8F83] shrink-0 mt-0.5" />
             <div className="text-xs">
-              <div className="font-semibold text-[#202938]">Profil Kurulumu Tamamlandı</div>
+              <div className="font-semibold text-[#202938]">{i18n.t("Profil Kurulumu Tamamlandı")}</div>
               <div className="text-[#667085] mt-1">
-                Yapay zeka analiz motorumuz profilinizi oluşturdu. Artık size özel beceri haritalarını inceleyebilir ve kariyer hedeflerinize uygun fırsatları takip edebilirsiniz.
+                {i18n.t("Yapay zeka analiz motorumuz profilinizi oluşturdu. Artık size özel beceri haritalarını inceleyebilir ve kariyer hedeflerinize uygun fırsatları takip edebilirsiniz.")}
               </div>
             </div>
           </div>
 
           <div className="p-4 rounded-lg bg-[#F7F8FA] border border-[#E3E7ED] text-xs space-y-2">
             <div className="flex justify-between border-b border-[#E3E7ED] pb-1.5">
-              <span className="text-[#667085]">Kullanıcı:</span>
+              <span className="text-[#667085]">{i18n.t("Kullanıcı:")}</span>
               <span className="font-medium text-[#202938]">{user.firstName} {user.lastName || ""}</span>
             </div>
             <div className="flex justify-between border-b border-[#E3E7ED] pb-1.5">
-              <span className="text-[#667085]">E-posta:</span>
+              <span className="text-[#667085]">{i18n.t("E-posta:")}</span>
               <span className="font-medium text-[#202938]">{user.email}</span>
             </div>
             <div className="flex justify-between border-b border-[#E3E7ED] pb-1.5">
-              <span className="text-[#667085]">Hedef Rol:</span>
+              <span className="text-[#667085]">{i18n.t("Hedef Rol:")}</span>
               <span className="font-medium text-[#202938]">
-                {activeTab === "upload" && extractedData ? extractedData.detectedRole : manualRole || "Genel Yaz\u0131l\u0131m Geli\u015Ftirici"}
+                {activeTab === "upload" && extractedData ? extractedData.detectedRole : manualRole || i18n.t("Genel Yazılım Geliştirici")}
               </span>
             </div>
             <div className="flex justify-between border-b border-[#E3E7ED] pb-1.5">
-              <span className="text-[#667085]">Yüklenen CV:</span>
-              <span className="font-medium text-[#202938]">{file ? file.name : "Manuel Profil Giri\u015Fi"}</span>
+              <span className="text-[#667085]">{i18n.t("Yüklenen CV:")}</span>
+              <span className="font-medium text-[#202938]">{file ? file.name : i18n.t("Manuel Profil Girişi")}</span>
             </div>
             <div className="flex justify-between pt-1">
-              <span className="text-[#667085]">Kayıtlı Beceriler:</span>
+              <span className="text-[#667085]">{i18n.t("Kayıtlı Beceriler:")}</span>
               <span className="font-medium text-[#202938]">{skills.slice(0, 5).join(", ")}{skills.length > 5 ? ` (+${skills.length - 5})` : ""}</span>
             </div>
           </div>
@@ -664,7 +665,7 @@ const CvUploadScreen = ({
     }}
     className="text-xs text-[#5276A7] hover:underline cursor-pointer"
   >
-              Giriş Ekranına Dön
+              {i18n.t("Giriş Ekranına Dön")}
             </button>
             <Button
     variant="primary"
@@ -675,7 +676,7 @@ const CvUploadScreen = ({
     }}
     className="gap-1.5"
   >
-              <span>Dashboard'a İlerle</span>
+              <span>{i18n.t("Dashboard'a İlerle")}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Button>
           </div>

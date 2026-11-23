@@ -1,3 +1,4 @@
+import i18n from '../../../i18n.js';
 import { ArrowLeft, Award, BriefcaseBusiness, GraduationCap } from 'lucide-react';
 import { ExperienceManager } from './ExperienceManager.jsx';
 import { EducationManager } from './EducationManager.jsx';
@@ -25,7 +26,7 @@ export function ProfileRecordsScreen({ kind, runAuthenticated, onBack }) {
 
   return <div className="px-5 py-8 text-[#202938] sm:px-8">
     <main className="mx-auto max-w-5xl">
-      <button type="button" onClick={onBack} className="inline-flex items-center gap-2 rounded-lg px-2 py-2 text-sm font-semibold text-[#5276A7] hover:bg-white"><ArrowLeft size={17} />Kariyer profilime dön</button>
+      <button type="button" onClick={onBack} className="inline-flex items-center gap-2 rounded-lg px-2 py-2 text-sm font-semibold text-[#5276A7] hover:bg-white"><ArrowLeft size={17} />{i18n.t("Kariyer profilime dön")}</button>
       <div className="mt-5 rounded-2xl border border-[#E3E7ED] bg-white p-6 shadow-sm sm:p-8">
         <div className="flex items-center gap-4 border-b border-[#E3E7ED] pb-5">
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#EFF4FA] text-[#243B64]"><Icon size={24} /></div>
