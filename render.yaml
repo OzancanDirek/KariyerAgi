@@ -19,6 +19,10 @@ services:
         sync: false
       - key: Web__Origin
         sync: false
+      - key: Careerjet__ApiKey
+        sync: false
+      - key: Careerjet__PublisherUrl
+        value: https://careerpath-web.onrender.com/
   - type: web
     name: careerpath-web
     runtime: static

@@ -131,5 +131,12 @@
   "CareerPath Platformu": "CareerPath Platform",
   "Career": "Career",
   "Path": "Path",
-  "Kariyer & Beceri Platformu": "Career & Skills Platform"
+  "Kariyer & Beceri Platformu": "Career & Skills Platform",
+  "CareerPath ilanları": "CareerPath jobs",
+  "Dış kaynaklardaki ilanlar": "Jobs from external sources",
+  "Dış ilanları görmek için en az iki karakterle ara.": "Search with at least two characters to see external jobs.",
+  "Dış ilanlar aranıyor...": "Searching external jobs...",
+  "Bu arama için dış ilan bulunamadı.": "No external jobs found for this search.",
+  "Kaynak sitede başvur": "Apply on source site",
+  "Dış ilan aramasında arama terimin, IP adresin ve tarayıcı bilgin Careerjet ile paylaşılır. Başvuru kaynak sitede yapılır.": "External job search shares your search terms, IP address and browser information with Careerjet. Applications are made on the source site."
 }

@@ -98,6 +98,7 @@ builder.Services.AddScoped<CompanyMembershipRepository>();
 builder.Services.AddScoped<HiringAccessService>();
 builder.Services.AddScoped<ICompanyService, CompanyServiceImpl>();
 builder.Services.AddScoped<IJobService, JobServiceImpl>();
+builder.Services.AddHttpClient<ExternalJobSearchService>(client => client.Timeout = TimeSpan.FromSeconds(8));
 builder.Services.AddScoped<IJobApplicationService, JobApplicationServiceImpl>();
 builder.Services.AddScoped<ICompanyMembershipService, CompanyMembershipServiceImpl>();
 builder.Services.AddScoped<ICustomCareerService, CustomCareerServiceImpl>();

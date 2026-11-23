@@ -4,6 +4,10 @@ export const jobApi = {
   published(token) {
     return request('jobs', '', { token });
   },
+  external(token, keywords, location = '', page = 1) {
+    const query = new URLSearchParams({ keywords, location, page: String(page) });
+    return request('jobs', `external?${query}`, { token });
+  },
   get(token, id) {
     return request('jobs', id, { token });
   },
