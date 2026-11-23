@@ -35,7 +35,9 @@ public sealed class ExternalJobSearchService(HttpClient client, IConfiguration c
         using var response = await client.SendAsync(request, cancellationToken);
         if (!response.IsSuccessStatusCode)
         {
-            logger.LogWarning("Careerjet search failed with HTTP {StatusCode}", (int)response.StatusCode);
+            var errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+            var failureReason = ClassifyFailure(errorBody);
+            logger.LogWarning("Careerjet search failed with HTTP {StatusCode}; reason: {FailureReason}", (int)response.StatusCode, failureReason);
             throw new HttpRequestException("Careerjet search failed.");
         }
         using var document = JsonDocument.Parse(await response.Content.ReadAsStringAsync(cancellationToken));
@@ -58,4 +60,15 @@ public sealed class ExternalJobSearchService(HttpClient client, IConfiguration c
 
     private static string GetString(JsonElement row, string name) => row.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.String
         ? value.GetString() ?? string.Empty : string.Empty;
+
+    private static string ClassifyFailure(string body)
+    {
+        if (body.Contains("user_ip", StringComparison.OrdinalIgnoreCase) || body.Contains("user_agent", StringComparison.OrdinalIgnoreCase))
+            return "missing-user-context";
+        if (body.Contains("ip address", StringComparison.OrdinalIgnoreCase) || body.Contains("ip_address", StringComparison.OrdinalIgnoreCase) || body.Contains("whitelist", StringComparison.OrdinalIgnoreCase))
+            return "ip-restriction";
+        if (body.Contains("invalid key", StringComparison.OrdinalIgnoreCase) || body.Contains("invalid credentials", StringComparison.OrdinalIgnoreCase))
+            return "invalid-credentials";
+        return "unclassified";
+    }
 }
