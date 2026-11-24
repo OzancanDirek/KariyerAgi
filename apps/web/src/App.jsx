@@ -25,11 +25,12 @@ import { CompanyReviewScreen } from './features/marketplace/CompanyReviewScreen.
 import { EmployerJobsScreen } from './features/marketplace/EmployerJobsScreen.jsx';
 import { EmployerCandidatesScreen } from './features/marketplace/EmployerCandidatesScreen.jsx';
 import { CandidateJobsScreen } from './features/marketplace/CandidateJobsScreen.jsx';
+import { InterviewPracticeScreen } from './features/interview/InterviewPracticeScreen.jsx';
 
 const signedInScreens = new Set([
   'dashboard', 'profile-overview', 'profile-edit', 'career-goals',
   'cv-analysis', 'cv-builder', 'skill-map', 'roadmap', 'learning-resources', 'resource-management', 'records-experiences',
-  'records-educations', 'records-projects', 'records-cv', 'records-certificates', 'company', 'employer-jobs', 'employer-candidates', 'company-review', 'candidate-jobs'
+  'records-educations', 'records-projects', 'records-cv', 'records-certificates', 'company', 'employer-jobs', 'employer-candidates', 'company-review', 'candidate-jobs', 'interview-practice'
 ]);
 
 function screenFromUrl() {
@@ -171,6 +172,8 @@ export default function App() {
       page = <LearningResourcesScreen runAuthenticated={runAuthenticated} selectedRoleId={selectedRoleId} onSelectRole={selectRole} onOpenRoadmap={() => navigateSignedIn('roadmap')} />;
     } else if (signedInScreen === 'candidate-jobs') {
       page = <CandidateJobsScreen runAuthenticated={runAuthenticated} onOpenCvs={() => navigateSignedIn('records-cv')} />;
+    } else if (signedInScreen === 'interview-practice') {
+      page = <InterviewPracticeScreen runAuthenticated={runAuthenticated} />;
     } else if (signedInScreen === 'profile-overview') {
       page = <ProfileOverviewScreen runAuthenticated={runAuthenticated} onEdit={() => navigateSignedIn('profile-edit')} onOpenGoals={() => navigateSignedIn('career-goals')} onOpenRecords={(kind) => navigateSignedIn(`records-${kind}`)} />;
     } else {
